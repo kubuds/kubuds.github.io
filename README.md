@@ -1,35 +1,29 @@
-# Business Jekyll Theme
+# 上海苦芽科技有限公司官网
 
-Business Jekyll Theme is a theme that is designed to be used for small and medium business. It is designed by a team from [Technext](https://github.com/technext/). The theme is then ported over by [Melvin Ch'ng](http://melvinchng.github.io) for Jekyll support. The original source code can be obainted from Technext's [repository](https://github.com/technext/office)
+> 网站基于 jekyll 开发，原始模板来源于公开免费的模板：Business Jekyll Theme, 感谢模板作者的贡献， 以下简介摘自于该模板 github 仓库的 README：
 
-Unlike most Jekyll Themes, Business Jekyll Theme is not meant to be a single page theme. This theme is a package that you can use for your business website or promote certain project. I reorganized all the files and make it Jekyll friendly.
+> Business Jekyll Theme is a theme that is designed to be used for small and medium business. It is designed by a team from [Technext](https://github.com/technext/). The theme is then ported over by [Melvin Ch'ng](http://melvinchng.github.io) for Jekyll support. The original source code can be obainted from Technext's [repository](https://github.com/technext/office)
 
-Big thanks to the creator of Office as this theme would not be possible without their hard work! You are always welcome to contribute to this repository to make it better!
+### 网站地址
 
-**Example Site**
-- [Business Jekyll Theme](https://business-jekyll-theme.github.io)
+- [kubuds.io](https://kubuds.io)
 
-**Example Site From The Original Creator**
-- [Office Template](http://demo.themewagon.com/preview/office-responsive-multipage-bootstrap-template)
+## 开发部署
 
-## Feature
-- Responsive layout
-- CSS Framework - Bootstrap 3
-- Beautiful icons by Fontawesome
-- Clean, simple and elegant
-- Multi page Template
-- Well commented and structured coding
-- Easy to use
-- It's Free!
+1. 安装 jekyll: [official website](https://jekyllrb.com/docs/)
+2. 下载本仓库代码
+3. 在代码根目录下，安装项目依赖的所有 gem 包:
 
-## Note
-I removed certain features from the original theme packages as we do not really need it. I modified the original source code slightly to make it more mobile friendly and reusable. 
+```
+bundle install
+```
 
-## Installation
-1. For first time user, you have to install Ruby and Rails. If you do not have Ruby on Rails installed, you may follow [this tutorial](http://melvinchng.github.io/rails/RubyOnRailsInstallation.html) that I wrote for Windows, Linux, and MacOS (installation videos are included).
-2. Install Jekyll by using the command `gem install jekyll`.
-3. Start your localhost server by using the command `jekyll serve`. Make sure that you are at the root directory of your folder before using this command.
-4. Your site should be accessible at `localhost:4000`.
-5. For additional information about Jekyll, refer to the [official website](http://jekyllrb.com/). 
+4. 本地运行:
 
-## Enjoy!
+```
+bundle exec jekyll serve -d docs
+```
+
+> jekyll 编译后的静态文件默认输出到\_site 目录，我们改为 docs，跟 github pages 的要求保持一致
+
+5. 提交代码。代码提交到 github 以后，github 会直接访问 docs 文件夹作为网站发布源。
