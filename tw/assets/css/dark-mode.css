@@ -1,0 +1,606 @@
+/* =========================================================================
+   Dark 模式配色（kubuds 官网）
+   -------------------------------------------------------------------------
+   设计依据（业界通行做法）：
+   1. 不用纯黑作底，采用 #121212 系列 —— 纯黑与正文对比过强，长时间阅读易疲劳，
+      Material Design 与主流站点均推荐接近黑的深灰来营造层次。
+   2. 用 data-theme 属性切换 + localStorage 持久化，默认跟随系统偏好
+      （prefers-color-scheme）。
+   3. 正文对比度保持 WCAG AA 以上：正文 #e8e8ea / 底 #121212 ≈ 15:1。
+   4. 品牌主色在暗底上提亮（#655E7A -> #a99fc4），保持色相并保证可读性；
+      链接沿用站点原有的蓝灰 hover 色并提亮为 #8fb4d9。
+   5. 图片：装饰性大图（hero 背景）保持原样；logo 换用深色版（白底已透明、
+      笔迹提亮）；内容图片略微降低亮度，避免在暗色页面上形成刺眼亮块。
+   本文件在 style.css 之后加载，只覆盖配色，不改动布局与间距。
+   ========================================================================= */
+
+/* ---------- 调色板 ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* 层次底色：越靠上层越亮，形成纵深 */
+  --dm-bg: #121212;          /* 页面底 */
+  --dm-bg-alt: #171717;      /* 导航栏 / hero 底 */
+  --dm-surface: #1a1a1a;     /* 区块底 */
+  --dm-card: #1e1e1e;        /* 卡片底 */
+  --dm-card-hover: #242428;
+
+  --dm-border: #2e2e33;      /* 常规边框 */
+  --dm-border-soft: #26262b; /* 弱化分隔线 */
+
+  /* 文字（三级层次 + 加粗档） */
+  --dm-text: #e8e8ea;        /* 强层级文字（标题等） */
+  --dm-text-2: #b8b8bd;      /* 正文段落 / 次要文字 */
+  --dm-text-3: #8a8a90;      /* 弱化文字 / 元信息 */
+  --dm-strong: #d4d4d8;      /* 正文内加粗：介于标题与正文之间。
+                                2026-09-26 调整：原与标题同用 --dm-text(#e8e8ea)，
+                                与正文（尤其覆盖前的 #555）反差过大，降一档。 */
+
+  /* 品牌与交互色 */
+  --dm-brand: #a99fc4;       /* 品牌主色提亮版 */
+  --dm-link: #8fb4d9;        /* 链接 / hover */
+  --dm-accent: #6ea8dc;      /* 强调（蓝色系） */
+
+  --dm-shadow: rgba(0, 0, 0, 0.55);
+  --dm-overlay: rgba(18, 18, 18, 0.78);   /* hero 遮罩 */
+  /* hero 背景图的 multiply 混合底：与图片相乘决定图的实际亮度。
+     原用 --dm-bg-alt(#171717) 会把图片压到约 9% 亮度、近乎全黑；
+     2026-09-20 提亮为 #666670（约 40%），图片细节清晰可辨、
+     浅色标题仍有足够对比度。 */
+  --dm-hero-blend: #666670;
+}
+
+/* ---------- 基础 ---------- */
+[data-theme="dark"] body {
+  background-color: var(--dm-bg);
+  color: var(--dm-text);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--dm-text);
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] li,
+[data-theme="dark"] span {
+  color: inherit;
+}
+
+[data-theme="dark"] a {
+  color: var(--dm-link);
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--dm-brand);
+}
+
+[data-theme="dark"] hr {
+  border-color: var(--dm-border);
+}
+
+/* ---------- 导航栏 ---------- */
+[data-theme="dark"] .navigation {
+  background: var(--dm-bg-alt);
+  border-bottom: 1px solid var(--dm-border-soft);
+}
+
+[data-theme="dark"] .navigation .navbar .navbar-nav > li > a {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .navigation .navbar .navbar-nav:not(.navbar-language) > li > a:hover,
+[data-theme="dark"] .navigation .navbar .navbar-nav:not(.navbar-language) > li > a:focus {
+  color: var(--dm-brand) !important;
+}
+
+/* 下拉菜单 */
+[data-theme="dark"] .navigation .navbar .dropdown-menu {
+  background: var(--dm-card);
+  box-shadow: 0 0.5rem 2rem var(--dm-shadow);
+  border: 1px solid var(--dm-border);
+}
+
+[data-theme="dark"] .navigation .navbar .dropdown-menu a,
+[data-theme="dark"] .navigation .navbar .dropdown-menu .dropdown-item {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .navigation .navbar .dropdown-menu a:hover,
+[data-theme="dark"] .navigation .navbar .dropdown-menu .dropdown-item:hover {
+  background: var(--dm-card-hover);
+  color: var(--dm-brand);
+}
+
+[data-theme="dark"] .navbar-toggler {
+  color: var(--dm-text-2);
+}
+
+/* logo：换用深色版（白底已透明、笔迹提亮为浅紫） */
+[data-theme="dark"] .navigation .navbar-brand .logo_ch {
+  content: url("/assets/img/logos/kubuds_ch_dark.png");
+}
+
+[data-theme="dark"] .navigation .navbar-brand .logo {
+  content: url("/assets/img/logos/kubuds_en_dark.png");
+}
+
+/* ---------- hero 区域 ---------- */
+/* 首页 hero：浅灰底 -> 深灰底 */
+[data-theme="dark"] .home-slider {
+  background-color: var(--dm-bg-alt);
+}
+
+/* 内页 hero（service / solution / community 页）：原为页面白底或浅灰底 */
+[data-theme="dark"] .service-slider,
+[data-theme="dark"] .service-detail,
+[data-theme="dark"] .page-title {
+  background-color: var(--dm-bg);
+}
+
+/* 带背景图的内页 hero：图片与灰底做 multiply 混合来压暗，兼顾暗色氛围与文字可读。
+   ⚠️ 混合底决定图片亮度：原用 --dm-bg-alt(#171717) 时图片近乎全黑；
+   2026-09-20 起用 --dm-hero-blend(#666670)，图片约 40% 亮度、细节可见。 */
+[data-theme="dark"] .slider-service-bg,
+[data-theme="dark"] .slider-solution-bg,
+[data-theme="dark"] .slider-community-bg,
+[data-theme="dark"] .slider-about-bg,
+[data-theme="dark"] .slider-post-bg,
+[data-theme="dark"] .slider-career-bg {
+  background-color: var(--dm-hero-blend);
+  background-blend-mode: multiply;
+}
+
+/* hero 的浅色遮罩改为暗色遮罩（原来用 #f5f5f7 提亮以衬托深色文字，
+   暗色模式下改为压暗，让浅色文字可读） */
+[data-theme="dark"] .overly:before,
+[data-theme="dark"] .slider:before,
+[data-theme="dark"] .home-slider:before,
+[data-theme="dark"] .page-title:before {
+  background: var(--dm-overlay);
+}
+
+/* 原来在浅底上使用的深色文字（内页 hero），暗色模式下改为浅色 */
+[data-theme="dark"] .slider-service-bg .block h1,
+[data-theme="dark"] .slider-service-bg .block h2,
+[data-theme="dark"] .slider-service-bg .block h3,
+[data-theme="dark"] .slider-service-bg .block h4,
+[data-theme="dark"] .slider-about-bg .block h1,
+[data-theme="dark"] .service-slider h1,
+[data-theme="dark"] .service-slider .section-title p,
+[data-theme="dark"] .service-slider h3 {
+  color: var(--dm-text);
+  text-shadow: none;
+}
+
+/* 索引页 / 新闻页 hero（.slider-post-bg）：标题原为深灰 #555 + 白色文字阴影，
+   配浅色图使用；暗色模式下图片被压暗过，深灰字几乎不可见 —— 改为浅色字 + 深色阴影，
+   在提亮后的图片（--dm-hero-blend）上仍有清晰对比。 */
+[data-theme="dark"] .slider-post-bg .block h1 {
+  color: var(--dm-text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] .slider-post-bg .block h4 {
+  color: var(--dm-accent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] .slider-service-bg .block p,
+[data-theme="dark"] .slider-about-bg .block p {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .slider-about-bg .block h4 {
+  color: var(--dm-accent);
+}
+
+/* ---------- 服务 / 卡片 ---------- */
+/* 区块底色：站点用 .service / .section 承载浅灰底（#F5F5F5），暗色下改为页面底色，
+   由卡片自身的深色底形成层次 */
+[data-theme="dark"] .service,
+[data-theme="dark"] .section,
+[data-theme="dark"] .service-detail,
+[data-theme="dark"] .call-to-action,
+[data-theme="dark"] .section-top {
+  background: var(--dm-bg);
+}
+
+/* 页面初始遮罩（原为白底，暗色下改为深色） */
+[data-theme="dark"] #preloader {
+  background: var(--dm-bg);
+}
+
+/* 其他使用白底的内容块 */
+[data-theme="dark"] .service-list .block,
+[data-theme="dark"] .about .member,
+[data-theme="dark"] .team .member {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+}
+
+[data-theme="dark"] .carousel-indicators li {
+  background-color: #55555f;
+}
+
+[data-theme="dark"] .carousel-indicators li.active {
+  background-color: var(--dm-brand);
+}
+
+[data-theme="dark"] .service-item,
+[data-theme="dark"] .news-card,
+[data-theme="dark"] .card {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+  box-shadow: 0 0.25rem 0.75rem var(--dm-shadow);
+}
+
+[data-theme="dark"] .service .service-item:hover,
+[data-theme="dark"] .news-card:hover {
+  box-shadow: 0 0.5rem 1.5rem var(--dm-shadow);
+}
+
+[data-theme="dark"] .service .service-item i,
+[data-theme="dark"] .service .service-item h4 {
+  color: var(--dm-brand);
+}
+
+[data-theme="dark"] .service .service-item h4,
+[data-theme="dark"] .news-title a {
+  color: var(--dm-text);
+}
+
+[data-theme="dark"] .service .service-item p,
+[data-theme="dark"] .news-card-content,
+[data-theme="dark"] .news-card-content a {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .news-meta {
+  color: var(--dm-text-3);
+}
+
+[data-theme="dark"] .news-title a:hover,
+[data-theme="dark"] .news-card-content a:hover {
+  color: var(--dm-link);
+}
+
+/* 深色服务区块本身即深色，保持并统一边框 */
+[data-theme="dark"] .dark-service .service-item {
+  border-color: var(--dm-border);
+}
+
+/* ---------- 正文 / 日报 ---------- */
+/* 文章正文容器（日报/周报/新闻详情页）：站点用白底卡片承载正文 */
+[data-theme="dark"] .post-content-wrapper,
+[data-theme="dark"] .post-detail,
+[data-theme="dark"] .blog-details,
+[data-theme="dark"] .post-area,
+[data-theme="dark"] .content-wrapper {
+  background: var(--dm-card);
+  box-shadow: 0 0.25rem 1rem var(--dm-shadow);
+}
+
+[data-theme="dark"] .post-content-wrapper h1,
+[data-theme="dark"] .post-content-wrapper h2,
+[data-theme="dark"] .post-content-wrapper h3,
+[data-theme="dark"] .post-content-wrapper h4,
+[data-theme="dark"] .post-content-wrapper h5,
+[data-theme="dark"] .post-content-wrapper h6 {
+  color: var(--dm-text);
+}
+
+/* 正文（.post-content）：覆盖浅色主题的 color:#555 —— 原规则未做暗色覆盖，
+   暗色下正文过暗、与加粗反差过大（2026-09-26 用户反馈调整）。 */
+[data-theme="dark"] .post-content-wrapper .post-content {
+  color: var(--dm-text-2);
+}
+
+/* 正文内加粗：降一档（原与标题同用 --dm-text，比正文亮太多） */
+[data-theme="dark"] .post-content-wrapper strong,
+[data-theme="dark"] .post-content-wrapper b,
+[data-theme="dark"] .post-content-wrapper .post-content strong,
+[data-theme="dark"] .post-content-wrapper .post-content b {
+  color: var(--dm-strong);
+}
+
+[data-theme="dark"] .text-area,
+[data-theme="dark"] .text-area p {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] table {
+  color: var(--dm-text-2);
+  border-color: var(--dm-border);
+}
+
+[data-theme="dark"] table th {
+  background: var(--dm-card);
+  color: var(--dm-text);
+  border-color: var(--dm-border);
+}
+
+[data-theme="dark"] table td {
+  border-color: var(--dm-border);
+}
+
+[data-theme="dark"] table tr:nth-child(even) {
+  background: var(--dm-surface);
+}
+
+[data-theme="dark"] blockquote {
+  border-left-color: var(--dm-brand);
+  background: var(--dm-surface);
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] code,
+[data-theme="dark"] pre {
+  background: #0e0e0e;
+  color: #d8d8dc;
+  border-color: var(--dm-border);
+}
+
+/* 内容图片：避免在暗色页面上形成刺眼亮块 */
+[data-theme="dark"] .text-area img,
+[data-theme="dark"] .news-card img,
+[data-theme="dark"] .service-detail img {
+  filter: brightness(0.88) contrast(1.02);
+}
+
+/* ---------- 页脚 ---------- */
+[data-theme="dark"] .footer .footer-top {
+  background: var(--dm-bg-alt);
+}
+
+[data-theme="dark"] .footer h4,
+[data-theme="dark"] .footer a,
+[data-theme="dark"] .footer p {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .footer a:hover {
+  color: var(--dm-link);
+}
+
+[data-theme="dark"] .footer .footer-manu ul li a {
+  color: var(--dm-text-3);
+}
+
+[data-theme="dark"] .footer .footer-manu ul li a:hover {
+  color: var(--dm-text);
+}
+
+[data-theme="dark"] .footer .footer-copyright {
+  background: var(--dm-bg);
+  color: var(--dm-text-3);
+  border-top: 1px solid var(--dm-border-soft);
+}
+
+[data-theme="dark"] .footer .copyright a {
+  color: var(--dm-text-2);
+}
+
+[data-theme="dark"] .social-media-icons ul li a,
+[data-theme="dark"] .social-icons i,
+[data-theme="dark"] .social-profile ul li a {
+  color: var(--dm-text-2);
+}
+
+/* ---------- 表单 ---------- */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--dm-text-3);
+}
+
+/* ---------- 按钮 ---------- */
+[data-theme="dark"] .btn-main {
+  background: var(--dm-brand);
+  border-color: var(--dm-brand);
+  color: #16161a;
+}
+
+[data-theme="dark"] .btn-main:hover {
+  background: var(--dm-link);
+  border-color: var(--dm-link);
+  color: #16161a;
+}
+
+/* ---------- 补遗：静态扫描 style.css 后逐条核对出的其余浅底容器 ---------- */
+/* 站点使用浅色底的容器一览（.bg-shadow / .bg-gray 为工具类，.single-blog /
+   .news-item / .text-area 等为内容容器），暗色下统一替换为深色卡片底 */
+[data-theme="dark"] header,
+[data-theme="dark"] .bg-shadow,
+[data-theme="dark"] .single-blog,
+[data-theme="dark"] .news-item,
+[data-theme="dark"] .text-area,
+[data-theme="dark"] .section-top .about,
+[data-theme="dark"] .section-top .team .member,
+[data-theme="dark"] .single-product-slider .carousel .carousel-control {
+  background: var(--dm-card);
+}
+
+[data-theme="dark"] .bg-gray,
+[data-theme="dark"] .tabCommon .nav-tabs a {
+  background: var(--dm-surface);
+}
+
+[data-theme="dark"] .tabCommon .nav-tabs .active a,
+[data-theme="dark"] .tabCommon .nav-tabs a:hover {
+  background: var(--dm-card);
+  color: var(--dm-text);
+  border-color: var(--dm-border);
+}
+
+[data-theme="dark"] #wrapper-work ul li .items-text h2:before {
+  background: var(--dm-bg-alt);
+}
+
+[data-theme="dark"] .shopping.cart .product-list .table .cart-amount th {
+  background: var(--dm-surface);
+}
+
+/* 正文容器里的标题与文字（.text-area 承载日报/新闻正文） */
+[data-theme="dark"] .text-area h1,
+[data-theme="dark"] .text-area h2,
+[data-theme="dark"] .text-area h3,
+[data-theme="dark"] .text-area h4,
+[data-theme="dark"] .single-blog h1,
+[data-theme="dark"] .single-blog h2,
+[data-theme="dark"] .single-blog h3 {
+  color: var(--dm-text);
+}
+
+/* 日报 / 新闻正文（.text-area / .single-blog）内的加粗：同样降一档，与正文段落保持小反差（2026-09-26） */
+[data-theme="dark"] .text-area strong,
+[data-theme="dark"] .text-area b,
+[data-theme="dark"] .single-blog strong,
+[data-theme="dark"] .single-blog b {
+  color: var(--dm-strong);
+}
+
+/* 正文中的行内代码与引用：原为深字浅底，暗色下反转 */
+[data-theme="dark"] .post-content-wrapper code,
+[data-theme="dark"] .text-area code {
+  background: #0e0e0e;
+  color: #d8c8f0;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.2rem;
+}
+
+[data-theme="dark"] .post-content-wrapper a,
+[data-theme="dark"] .text-area a {
+  color: var(--dm-link);
+}
+
+[data-theme="dark"] .post-content-wrapper hr,
+[data-theme="dark"] .text-area hr {
+  border-color: var(--dm-border);
+}
+
+/* ---------- 滚动条（WebKit）---------- */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--dm-bg);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #33333a;
+  border-radius: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #43434c;
+}
+
+/* =========================================================================
+   导航栏配色切换开关（滑动式）
+   ========================================================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid #3c5f82;
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+.theme-toggle .tt-icon {
+  font-size: 1rem;
+  color: #8a8a90;
+  transition: color 0.25s ease;
+}
+
+.theme-toggle .tt-track {
+  position: relative;
+  display: inline-block;
+  width: 2.5rem;
+  height: 1.25rem;
+  border-radius: 1rem;
+  background: #d5d5da;
+  transition: background 0.25s ease;
+}
+
+.theme-toggle .tt-thumb {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease;
+}
+
+/* 暗色模式下的开关状态 */
+[data-theme="dark"] .theme-toggle .tt-track {
+  background: #4a4a52;
+}
+
+[data-theme="dark"] .theme-toggle .tt-thumb {
+  transform: translateX(1.25rem);
+  background: #e8e8ea;
+}
+
+[data-theme="dark"] .theme-toggle .tt-icon--sun {
+  color: #6d6d76;
+}
+
+[data-theme="dark"] .theme-toggle .tt-icon--moon {
+  color: var(--dm-brand);
+}
+
+.theme-toggle:hover .tt-track {
+  background: #c3c3ca;
+}
+
+[data-theme="dark"] .theme-toggle:hover .tt-track {
+  background: #55555f;
+}
+
+/* 移动端：跟随菜单项居中显示 */
+@media (max-width: 992px) {
+  .theme-toggle {
+    margin: 0.75rem auto;
+    justify-content: center;
+  }
+}
+
+/* ---------- 过渡（切换时平滑，且尊重"减少动效"偏好）---------- */
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .navigation,
+  .home-slider,
+  .service-item,
+  .news-card,
+  .footer .footer-top {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+}
