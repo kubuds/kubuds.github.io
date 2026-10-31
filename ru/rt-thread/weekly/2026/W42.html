@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ru/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ru/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 周报" href="/rss/ru/rt-thread/weekly.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ru/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ru/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ru/">Главная</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Услуги <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/service/simulator.html">Симулятор</a></li>
+              <li><a class="dropdown-item" href="/ru/service/os.html">Операционная система</a></li>
+              <li><a class="dropdown-item" href="/ru/service/toolchain.html">Инструментальная цепочка</a></li>
+              <li><a class="dropdown-item" href="/ru/service/chip.html">Встраиваемые чипы</a></li>
+
+              <li><a class="dropdown-item" href="/ru/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ru/service/aisys.html">AI-системы</a></li>
+              <li><a class="dropdown-item" href="/ru/service/consultation.html">Консалтинг</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Решения <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Сообщество <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ru/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ru/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ru/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ru/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ru/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ru/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/post.html" style="white-space: nowrap;">Новости и события</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/about.html" style="white-space: nowrap;">О нас</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ru/career.html">Вакансии</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              Русский <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/weekly/2026/W42.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/weekly/2026/W42.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/weekly/2026/W42.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/weekly/2026/W42.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/weekly/2026/W42.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>Еженедельный отчёт RT-Thread (2026-10-12 ~ 2026-10-16) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ru/">Главная</a></li>
+                                <li class="breadcrumb-item"><a href="/ru/post.html#news-list" class="news-list-link">Новости и события</a>
+                                </li>
+                                <li class="breadcrumb-item active">Еженедельный отчёт RT-Thread (2026-10-12 ~ 2026-10-16)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>Еженедельный отчёт RT-Thread (2026-10-12 ~ 2026-10-16)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-16</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Период отчёта</strong>: с 12 октября 2026 г. (понедельник) по 16 октября (пятница), 5 рабочих дней, 5 выпусков ежедневного отчёта; дополнительно включает проверку в день публикации (17 октября), охватывающую изменения основной линии и инструментальной цепочки с 08:00 16.10 по 16:30 17.10<br />
+<strong>Источники материалов</strong>: 5 выпусков ежедневного отчёта о динамике RT-Thread данного издания (12.10, 13.10, 14.10, 15.10, 16.10), суммарное эффективное окно мониторинга с 10:30 10.10 по 08:00 16.10 (выпуск понедельника — окно через выходные, выпуск четверга — повторный запуск после сбоя, около 29 часов); проверка в день публикации основана на фактических данных потоков коммитов, статусов PR, страниц релизов и тегов в основном репозитории GitHub, а также в репозиториях Env и packages<br />
+<strong>Пояснения к составлению</strong>: охватывает пять измерений — ядро и версии, инструментальная цепочка, экосистема и адаптация производителей, официальные и общественные мероприятия, отраслевые применения; факты и даты в основном тексте по пунктам взяты из оригинальных текстов ежедневных отчётов соответствующего периода, дополненные в день публикации записи отдельно помечены датой и способом проверки</p>
+
+<hr />
+
+<h2 id="1-главное-за-неделю">1. Главное за неделю</h2>
+
+<ul>
+  <li>
+    <p><strong>Крупная переработка Next RISC-V вошла в основную линию, номер версии ядра одновременно повышен до v5.4.0 (17.10)</strong>: отслеживаемое почти пять месяцев предложение по переработке архитектуры RISC-V в основном репозитории (#10320, автор GuEe-GUI) было объединено сопровождающим Rbb666 17.10 в 09:44 в master, 4 коммита, 165 файлов, +15134/-2617; за минуту до слияния (09:43) другой коммит (#11875) уже поднял номер версии ядра до v5.4.0 (макрос версии 5.4.0). Официальный Release и тег ещё не созданы, на странице релизов последним остаётся v5.3.0 от 10.09, последний раздел ChangeLog также всё ещё v5.3.0. Это произошло после отсечной точки ежедневного отчёта пятницы (08:00 16.10) и относится к дополнениям проверки дня публикации.</p>
+  </li>
+  <li>
+    <p><strong>За неделю объединено 15 коммитов, 14.10 утром за 64 минуты подряд прошло 8 коммитов (12.10 ~ 16.10)</strong>: в понедельник 2 коммита (#11863, #11787), во вторник ноль объединений (master молчал около 46 часов), в среду 8 коммитов (с 09:13 до 10:17), в четверг 4 коммита, в пятницу 1 коммит (#11846, после отсечной точки ежедневного отчёта). Темы объединений сосредоточены в трёх группах: устойчивость сетевого стека, безопасность памяти и границ, BSP производителей; наблюдается форма массового закрытия сопровождающими.</p>
+  </li>
+  <li>
+    <p><strong>В файловой системе 9PFS подряд выявлены две уязвимости, одна с рейтингом CVSS 3.1 7.5 (15.10)</strong>: новый тикет дефекта #11868 указывает, что 64-битный макрос выборки значения на пути приёма разыменовывает буфер как обычный указатель (размер структуры 292 и протокольная константа 42 делают rx_buffer+42 всегда равным 6 mod 8), сгенерированная GCC под ARMv7-A инструкция LDRD требует 8-байтового выравнивания, и любой легальный ответ Tstat вызывает data abort в dfs_9pfs_open и dfs_9pfs_stat; отчёт локализует коммит, introduced 9PFS в декабре 2025, даёт рейтинг удалённого отказа в обслуживании и полную цепочку воспроизведения на QEMU vexpress-a9, а также прилагает дизассемблирование и подтверждение через addr2line. Другая, открытая в марте #11289 (выход за границы чтения на пути getdents цикла), получила подтверждение воспроизведения сообществом в master (bsp/simulator с ASan). Оба дела остаются открытыми.</p>
+  </li>
+  <li>
+    <p><strong>Замыкание устойчивости сетевого стека: два дела ping и макроконтроль lwip последовательно закрыты (14.10 ~ 15.10)</strong>: #11853 исправляет деление на ноль в статистике ping при недостижимости цели, приводящее к падению shell, тикет дефекта #11852 закрыт в тот же день; #11866 исправляет логику задержки последнего пакета (исходная проверка цикла всегда ложна, из-за чего после последнего пакета всё ещё добавлялась задержка, и интерфейс задержки вызывался с параметром 0), #11865 закрыт в тот же день; более раннее предложение в том же направлении #11862 закрыто без объединения. Макроконтроль содержимого сегмента lwip из #11815 после нескольких раундов расширения объединён 15.10 в 13:28, 6 файлов +188/-28.</p>
+  </li>
+  <li>
+    <p><strong>Укрепление памяти и границ стало параллельной основной линией (12.10 ~ 15.10)</strong>: исправление целочисленного переполнения calloc в ядре (#11848), верхняя граница числа интерфейсов legacy USB host и очистка перечисления (#11822, тикет дефекта #11288 закрыт), исправление двух выходов за границы в хеш-таблице phandle ofw дерева устройств (#11845), проверка границ опций DHCP-сервера (#11858, продолжение с начала периода) последовательно объединены; предложение AddressSanitizer для кучи (#11772) дополнено проверками диапазонов rt_memcpy, rt_memset и rt_memmove и граничными случаями, согласно отчёту последний CI полностью прошёл.</p>
+  </li>
+  <li>
+    <p><strong>Высокая плотность взаимодействия в очереди ревью, новые контрибьюторы берут несколько линий (13.10 ~ 16.10)</strong>: предложение SPI для ESP32-C6 (#11846) получило три построчных замечания сопровождающего (после отключения DMA верхний предел 64 байта на одну передачу требует сегментации, при совместном использовании IDF для C3 и C6 сборки перезаписывают друг друга, проверку разрядности нужно перенести вперёд), автор после поочерёдной доработки объединил его 16.10 в 11:31; новичковое задание efm32 menuconfig (#7530) после принятия контрибьютором через 1 минуту породило предложение (#11867, 2 файла +408); открыто предложение по устранению неоднозначности совпадения кодов команд управления одним устройством F_GETFL и F_SETFL на уровне DFS (#11869); обсуждение пути ответа aarch64 GIC предоставило фактические данные уровня сотен тысяч выводов.</p>
+  </li>
+  <li>
+    <p><strong>Экосистема и инструментарий: hpm_sdk v1.13.0 завершает цикл «тег, индекс, BSP» (10-13 ~ 10-17)</strong>: репозиторий пакетов вышестоящего уровня 10-13 выпустил тег v1.13.0 (добавлена серия HPM5100), предложение по индексу packages #2045 влито 10-14 в 18:41 — первое за полмесяца для репозитория индекса; в основном репозитории на стороне BSP 10-17 выполнено обновление до v1.13.0 и добавлена поддержка hpm5100evk (#11871). В тот же период инструмент Env 10-17 слил PR #302 (встроенная навигация по документации в WebUI) и поднял номер версии до v2.0.3, при этом на странице Release последней по-прежнему остаётся v2.0.2 от 09-16.</p>
+  </li>
+  <li>
+    <p><strong>Контент сообщества держится на уровне двух постов в день, соревнования и обучение идут параллельно (10-12 ~ 10-15)</strong>: на этой неделе 5 постов с работами конкурса встраиваемых систем 2026 (портативный отладчик, «目语心声», USB-дополнительный экран GD32H759IM, регистратор мониторинга окружающей среды, реабилитационный манипулятор «舒衡智养»), везде в качестве основного контроллера используется серия GD32H7; последовательно опубликованы обзор Workshop по AI-машинкам с выставки Industry Expo (10-15) и обучающая платформа гибридного развёртывания с виртуализацией на RK3588 (10-13); официальный новостной интерфейс молчит уже пятьдесят седьмой день подряд.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="2-ядро-и-динамика-версий">2. Ядро и динамика версий</h2>
+
+<h3 id="версии-и-основная-ветка">Версии и основная ветка</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-17　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/releases">страница releases основного репозитория</a></p>
+
+<ul>
+  <li><strong>Официальные версии</strong>: на этой неделе нет новых Release и тегов, последней официальной версией остаётся v5.3.0, выпущенная 09-10; проверка в день релиза показывает, что в основной ветке макрос версии поднят до v5.4.0 (#11875), однако ChangeLog, теги и анонс релиза за этим не последовали, поэтому на этой неделе формулировка «выпущено» не используется.</li>
+  <li><strong>Общий объём слияний</strong>: с 10-12 по 10-16 всего 15 слияний, ещё 5 за выходные 10-10 ~ 10-11 учтены в ежедневном отчёте за понедельник.</li>
+  <li><strong>Характер ритма</strong>: после 10-12 11:06 master молчал около 46 часов, с 10-14 09:13 до 10:17 за 64 минуты сосредоточенно влито 8 коммитов, 10-15 с 13:28 до 13:50 добавлены ещё 3 — мейнтейнеры закрывают задачи пакетными окнами, а не продвигаются равномерно каждый день.</li>
+  <li><strong>Изменения в день релиза</strong>: 10-16 в 11:31 влит #11846; 10-17 с 09:43 до 16:42 последовательно влиты #11875 (подъём версии), #10320 (Next RISC-V), #11871 (hpm_sdk и hpm5100evk), #11872 (удаление избыточных путей глобального CPPPATH в драйвере touch).</li>
+</ul>
+
+<h3 id="список-слияний-этой-недели-10-12--10-16-15-коммитов">Список слияний этой недели (10-12 ~ 10-16, 15 коммитов)</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-16　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">поток коммитов master основного репозитория</a></p>
+
+<ul>
+  <li><strong>10-12 (2 коммита)</strong>: #11863 точка входа сборки при отсутствии каталога инструментальной цепочки вместо установки локального флага выхода теперь выполняет прямой ненулевой выход, влито примерно через 36 минут после открытия; #11787 генерация цели Eclipse вводит список каталогов метаданных SCM (.git, .svn, .hg), такие каталоги больше не сканируются рекурсивно.</li>
+  <li><strong>10-14 (8 коммитов, с 09:13 до 10:17)</strong>: #11861 восстановление состояния vstart после настройки векторного расширения RISC-V; #11855 ошибка сборки при одновременном включении reset и ulog; #11851 добавлена поддержка SPI6 BDMA для STM32H723-DM-MC02; #11848 исправлено целочисленное переполнение в calloc ядра; #11853 исправлено деление на ноль в статистике ping; #11847 для ESP32-C3 исправлено ошибочное совпадение подстановочных знаков IRAM и компоновочного скрипта Bluetooth при путях Windows; #11814 оптимизация распределения системных ресурсов ra6w1 (стек главного потока скорректирован до 4096); #11822 верхняя граница числа интерфейсов legacy USB host и упорядочивание путей перечисления и очистки.</li>
+  <li><strong>10-15 (4 коммита)</strong>: #11866 поправки задержки последнего пакета и вызова с нулевой задержкой в ping; #11815 управление макросами содержимого секции lwip (6 файлов +188/-28); #11812 дополнение таймеров N32H47x_48x и H49x (39 файлов +3956/-105, тик LPTIM выводится по реальному LSI, в комплекте покрытие сборкой ci-attach); #11845 исправление выхода за границы хеш-таблицы ofw phandle (число выделений изменено на max-min+1, очистка при расширении считается от числа старых элементов).</li>
+  <li><strong>10-16 (1 коммит)</strong>: #11846 поддержка SPI для ESP32-C6 (сегментированная передача с верхним пределом 64 байта, сохранение двух наборов вызовов по целевым макросам с двусторонней проверкой сборки, проверка разрядности вынесена вперёд).</li>
+</ul>
+
+<h3 id="перенесено-с-начала-периода-пять-слияний-10-10--10-11">Перенесено с начала периода: пять слияний 10-10 ~ 10-11</h3>
+
+<p><strong>Дата</strong>: 2026-10-10 ~ 2026-10-11　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11858">PR #11858</a></p>
+
+<ul>
+  <li>#11858 Перед разбором опций DHCP-сервера добавлена проверка границ, устранён путь чтения за границами; вслед за этим закрыт отчёт о дефекте #11323, поданный исследователем безопасности.</li>
+  <li>#11841 Во всех STM32 BSP выравнивание стека унифицировано с ALIGN(4) на ALIGN(8), 110 файлов +220/-220, что удовлетворяет требованию AAPCS к выравниванию указателя стека на границах публичных функций; упомянутый отчёт о дефекте #7527 от мая 2023 года по-прежнему открыт.</li>
+  <li>#11813 В тестах производительности utest устранена зависимость от фиксированного тактового таймера и усилена защита сборки тестов.</li>
+  <li>#11856 Глобальные конструкторы C++ дополнены проходом через __init_array_start и __init_array_end (слабые объявления символов), с пропуском дублирующихся записей, уже попавших в диапазон ctors; отчёт о дефекте #11778 закрыт.</li>
+  <li>#11770 Исправлен дефект псевдонима кольцевого буфера USB CDC VCOM (переведено на штатное подключение и добавлена поддержка опроса приёма); отчёт о дефекте #11739 закрыт.</li>
+</ul>
+
+<h3 id="безопасность-и-дефекты">Безопасность и дефекты</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-15　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11868">Issue #11868</a></p>
+
+<ul>
+  <li><strong>Новый компонент входит в период централизованного аудита</strong>: два дефекта 9PFS на этой неделе (удалённый отказ в обслуживании #11868, чтение за границами #11289) — самые серьёзные проблемы безопасности недели; первый сопровождается собственной цепочкой воспроизведения, дизассемблированием и подтверждением через addr2line, второй подтверждён воспроизведением с ASan на master.</li>
+  <li><strong>Групповое устранение граничных ошибок</strong>: целочисленное переполнение calloc, верхняя граница числа интерфейсов USB host, выход за границы хеш-таблицы ofw phandle, чтение за границами опций DHCP — четыре случая, охватывающие четыре уровня: выделение памяти, перечисление периферии, дерево устройств и разбор сетевых протоколов.</li>
+  <li><strong>Старые отчёты переходят к сообществу</strong>: #5073 (POSIX ioctl последовательного порта не может задать низкоуровневые параметры, проверка подтвердила, что проблема сохраняется в dfs_v1), #6568 (пример документации DAC, исправление уже влито, формат представления документации требует доработки), #5913 (отчёт о переполнении at_gethostbyname, созданный в 2022 году, сообщество требует определить направление решения и ответственного).</li>
+  <li><strong>Отчёты о дефектах, закрытые вместе с исправлениями</strong>: на этой неделе закрыто шесть отчётов #11852, #11865, #11288, #11323, #11778, #11739 (включая два давно зависших пункта, принятых в начале периода).</li>
+</ul>
+
+<h3 id="наблюдение-за-очередью-ревью">Наблюдение за очередью ревью</h3>
+
+<p><strong>Дата</strong>: 2026-10-13 ~ 2026-10-16　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/10320">PR #10320</a></p>
+
+<ul>
+  <li><strong>Наиболее активное направление RISC-V</strong>: #10320 — многократные итерации в течение всей недели — 13.10 опубликован отчёт с фактическими замерами пяти конфигураций QEMU (комбинация с отключённой моделью устройств в S-Mode не прошла линковку из-за отсутствия общих символов загрузки и многопроцессорного планирования), мейнтейнер предложил критерий адаптации «модель устройств или без модели устройств — на выбор»; в тот же день вечером контрибьютор проверил два сопутствующих патча на реальной плате ESP32-C3 — C3 и C6 компилируются успешно и без предупреждений; 15.10 в 11:51 отправлен коммит рефакторинга уровня libcpu (6bf3686), трекинг-тикет #11246 синхронно обновлён.</li>
+  <li><strong>Технический охват коммита рефакторинга</strong>: введён опциональный унифицированный общий слой RISC-V (RV32 и RV64), выбор архитектуры и разрядности выполняется через ARCH_RISCV и ARCH_CPU_64BIT, унифицированы обработка context, trap, MMU, cache, timer, SBI, SMP и ISA, добавлена поддержка PLIC, CLIC, ACLINT, APLIC и IMSIC, создана таблица отображения физического HART ID на логический CPU ID с сохранением ветки переопределений производителя T-Head; qemu-virt64-riscv стал первым BSP, подключённым к новому общему слою (один каталог поддерживает S-mode для RV32 и RV64), существующие BSP, не использующие макрос RT_USING_RISCV_NEW_COMMON, продолжают работать по путям legacy_common и common64.</li>
+  <li><strong>Сеть и память</strong>: #11815 расширен с управления макросами до четырёх групп коммитов — очистка DNS, запуск DHCP, параметры буферизации и жизненный цикл WLAN — и влит; предложение ASan в #11772 дополняет существующую инструментацию кучи и покрытие QEMU CI обёртками интерфейсов libc и пограничными случаями.</li>
+  <li><strong>Платы и периферия</strong>: #11844 (поддержка платы ESP32-S3) прошёл исправления по автоматическому ревью (развёртывание макроса мьютекса, уровень распределения прерываний UART0), оставшийся сбой сборки признан существующей проблемой верхнего уровня, запрошено ручное повторное ревью; #11860 (aarch64 GIC) — глубокое обсуждение удаления лишней записи GICD_ICPENDR перед EOI: автор приводит замеры — при сохранении примерно в 19–33 запусках вывода обязательно происходит одна потеря завершающего прерывания, после удаления — ноль сбоев на 480 тысячах запусков вывода.</li>
+  <li><strong>Инструменты и спецификации</strong>: #11743 (автоматический выбор целей Keil и IAR) — автор ответил на два замечания повторного ревью; #11859 (сведение правил clang-format) — дополнительно представлены два коммита с демонстрацией фактического эффекта на thread.c; #11812 влит после повторного открытия мейнтейнером; #11869 (устранение неоднозначности конфликта кодов DFS) открыт заново, команды различаются по форме параметров, синхронно переработаны реализации двух поколений dfs_v1 и dfs_v2.</li>
+  <li><strong>Активация задач для новичков</strong>: в задаче menuconfig из #7530 контрибьютор взял подзадачу efm32 (дополнение Kconfig и .config), через 1 минуту после взятия открыт #11867.</li>
+</ul>
+
+<h3 id="проверка-дня-релиза-next-risc-v-и-v540-1610--1710">Проверка дня релиза: Next RISC-V и v5.4.0 (16.10 ~ 17.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-17 09:43–16:42　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/10320">PR #10320</a></p>
+
+<ul>
+  <li><strong>Факт слияния</strong>: #10320 слит 17.10 в 09:44:27 мейнтейнером Rbb666, base — master, head — next_riscv, 4 коммита, 165 файлов, +15134/−2617; коммит слияния — 8d8dc96, заголовок «[ARCH/RISC-V] Next RISC-V (#10320)».</li>
+  <li><strong>Действия по версии</strong>: за минуту до слияния, в 09:43:51, применён #11875 «[kernel] Bump version to v5.4.0», макрос версии в include/rtdef.h — 5.4.0; на странице релизов и странице тегов последней по-прежнему остаётся v5.3.0 (10.09), ChangeLog по-прежнему на v5.3.0.</li>
+  <li><strong>Путь миграции</strong>: унифицированный общий слой вводится как опция (переключатель RT_USING_RISCV_NEW_COMMON), qemu-virt64-riscv подключён первым; существующие BSP сохраняют путь legacy, миграция может выполняться поэтапно по платформам.</li>
+  <li><strong>Одновременно завершено</strong>: #11871 обновляет hpm_sdk до v1.13.0 и добавляет поддержку hpm5100evk; #11872 удаляет избыточные пути из глобального CPPPATH драйвера touch.</li>
+  <li><strong>Инструментальная цепочка</strong>: в репозитории Env 17.10 слит PR #302 (встроенная навигация по документации в WebUI), затем номер версии поднят до v2.0.3; на странице Release последней по-прежнему остаётся v2.0.2 (16.09).</li>
+</ul>
+
+<hr />
+
+<h2 id="3-экосистема-и-адаптация-производителей">3. Экосистема и адаптация производителей</h2>
+
+<h3 id="bsp-и-драйверы-производителей">BSP и драйверы производителей</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-17　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11851">PR #11851</a></p>
+
+<ul>
+  <li><strong>Renesas</strong>: влита оптимизация распределения системных ресурсов ra6w1 (#11814), размер стека основного потока изменён на 4096.</li>
+  <li><strong>Espressif ESP32</strong>: ESP32-C3 — исправлено сопоставление подстановочных знаков IRAM в путях Windows и ошибочное сопоставление скрипта компоновки Bluetooth (#11847); влита поддержка SPI для ESP32-C6 (#11846, 16.10); поддержка платы ESP32-S3 (#11844) прошла автоматическую проверку и исправления, ожидает ручного повторного рассмотрения.</li>
+  <li><strong>STMicroelectronics STM32</strong>: в STM32H723-DM-MC02 добавлена поддержка SPI6 BDMA (#11851); во всех BSP семейства выравнивание стека изменено на ALIGN(8) (#11841, перенесено с начала периода, 110 файлов).</li>
+  <li><strong>Nations N32</strong>: влито дополнение таймеров N32H47x_48x и N32H49x (#11812, 39 файлов +3956/-105, синхронное расширение PWM и импульсного энкодера); в n32h7xx_std_driver 14.10 исправлено чтение состояния ECC в драйвере FEMC — теперь используются стандартные константы серии FEMC_ECC_LAST_.</li>
+  <li><strong>GigaDevice GD32</strong>: предложение по DMA для GD32G553 (нисходящий PR #72) прошло рассмотрение — 4 коммита, 13 файлов, +1082/-167; робот сборки сообщил об успешной полной сборке 32 BSP GD32 (перенесено с начала периода).</li>
+  <li><strong>XHSC</strong>: в индекс Studio SDK добавлены записи BSP трёх оценочных плат HC32F467, HC32F4A2 и HC32F4A8 (коммит 10.10, перенесено с начала периода).</li>
+  <li><strong>HPMicro</strong>: в packages влит индекс hpm_sdk v1.13.0 (#2045); BSP в основном репозитории 17.10 обновлён до v1.13.0 и добавлена поддержка hpm5100evk (#11871).</li>
+</ul>
+
+<h3 id="пакеты-и-промежуточное-по">Пакеты и промежуточное ПО</h3>
+
+<p><strong>Дата</strong>: 2026-10-13 ~ 2026-10-15　<strong>Источники</strong>: <a href="https://github.com/RT-Thread/packages/pull/2045">PR #2045</a></p>
+
+<ul>
+  <li><strong>Влито управление макросами содержимого раздела lwip (15.10, 6 файлов +188/-28)</strong>: синхронизация жизненного цикла WLAN AP и пути прямого приёма, настройка параметров буфера и сохранение PBUF tailroom, оптимизация логики запуска DHCP, очистка конфигурации DNS при отключении в режиме STA, упорядочивание макросов компиляции.</li>
+  <li><strong>Индекс пакетов</strong>: предложение hpm_sdk v1.13.0 #2045 влито 14.10 в 18:41 — первая запись в индексном репозитории за половину месяца (предыдущая была 24.09); добавлена конфигурация PKG_USING_HPM_SDK_V113, версия по умолчанию остаётся v1.10.0 и требует явного выбора; вышестоящий rtt-pkg-hpm-sdk получил тег v1.13.0 13.10 в 16:05, добавлена поддержка HPM5151 и HPM5100EVK.</li>
+  <li><strong>Экосистема отладки</strong>: сторонняя платформа GDB GDR выпустила версию 2026.04 (13.10) — добавлено автоматическое определение адаптера (по совпадающим символам, источнику версии и отпечатку компоновки выдаётся уверенность exact, range, undetected) и gdr init auto; поддерживается интерпретация объектов ядра 3.1.x, 4.0.x, 4.1.x, RV64 начиная с 4.0.4, Cortex-A9 проверен на реальном оборудовании.</li>
+</ul>
+
+<h3 id="инструментарий-и-среда-разработки">Инструментарий и среда разработки</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-17　<strong>Источники</strong>: <a href="https://github.com/RT-Thread/env/pull/302">Env PR #302</a></p>
+
+<ul>
+  <li><strong>Инструменты сборки</strong>: при отсутствии каталога инструментальной цепочки сборка завершается с ненулевым кодом (#11863); при генерации цели Eclipse добавлен список каталогов метаданных SCM (#11787).</li>
+  <li><strong>Env</strong>: в первой половине недели активности не было (последний коммит 09.10), 17.10 объединён PR #302 (встроенная навигация по документации в WebUI) и номер версии повышен до v2.0.3, на странице Release последней по-прежнему остаётся v2.0.2.</li>
+  <li><strong>RT-Thread Studio</strong>: в окне sdk-index изменений не было, последними остаются записи о трёх платах XHSC от 10.10; в остальных репозиториях компонентов изменений не было.</li>
+  <li><strong>Драйверы устройств N32</strong>: в n32h7xx_std_driver 14.10 влито исправление использования констант ECC FEMC.</li>
+</ul>
+
+<h3 id="примечания-по-проверке">Примечания по проверке</h3>
+
+<ul>
+  <li>В env, packages, индексе Studio SDK и нисходящем GD32 в окне с 12.10 по 16.10 изменений не было; последние действия — 09.10, 14.10, 10.10, 28.09 соответственно; изменения в репозиториях направления Zephyr в организации GD32 в окне не относятся к этому выпуску.</li>
+  <li>Поиск по экосистеме topic:rt-thread: zlgopen/awtk — общие улучшения GUI (не тематические), h120d-protocol — только обновление README и вызывающая сомнения форма репозитория; оба не включены.</li>
+  <li>На странице релизов и странице тегов основного репозитория на этой неделе новых версий нет; страница новостей на официальном сайте рендерится динамически на стороне клиента и не поддаётся непосредственному чтению.</li>
+</ul>
+
+<hr />
+
+<h2 id="4-официальные-и-общественные-мероприятия">4. Официальные и общественные мероприятия</h2>
+
+<h3 id="отраслевой-месячный-отчёт-и-обзор-выставки">Отраслевой месячный отчёт и обзор выставки</h3>
+
+<p><strong>Дата</strong>: 2026-10-11, 15.10　<strong>Источники</strong>: <a href="https://www.eet-china.com/mp/a529977.html">Обзорный месячный отчёт сообщества за сентябрь</a></p>
+
+<ul>
+  <li><strong>Ежемесячный обзор сообщества за сентябрь (10-11)</strong>: две основные линии — релиз v5.3.0 и аппаратная экосистема. Со стороны версии зафиксированы компоненты Rust, поддержка дерева устройств (DM), DVFS и VirtIO 1.2, а также новые BSP для Raspberry Pi 5, XuanTie C908X и других платформ; со стороны аппаратного обеспечения отслеживается трёхэтапный путь Gino Pi (GD32H77D) — от прогрева до продажи и затем до адаптации, а также обновление Titan Mini (RA8P1) до OpenMV 5.0.1. Данные проекта за сентябрь: 57 коммитов, 20 контрибьюторов, основная ветка разработки — v5.3.1.</li>
+  <li><strong>Разбор Workshop по AI-машинкам на промышленной выставке (10-15)</strong>: 13 октября на шанхайской площадке участники в парах практиковались на десятках комплектов учебных умных машинок, проходя проверку оборудования, загрузку системы, отладку периферии, управление в реальном времени, построение карты SLAM, автономную навигацию, калибровку камеры, мультимодальное визуальное слежение и комплексные учения с AR; в статье изложена концепция гибридного развёртывания AIOS (AI-инференс выполняется на стороне Linux, высоконадёжное управление в реальном времени передаётся ядру RT-Thread), на площадке также демонстрировались продукты на единой базовой платформе — роботы, дроны и промышленные контроллеры; в статье упоминается совокупный объём установок свыше 2,5 млрд устройств.</li>
+</ul>
+
+<h3 id="учебная-платформа-и-конкурсные-работы">Учебная платформа и конкурсные работы</h3>
+
+<p><strong>Дата</strong>: 2026-10-12 ~ 2026-10-15　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a530624.html">Учебная платформа виртуализированного гибридного развёртывания</a></p>
+
+<ul>
+  <li><strong>Учебная платформа виртуализированного гибридного развёртывания (10-13)</strong>: Rockchip HyperCar на одном чипе RK3588 одновременно запускает два домена — Linux с ROS 2 и RT-Thread; HyperBoot отвечает за загрузку, изоляцию и распределение ресурсов, домены взаимодействуют через виртуальную сеть и micro-ROS — сторона Linux несёт восприятие, принятие решений и оркестрацию приложений, сторона RT-Thread выполняет жёсткое реальное время шасси; в комплекте четыре типа модулей — базовое управление, построение карты и навигация, визуальные сервисы и манипулятор — всего 16 кейсов и трёхуровневый практический трек.</li>
+  <li><strong>Работы конкурса встраиваемых систем 2026 (5 статей за неделю)</strong>: портативный отладчик (GD32H759IM, 7-дюймовый сенсорный экран, последовательный порт, CAN, двухканальный осциллограф и генератор сигналов DDS); интеллектуальное вспомогательное устройство для пожилых людей с болезнью Альцгеймера «Muyu Xinsheng» (GD32H759I-EVAL плюс зрение K230, замкнутый цикл «смотреть, запоминать, оберегать, сопровождать»); двухфункциональное устройство на GD32H759IM — USB-дисплей плюс камера OV2640 (RT-Thread 4.1.1 плюс LVGL 9.5); многофункциональный монитор окружающей среды и локальный регистратор данных на GD32H7 (RT-Thread 5.3.0 плюс LVGL 8.3.11); адаптивный многомодальный реабилитационный манипулятор «Shuheng Zhiyang» (GD32H759I-EVAL плюс K230 для расчёта акупунктурных точек).</li>
+</ul>
+
+<h3 id="форум-и-официальные-каналы">Форум и официальные каналы</h3>
+
+<ul>
+  <li><strong>Обсуждения на форуме</strong>: тема «rtthread是否可以借鉴一下 zephyr 的一些特点» получала взаимодействия всю неделю; автор темы исходил из опыта использования Studio и предлагал обратить внимание на идеи облегчения Zephyr и снизить нагрузку на сопровождение графической конфигурации; интерфейс форума не предоставляет текст ответов, на этой неделе зафиксирована только активность.</li>
+  <li><strong>Официальный новостной интерфейс</strong>: пятьдесят третий — пятьдесят седьмой день подряд без пополнений, последний архивный материал по-прежнему от 2026-06-17; информация о продуктах и мероприятиях продолжает появляться в первую очередь в WeChat-аккаунте, на форуме сообщества и в канале GitHub.</li>
+</ul>
+
+<hr />
+
+<h2 id="5-отраслевые-применения-и-коммерческие-тенденции">5. Отраслевые применения и коммерческие тенденции</h2>
+
+<h3 id="сотрудничество-устройство--периферия-и-роботы-для-здоровья">Сотрудничество «устройство — периферия» и роботы для здоровья</h3>
+
+<p><strong>Дата</strong>: 2026-10-12, 10-15　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a530367.html">Технический разбор ловкого манипулятора с координацией «устройство — периферия»</a></p>
+
+<ul>
+  <li><strong>Ловкий манипулятор с координацией «устройство — периферия» (10-12)</strong>: открытый исходный код работы, получившей награду конкурса RT-Thread AIoT — единственным управляющим ядром служит Titan Board (Renesas RA8P1, Cortex-M85 плюс NPU Ethos-U55), модель распознавания 17 классов жестов после INT8-квантизации и компиляции через RUHMI и Vela превращается в единый подграф для всего NPU (все 107 операторов размещены на Ethos-U55), один инференс занимает около 77–78 миллисекунд; автор делится инженерным опытом поэтапного запуска D-cache и тактирования OSPI, объединения проектов WiFi и NPU, низкополосной потоковой передачи TinyJPEG и другими решениями.</li>
+  <li><strong>Реабилитационный манипулятор «Shuheng Zhiyang» (10-15)</strong>: на стороне зрения K230 в реальном времени извлекает 17 групп ключевых точек скелета человека и вычисляет трёхмерные координаты акупунктурных точек, GD32H759I-EVAL выполняет обратную кинематику и затем приводит в действие сервоприводы с шиной и четырьмя степенями свободы для биомиметического массажа, поддерживается адаптивное слежение за микродвижениями человека; в облаке развёрнут сервис SpringBoot с интеллектуальной консультацией, предусмотрены ограничение углов, проверка параметров, управление конечным автоматом и аварийная остановка.</li>
+</ul>
+
+<h3 id="портирование-на-уровне-плат-и-отраслевой-нарратив">Портирование на уровне плат и отраслевой нарратив</h3>
+
+<p><strong>Дата</strong>: 2026-10-15 ~ 2026-10-16　<strong>Источник</strong>: <a href="https://github.com/equence/sf8086">Репозиторий проекта sf8086</a></p>
+
+<ul>
+  <li><strong>Портирование FreeDOS на плату Sifli SF32LB525 (10-15 — 10-16)</strong>: разработчик из сообщества портировал эмулятор 8086tiny на отладочную плату Huangshan Pi (Cortex-M33) на базе RT-Thread; BIOS, загрузочный флоппи-диск и инструментальная цепочка компилятора Turbo C 2.01 полностью размещены в прошивке; диск A представляет собой RAM-диск (около 144 КБ), пересоздаваемый из flash при каждой загрузке, и позволяет запускать такие DOS-утилиты, как EDIT, DEBUG, ZIP; RT-Thread shell и консоль DOS совместно используют UART1, включая арбитраж последовательного порта и адаптацию отображения клавиш терминала; в рамках окна отправлено 13 коммитов.</li>
+  <li><strong>Коммерческая активность</strong>: на этой неделе не было новых сообщений о коммерческом внедрении, финансировании или заказах; отраслевой нарратив сосредоточен на гибридном развёртывании AIOS (инференс на стороне Linux плюс управление в реальном времени на RT-Thread) и расширении поддержки на уровне плат отечественных MCU (GD32H7, N32, HC32, HPM5100, SF32LB525).</li>
+</ul>
+
+<hr />
+
+<h2 id="6-наблюдения-за-трендами">6. Наблюдения за трендами</h2>
+
+<ul>
+  <li><strong>RISC-V совершил переход от предложения к основной ветке</strong>: находившийся на рассмотрении пять месяцев #10320 влит в виде опционального общего слоя, qemu-virt64-riscv подключён первым, существующие BSP сохраняют legacy-путь — миграция будет продвигаться поэтапно по платформам, краткосрочного риска полного переключения нет, но стек архитектуры RISC-V с этого момента вступает в период параллельного сосуществования двух треков — нового и старого. Номера версий зафиксированы до релиза (v5.4.0 и Env v2.0.3 лишь подняты, но не выпущены), в следующем выпуске следует перепроверить официальный релиз по странице релизов и ChangeLog.</li>
+  <li><strong>Вливания носят характер пакетных окон</strong>: из 15 коммитов на этой неделе 8 пришлись на 64-минутный интервал 10-14, перед этим наблюдалось около 46 часов тишины — мейнтейнеры обрабатывают очередь ревью оконным способом, поэтому число вливаний за один день больше не подходит в качестве единственного показателя активности; следует оценивать в сочетании с плотностью взаимодействия по рассматриваемым предложениям.</li>
+  <li><strong>Центр тяжести аудита безопасности смещается к новым компонентам</strong>: 9PFS после внедрения в 2025-12 впервые подряд выявил удалённый отказ в обслуживании и чтение за границами, в сочетании с предложением по ASan и исправлениями четырёх границ в calloc, USB host, ofw и DHCP безопасность памяти и разбора протоколов стала самой концентрированной технической линией недели.</li>
+  <li><strong>Расширение эшелона контрибьюторов и сокращение цепочки реагирования</strong>: дефект деления на ноль в ping от сообщения до вливания занял около 9 дней, второй случай в тот же день взял на себя новый контрибьютор; новичковая задача menuconfig, висевшая несколько месяцев, после взятия дала предложение за 1 минуту; аудит 9PFS независимо выполнен исследователем из сообщества с приложением доказательств дизассемблирования — нагрузка ревью смещается от единственной точки мейнтейнера к разделению труда в сообществе.</li>
+  <li><strong>Плотность экосистемы отечественных MCU продолжает расти</strong>: все 5 конкурсных работ недели основаны на GD32H7, дополнение таймеров N32 и исправление FEMC, три платы XHSC вошли в Studio, индекс hpm_sdk v1.13.0 и BSP реализованы в обоих направлениях — отечественные платформы перешли от этапа «запускается» к этапу конкуренции по полноте инструментальных цепочек.</li>
+  <li><strong>Официальные каналы молчат пятьдесят седьмой день, каналы сообщества стали единственным внешним окном</strong>: новостной интерфейс не обновляется с 06-17, внешняя информация обеспечивается форумом, конкурсными работами и отраслевыми медиа; ежемесячный отчёт и обзор промышленной выставки по-прежнему публикуются через сторонние медиа, отсутствие собственных официальных каналов продолжает увеличиваться.</li>
+</ul>
+
+<hr />
+
+<h2 id="приложение-материалы-и-проверка">Приложение: материалы и проверка</h2>
+
+<h3 id="перечень-материалов">Перечень материалов</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Выпуск</th>
+      <th>Дата</th>
+      <th>Действительное окно</th>
+      <th>Включённые записи</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Выпуск 1</td>
+      <td>2026-10-12 (понедельник)</td>
+      <td>10-10 10:30 — 10-12 08:00 (около 45,5 часов)</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>Выпуск 2</td>
+      <td>2026-10-13 (вторник)</td>
+      <td>10-12 08:00 — 10-13 08:00 (24 часа)</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Выпуск 3</td>
+      <td>2026-10-14 (среда)</td>
+      <td>10-13 08:00 — 10-14 08:00 (24 часа)</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>Выпуск 4</td>
+      <td>2026-10-15 (четверг)</td>
+      <td>10-14 08:00 — 10-15 13:30 (около 29 часов, повторный запуск после сбоя)</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>Выпуск 5</td>
+      <td>2026-10-16 (пятница)</td>
+      <td>10-15 13:30 — 10-16 08:00 (около 18,5 часов)</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Все пять ежедневных отчётов в наличии, пропущенных дат нет; выпуск четверга был сформирован с задержкой из-за последовательной остановки штатного запуска и ручного повторного запуска в тот день, окно соответственно продлено; выпуск пятницы отсчитывается от этой задержанной отсечки, поэтому короче 24 часов.</li>
+  <li>Основной текст еженедельного отчёта объединяет однотемные записи на основе пяти ежедневных отчётов; общее число записей не совпадает с таблицей выше, что является нормальным объединением.</li>
+</ul>
+
+<h3 id="пояснения-к-проверке">Пояснения к проверке</h3>
+
+<ul>
+  <li><strong>Проверка даты публикации</strong>: 2026-10-17 проведена постатейная фактическая проверка потока коммитов master в основном репозитории GitHub, статусов PR (#10320, #11846, #11847, #11855, #11875, #11871, #11872), страниц releases и tags, а также потоков коммитов репозиториев Env и packages; момент проверки — до 17:00 10-17.</li>
+  <li><strong>Оговорка о версии</strong>: v5.4.0 — фактически измеренное значение макроса версии в include/rtdef.h (5.4.0); официальный Release, теги и ChangeLog не обновлены, поэтому во всём тексте используется формулировка «номер версии уже повышен, но релиз ещё не выпущен»; для Env v2.0.3 аналогично.</li>
+  <li><strong>Не включено</strong>: повторный продвигающий материал о выездных офлайн-мероприятиях в шести городах (продолжение анонса от 09-27, без новой информации), материал о сравнении промышленных граничных архитектур x86, Arm и RISC-V (не по данной теме), материал о новинках Botinkit на промышленной выставке (в основном чтении не содержал существенного контента RT-Thread), zlgopen/awtk и h120d-protocol, интервью с Damo Academy на riscv.org (тема RISC-V).</li>
+  <li><strong>Ограничения каналов</strong>: прямой доступ к исходному сайту EE Times China ограничен, соответствующие материалы проверены и систематизированы через поисковые сервисы и канал списка статей на сайте; страница списка новостей на официальном сайте рендерится динамически на стороне клиента, данные приведены по официальному новостному интерфейсу; множественные запросы Google News на китайском и английском, а также поиск в HN Algolia не выявили новых действительных англоязычных материалов за эту неделю.</li>
+</ul>
+
+<h3 id="полный-список-источников">Полный список источников</h3>
+
+<ul>
+  <li><strong>[1]</strong> PR #11863 (проверка отсутствующих компонентов инструментальной цепочки сборки, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11863">https://github.com/RT-Thread/rt-thread/pull/11863</a></li>
+  <li><strong>[2]</strong> PR #11787 (Eclipse исключает каталоги метаданных SCM, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11787">https://github.com/RT-Thread/rt-thread/pull/11787</a></li>
+  <li><strong>[3]</strong> PR #11864 (исправление отношений включения rtdbg.h) — <a href="https://github.com/RT-Thread/rt-thread/pull/11864">https://github.com/RT-Thread/rt-thread/pull/11864</a></li>
+  <li><strong>[4]</strong> PR #11861 (восстановление vstart векторного расширения RISC-V, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11861">https://github.com/RT-Thread/rt-thread/pull/11861</a></li>
+  <li><strong>[5]</strong> PR #11851 (STM32H723 SPI6 BDMA, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11851">https://github.com/RT-Thread/rt-thread/pull/11851</a></li>
+  <li><strong>[6]</strong> PR #11848 (исправление переполнения calloc в ядре, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11848">https://github.com/RT-Thread/rt-thread/pull/11848</a></li>
+  <li><strong>[7]</strong> PR #11853 (исправление деления на ноль в статистике ping, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11853">https://github.com/RT-Thread/rt-thread/pull/11853</a></li>
+  <li><strong>[8]</strong> Issue #11852 (баг-репорт о падении ping из-за деления на ноль, закрыто) — <a href="https://github.com/RT-Thread/rt-thread/issues/11852">https://github.com/RT-Thread/rt-thread/issues/11852</a></li>
+  <li><strong>[9]</strong> PR #11847 (исправление подстановочных знаков IRAM для ESP32-C3, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11847">https://github.com/RT-Thread/rt-thread/pull/11847</a></li>
+  <li><strong>[10]</strong> PR #11814 (оптимизация распределения ресурсов ra6w1, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11814">https://github.com/RT-Thread/rt-thread/pull/11814</a></li>
+  <li><strong>[11]</strong> PR #11822 (усиление проверки количества интерфейсов USB host, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11822">https://github.com/RT-Thread/rt-thread/pull/11822</a></li>
+  <li><strong>[12]</strong> Issue #11288 (баг-репорт о выходе за границы в USB host, закрыто) — <a href="https://github.com/RT-Thread/rt-thread/issues/11288">https://github.com/RT-Thread/rt-thread/issues/11288</a></li>
+  <li><strong>[13]</strong> PR #11855 (исправление ошибок сборки reset и ulog, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11855">https://github.com/RT-Thread/rt-thread/pull/11855</a></li>
+  <li><strong>[14]</strong> PR #11866 (исправление задержки последнего пакета ping, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11866">https://github.com/RT-Thread/rt-thread/pull/11866</a></li>
+  <li><strong>[15]</strong> Issue #11865 (баг-репорт о задержке последнего пакета, закрыто) — <a href="https://github.com/RT-Thread/rt-thread/issues/11865">https://github.com/RT-Thread/rt-thread/issues/11865</a></li>
+  <li><strong>[16]</strong> PR #11862 (аналогичное раннее предложение, закрыто без слияния) — <a href="https://github.com/RT-Thread/rt-thread/pull/11862">https://github.com/RT-Thread/rt-thread/pull/11862</a></li>
+  <li><strong>[17]</strong> PR #11815 (управление содержимым секции lwip через макросы, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11815">https://github.com/RT-Thread/rt-thread/pull/11815</a></li>
+  <li><strong>[18]</strong> PR #11812 (дополнение таймеров N32, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11812">https://github.com/RT-Thread/rt-thread/pull/11812</a></li>
+  <li><strong>[19]</strong> PR #11845 (исправление выхода за границы хеш-таблицы ofw, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11845">https://github.com/RT-Thread/rt-thread/pull/11845</a></li>
+  <li><strong>[20]</strong> PR #11846 (SPI для ESP32-C6, слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11846">https://github.com/RT-Thread/rt-thread/pull/11846</a></li>
+  <li><strong>[21]</strong> PR #11844 (поддержка платы ESP32-S3, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11844">https://github.com/RT-Thread/rt-thread/pull/11844</a></li>
+  <li><strong>[22]</strong> PR #11743 (автоматический выбор цели Keil и IAR, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11743">https://github.com/RT-Thread/rt-thread/pull/11743</a></li>
+  <li><strong>[23]</strong> PR #11859 (сведение правил clang-format, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11859">https://github.com/RT-Thread/rt-thread/pull/11859</a></li>
+  <li><strong>[24]</strong> PR #11772 (куча памяти</li>
+</ul>
+
+<p>AddressSanitizer, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11772">https://github.com/RT-Thread/rt-thread/pull/11772</a></p>
+<ul>
+  <li><strong>[25]</strong> PR #11860 (путь подтверждения aarch64 GIC, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11860">https://github.com/RT-Thread/rt-thread/pull/11860</a></li>
+  <li><strong>[26]</strong> PR #11869 (устранение неоднозначности конфликта кодов команд DFS, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11869">https://github.com/RT-Thread/rt-thread/pull/11869</a></li>
+  <li><strong>[27]</strong> PR #11867 (поддержка efm32 menuconfig, на рассмотрении) — <a href="https://github.com/RT-Thread/rt-thread/pull/11867">https://github.com/RT-Thread/rt-thread/pull/11867</a></li>
+  <li><strong>[28]</strong> Issue #7530 (список задач для новичков по menuconfig) — <a href="https://github.com/RT-Thread/rt-thread/issues/7530">https://github.com/RT-Thread/rt-thread/issues/7530</a></li>
+  <li><strong>[29]</strong> Issue #11868 (нарушение выравнивания 9PFS ARMv7-A, новый) — <a href="https://github.com/RT-Thread/rt-thread/issues/11868">https://github.com/RT-Thread/rt-thread/issues/11868</a></li>
+  <li><strong>[30]</strong> Issue #11289 (выход за границы при чтении 9PFS getdents, воспроизведение подтверждено) — <a href="https://github.com/RT-Thread/rt-thread/issues/11289">https://github.com/RT-Thread/rt-thread/issues/11289</a></li>
+  <li><strong>[31]</strong> Issue #5913 (отчёт о переполнении at_gethostbyname) — <a href="https://github.com/RT-Thread/rt-thread/issues/5913">https://github.com/RT-Thread/rt-thread/issues/5913</a></li>
+  <li><strong>[32]</strong> Issue #5073 (параметры управления последовательного порта POSIX ioctl) — <a href="https://github.com/RT-Thread/rt-thread/issues/5073">https://github.com/RT-Thread/rt-thread/issues/5073</a></li>
+  <li><strong>[33]</strong> Issue #6568 (пример документации DAC) — <a href="https://github.com/RT-Thread/rt-thread/issues/6568">https://github.com/RT-Thread/rt-thread/issues/6568</a></li>
+  <li><strong>[34]</strong> PR #10320 (крупный рефакторинг Next RISC-V, уже слит) — <a href="https://github.com/RT-Thread/rt-thread/pull/10320">https://github.com/RT-Thread/rt-thread/pull/10320</a></li>
+  <li><strong>[35]</strong> Коммит рефакторинга портирования архитектуры RISC-V 6bf3686 — <a href="https://github.com/RT-Thread/rt-thread/commit/6bf36864cd3e9a654d092892fcb8a2e5f1b5fd6b">https://github.com/RT-Thread/rt-thread/commit/6bf36864cd3e9a654d092892fcb8a2e5f1b5fd6b</a></li>
+  <li><strong>[36]</strong> PR #11875 (повышение версии ядра до v5.4.0) — <a href="https://github.com/RT-Thread/rt-thread/pull/11875">https://github.com/RT-Thread/rt-thread/pull/11875</a></li>
+  <li><strong>[37]</strong> PR #11871 (hpm_sdk v1.13.0 и hpm5100evk) — <a href="https://github.com/RT-Thread/rt-thread/pull/11871">https://github.com/RT-Thread/rt-thread/pull/11871</a></li>
+  <li><strong>[38]</strong> PR #11872 (очистка CPPPATH драйвера touch) — <a href="https://github.com/RT-Thread/rt-thread/pull/11872">https://github.com/RT-Thread/rt-thread/pull/11872</a></li>
+  <li><strong>[39]</strong> Issue #11246 (тикет отслеживания недавних изменений RISC-V) — <a href="https://github.com/RT-Thread/rt-thread/issues/11246">https://github.com/RT-Thread/rt-thread/issues/11246</a></li>
+  <li><strong>[40]</strong> PR #11858 (проверка границ опций DHCP-сервера, уже слит) — <a href="https://github.com/RT-Thread/rt-thread/pull/11858">https://github.com/RT-Thread/rt-thread/pull/11858</a></li>
+  <li><strong>[41]</strong> Issue #11323 (чтение за границами опций DHCP, закрыт) — <a href="https://github.com/RT-Thread/rt-thread/issues/11323">https://github.com/RT-Thread/rt-thread/issues/11323</a></li>
+  <li><strong>[42]</strong> PR #11841 (выравнивание стека STM32 на 8 байт, уже слит) — <a href="https://github.com/RT-Thread/rt-thread/pull/11841">https://github.com/RT-Thread/rt-thread/pull/11841</a></li>
+  <li><strong>[43]</strong> Issue #7527 (тикет дефекта скрипта компоновки STM32) — <a href="https://github.com/RT-Thread/rt-thread/issues/7527">https://github.com/RT-Thread/rt-thread/issues/7527</a></li>
+  <li><strong>[44]</strong> PR #11813 (исправление зависимости utest от тактирования, уже слит) — <a href="https://github.com/RT-Thread/rt-thread/pull/11813">https://github.com/RT-Thread/rt-thread/pull/11813</a></li>
+  <li><strong>[45]</strong> PR #11856 (глобальные конструкторы C++ через .init_array, уже слит) — <a href="https://github.com/RT-Thread/rt-thread/pull/11856">https://github.com/RT-Thread/rt-thread/pull/11856</a></li>
+  <li>
+    <p><strong>[46]</strong> Issue #11778 (дефект поддержки автоматического конструирования C++, закрыт) — &lt;https://githu</p>
+  </li>
+  <li><strong>[47]</strong> PR #11770 (исправление USB CDC VCOM, уже слито) — <a href="https://github.com/RT-Thread/rt-thread/pull/11770">https://github.com/RT-Thread/rt-thread/pull/11770</a></li>
+  <li><strong>[48]</strong> Issue #11739 (дефект псевдонима кольцевого буфера VCOM, закрыто) — <a href="https://github.com/RT-Thread/rt-thread/issues/11739">https://github.com/RT-Thread/rt-thread/issues/11739</a></li>
+  <li><strong>[49]</strong> Поток коммитов master основного репозитория — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[50]</strong> Страница releases основного репозитория — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[51]</strong> PR #2045 (индекс hpm_sdk v1.13.0, RT-Thread/packages) — <a href="https://github.com/RT-Thread/packages/pull/2045">https://github.com/RT-Thread/packages/pull/2045</a></li>
+  <li><strong>[52]</strong> Релиз rtt-pkg-hpm-sdk v1.13.0 — <a href="https://github.com/hpmicro/rtt-pkg-hpm-sdk/releases/tag/v1.13.0">https://github.com/hpmicro/rtt-pkg-hpm-sdk/releases/tag/v1.13.0</a></li>
+  <li><strong>[53]</strong> Env PR #302 (встроенная навигация по документации в WebUI) — <a href="https://github.com/RT-Thread/env/pull/302">https://github.com/RT-Thread/env/pull/302</a></li>
+  <li><strong>[54]</strong> Страница релизов Env — <a href="https://github.com/RT-Thread/env/releases">https://github.com/RT-Thread/env/releases</a></li>
+  <li><strong>[55]</strong> Коммит исправления n32h7xx_std_driver 9983259 — <a href="https://github.com/RT-Thread-packages/n32h7xx_std_driver/commit/99832590b72d8a93a0852a31bbc9a3fe3523b76a">https://github.com/RT-Thread-packages/n32h7xx_std_driver/commit/99832590b72d8a93a0852a31bbc9a3fe3523b76a</a></li>
+  <li><strong>[56]</strong> Коммит Studio sdk-index 47693f18 (три платы HC32) — <a href="https://github.com/RT-Thread-Studio/sdk-index/commit/47693f187b09075f659416d201c3944c6ad498da">https://github.com/RT-Thread-Studio/sdk-index/commit/47693f187b09075f659416d201c3944c6ad498da</a></li>
+  <li><strong>[57]</strong> Нижестоящий PR #72 GD32 (поддержка GD32G553 DMA) — <a href="https://github.com/GD32-MCU-IOT/gd32_rt-thread/pull/72">https://github.com/GD32-MCU-IOT/gd32_rt-thread/pull/72</a></li>
+  <li><strong>[58]</strong> Страница релиза GDR 2026.04 — <a href="https://github.com/flespark/gdr/releases/tag/2026.04">https://github.com/flespark/gdr/releases/tag/2026.04</a></li>
+  <li><strong>[59]</strong> Ежемесячный обзор сообщества за сентябрь (EE Times China) — <a href="https://www.eet-china.com/mp/a529977.html">https://www.eet-china.com/mp/a529977.html</a></li>
+  <li><strong>[60]</strong> Разбор Workshop по AI-машинке на Промышленной выставке (EE Times China) — <a href="https://www.eet-china.com/mp/a531324.html">https://www.eet-china.com/mp/a531324.html</a></li>
+  <li><strong>[61]</strong> Учебная платформа гибридного развёртывания с виртуализацией (EE Times China) — <a href="https://www.eet-china.com/mp/a530624.html">https://www.eet-china.com/mp/a530624.html</a></li>
+  <li><strong>[62]</strong> Технический обмен по ловким манипуляторам с координацией «устройство — периферия» (EE Times China) — <a href="https://www.eet-china.com/mp/a530367.html">https://www.eet-china.com/mp/a530367.html</a></li>
+  <li><strong>[63]</strong> Тема форума «Портативный отладчик» — <a href="https://club.rt-thread.org/api/index/getContent?id=60a5931af4191d52">https://club.rt-thread.org/api/index/getContent?id=60a5931af4191d52</a></li>
+  <li><strong>[64]</strong> Тема форума «Голос глаз» — <a href="https://club.rt-thread.org/api/index/getContent?id=4656e92595977d25">https://club.rt-thread.org/api/index/getContent?id=4656e92595977d25</a></li>
+  <li><strong>[65]</strong> Тема форума «GD32H759IM: дополнительный USB-экран плюс OV2640» — <a href="https://club.rt-thread.org/api/index/getContent?id=76ffa34214c0eda4">https://club.rt-thread.org/api/index/getContent?id=76ffa34214c0eda4</a></li>
+  <li><strong>[66]</strong> Тема форума «Многофункциональный монитор окружающей среды с локальным регистратором данных» — <a href="https://club.rt-thread.org/api/index/getContent?id=248f9e54e367993d">https://club.rt-thread.org/api/index/getContent?id=248f9e54e367993d</a></li>
+  <li><strong>[67]</strong> Тема форума «Лечебно-терапевтический манипулятор Shuheng Zhiyang» — <a href="https://club.rt-thread.org/api/index/getContent?id=a2a82aa707bc2966">https://club.rt-thread.org/api/index/getContent?id=a2a82aa707bc2966</a></li>
+  <li><strong>[68]</strong> Тема форума «Может ли rtthread позаимствовать некоторые особенности zephyr» — <a href="https://club.rt-thread.org/api/index/getContent?id=37b351dfb3690ab5">https://club.rt-thread.org/api/index/getContent?id=37b351dfb3690ab5</a></li>
+  <li>
+    <p><strong>[69]</strong></p>
+  </li>
+  <li>Проект сообщества sf8086 (FreeDOS на плате SF32LB525) — <a href="https://github.com/equence/sf8086">https://github.com/equence/sf8086</a></li>
+  <li><strong>[70]</strong> Репозиторий кода проекта механической руки TitanBorad-RA8P1 — <a href="https://github.com/ethoskingdoom/TitanBorad-RA8P1">https://github.com/ethoskingdoom/TitanBorad-RA8P1</a></li>
+  <li><strong>[71]</strong> Официальный новостной интерфейс RT-Thread — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[72]</strong> Интерфейс статей форума сообщества — <a href="https://club.rt-thread.org/api/index/getList?type=article">https://club.rt-thread.org/api/index/getList?type=article</a></li>
+</ul>
+
+<p><em>Источники данных: ежедневный отчёт о динамике RT-Thread (с 2026-10-12 по 2026-10-16, всего пять выпусков) и проверка дат релизов в текущем цикле; период отчёта — с 2026-10-12 по 2026-10-16. Рекомендуемый период следующего еженедельного отчёта: 2026-10-19 ~ 2026-10-23.</em></p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ru/post.html#news-list" class="btn btn-main news-list-link">Назад</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Контакты</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Эл. почта:</strong> contact@kubuds.cn<br>
+            <strong>Адрес:</strong> Комната 108, 1-й этаж, корпус 1, ул. Гаои, д. 88, район Баошань, Шанхай<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Ссылки</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

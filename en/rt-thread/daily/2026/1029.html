@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/en/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1029.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1029.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1029.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1029.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1029.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Daily Intelligence Report (2026-10-29) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Daily Intelligence Report (2026-10-29)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Daily Intelligence Report (2026-10-29)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-29</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Research window</strong>: 2026-10-28 08:00 ~ 2026-10-29 08:00 (Beijing time, 24 hours)</p>
+
+<p><strong>Sources</strong>: RT-Thread official news API and community article API, GitHub (main repository commits / PR / Issue / releases / tags, RT-Thread/packages, vscode-rt-smart, sdk, pkgs-test, topic:rt-thread ecosystem search), Google News aggregation (six queries in Chinese and English, via proxy), HN Algolia, industry media and community project repository verification (see appendix source list for details)</p>
+
+<hr />
+
+<h2 id="issue-index">Issue Index</h2>
+
+<ul>
+  <li>I. Kernel and Version Updates
+    <ul>
+      <li>utest proposal submitted three months ago merges four commits at once (10-28)</li>
+      <li>utest summary misjudgment: a later passing unit erases the testcase failure count (10-28)</li>
+      <li>netdev test cases cut public network dependency, CI no longer accesses 8.8.8.8 or Baidu (10-28)</li>
+      <li>Signal test cases under musl start from 1, signal 0 no longer involved (10-28)</li>
+      <li>DHCP raw server option parsing boundary fix, out-of-bounds read defect closed (10-28)</li>
+    </ul>
+  </li>
+  <li>II. Security Follow-up and Pending Merge Queue
+    <ul>
+      <li>RT-Smart terminal ioctl hands user pointer to kernel for dereference, allowing arbitrary kernel memory read/write (10-28)</li>
+      <li>libc timer 64-bit truncation: 10-second timer armed as 21 hours (10-28)</li>
+      <li>musl pthread_exit thread list use-after-free, SMP concurrent exit crashes (10-28)</li>
+      <li>Smart batch of 10-18 proposals continues to refresh in the queue (10-29)</li>
+    </ul>
+  </li>
+  <li>III. Official and Community Activities
+    <ul>
+      <li>Official news API still at June 17, fourth consecutive month with no additions (10-28)</li>
+      <li>Community article channel publishes three embedded competition works within 80 minutes (10-28)</li>
+      <li>FAL maintainer steps down, one entry removed from MAINTAINERS (10-28)</li>
+    </ul>
+  </li>
+  <li>IV. Ecosystem and Vendor Adaptation
+    <ul>
+      <li>Renesas RA6W1-EK adds 24 Wi-Fi interrupt vectors, CryptoCell and MAC TX/RX completed (10-28)</li>
+      <li>Industrial CAN distributed mobile robot on NOVOSENSE NS800RT7P65 (10-28)</li>
+      <li>DAMO XuanTie D121 master with Loongson LS2K0300 slave for multi-device monitoring and anomaly tracing (10-28)</li>
+      <li>Lightweight neural network enhanced FOC on NXP MCXA346, steady-state error reduced by 4.26% (10-28)</li>
+    </ul>
+  </li>
+  <li>V. Trend Observations and Summary
+    <ul>
+      <li>This issue’s trend: test infrastructure and security boundaries both catching up</li>
+      <li>Limitations and deduplication notes</li>
+    </ul>
+  </li>
+  <li>Appendix: Source verification table and source list</li>
+</ul>
+
+<hr />
+
+<h2 id="i-kernel-and-version-dynamics">I. Kernel and Version Dynamics</h2>
+
+<h3 id="11-utest-proposal-submitted-three-months-ago-merged-in-four-commits-at-once-10-28">1.1 utest Proposal Submitted Three Months Ago Merged in Four Commits at Once (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:44 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">Main repository commit log</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11601">Proposal #11601</a></p>
+
+<p>The only grouped landing on the mainline this period came from an old proposal. Proposal #11601 was created on July 9 and merged on October 28 at 14:44, bringing in four commits across three files, with 125 lines added and 103 removed: a utest summary statistics fix, netdev test case stabilization, skipping signal 0 under musl, and two clang-format cleanups. All four landed at the same timestamp, indicating a whole-proposal merge rather than cherry-picking. From submission in July to mainline entry in late October, it sat for over three months; such pure test-and-format proposals routinely rank low in the review queue, but once merged they immediately change CI verdicts.</p>
+
+<h3 id="12-utest-summary-misjudgment-later-passing-units-erase-a-testcases-failure-count-10-28">1.2 utest Summary Misjudgment: Later Passing Units Erase a Testcase’s Failure Count (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:44 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">Proposal #11601</a></p>
+
+<p>When a testcase contains multiple UTEST_UNIT_RUN calls, a failing unit followed by a passing unit caused <code class="highlighter-rouge">utest_unit_run()</code> to reset <code class="highlighter-rouge">local_utest.failed_num</code>, so the testcase and the overall summary still reported success. In other words, the test genuinely failed but the report said otherwise. The fix: clear the statistics before the testcase starts, keep each unit counted independently, and after each unit completes, accumulate that unit’s pass and fail counts back into the testcase totals. This preserves unit-level isolation without letting later successes overwrite earlier failures. The change lands in utest.c, adding 29 lines and removing 6.</p>
+
+<h3 id="13-netdev-test-cases-cut-public-network-dependency-ci-no-longer-reaches-8888-or-baidu-10-28">1.3 netdev Test Cases Cut Public-Network Dependency; CI No Longer Reaches 8.8.8.8 or Baidu (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:44 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">Proposal #11601</a></p>
+
+<p>The original netdev ping test cases treated 8.8.8.8 and www.baidu.com as mandatory reachable targets, and also relied on invalid IP strings like “192.256.0.321” being rejected by the parsing layer. There were two problems: without external network access in CI, the former cases necessarily fail—a false red; and rejection behavior for invalid strings varies across parser implementations—a pseudo-assertion. This change wraps the external-network cases entirely in <code class="highlighter-rouge">#ifndef RT_USING_CI_ACTION</code>, switches the invalid-address case to passing an empty hostname (rejected before the DNS query), and changes the DNS case to verify only that configuration writes take effect. The change lands in tc_netdev.c, adding 34 lines and removing 43.</p>
+
+<h3 id="14-signal-test-cases-under-musl-start-at-1-signal-0-no-longer-participates-10-28">1.4 Signal Test Cases Under musl Start at 1; signal 0 No Longer Participates (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:44 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">Proposal #11601</a></p>
+
+<p>Four signal test cases previously installed handlers starting from signo equal to 0. Signal 0 in POSIX is only used for existence checks and has no installable-handler semantics; calling it this way under musl fails, so the whole group broke on musl configurations. This change introduces UTEST_SIGNAL_MIN: 1 under musl, still 0 for other libcs, with all four loops switched to the macro. The change lands in signal_tc.c, adding 10 lines and removing 4. This is a typical way to strip “libc implementation differences” out of test verdicts—cleaner than loosening conditions in assertions.</p>
+
+<h3 id="15-dhcp-raw-server-option-parsing-gains-boundary-checks-out-of-bounds-read-defect-closed-10-28">1.5 DHCP raw Server Option Parsing Gains Boundary Checks; Out-of-Bounds Read Defect Closed (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 19:04 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11940">Proposal #11940</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11913">Defect #11913</a></p>
+
+<p>When iterating over client options, the raw API DHCP server could read a missing length byte or return a truncated option; the MESSAGE_TYPE and REQUESTED_IP call sites then read values without validating length, constituting an out-of-bounds read. Parsing also proceeded over a preallocated 1500-byte buffer, beyond the range of data actually received. The merged fix validates layer by layer: confirm the option header is complete before reading the length byte; confirm declared content falls within the packet before returning or advancing the pointer; require at least 4 bytes for REQUESTED_IP and at least 1 byte for MESSAGE_TYPE; reject packets shorter than DHCP_OPTIONS_OFS; and compute the option region from the actual packet length. Only dhcp_server_raw.c changes, adding 23 lines and removing 5, with the author validating via 12 host-side regression cases (ASAN).</p>
+
+<h2 id="ii-security-follow-up-and-merge-queue">II. Security Follow-up and Merge Queue</h2>
+
+<h3 id="21-rt-smart-terminal-ioctl-passes-user-pointers-to-the-kernel-for-dereference-allowing-arbitrary-kernel-memory-readwrite-10-28">2.1 RT-Smart terminal ioctl passes user pointers to the kernel for dereference, allowing arbitrary kernel memory read/write (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 13:14 (report) / 20:35 (fix proposal)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11937">Issue #11937</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11941">PR #11941</a></p>
+
+<p>The report notes that RT-Smart’s terminal subsystem was ported from the FreeBSD tty framework, but the port dropped FreeBSD’s premise of first copyin-ing user arguments into a kernel stack buffer inside <code class="highlighter-rouge">sys_ioctl()</code>. RT-Smart’s <code class="highlighter-rouge">sys_ioctl()</code> forwards the raw user pointer directly for non-flock commands, and the ported adapter functions and the TIOCGWINSZ branch in tty.c still write directly to kernel addresses via <code class="highlighter-rouge">*(struct winsize *)data</code>. The consequence: an unprivileged process can read and write arbitrary kernel memory using only the two official interfaces, open plus ioctl, and passing a null pointer can crash the kernel outright. Affects all versions from v5.1.0 onward (introduced by PR #8672 on 2024-03-28); v5.0.x is unaffected. Verified on qemu-vexpress-a9, and the defect is architecture-independent — AArch64 RT-Smart is equally affected. At 20:35 the same day, the community submitted PR #11941: it introduces kernel stack staging and copy_from_user/copy_to_user in the ioctl adapter layer, and adds <code class="highlighter-rouge">lwp_in_user_space()</code> bounds checks to the common ptm and tty paths — 6 files, 577 insertions, 52 deletions.</p>
+
+<h3 id="22-libc-timer-64-bit-truncation-a-10-second-timer-is-armed-as-21-hours-10-28">2.2 libc timer 64-bit truncation: a 10-second timer is armed as 21 hours (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 (creation time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11938">PR #11938</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11924">Issue #11924</a></p>
+
+<p>Issue #11924 reports that <code class="highlighter-rouge">timer_gettime()</code> stores total remaining nanoseconds in a 32-bit integer before splitting into seconds. The proposer dug further and found an even more serious truncation of the same kind upstream: <code class="highlighter-rouge">timer_settime()</code> performs its conversion with <code class="highlighter-rouge">unsigned long res = rt_clock_time_get_res_scaled()</code>, and that function returns values on the order of 1e13 for a 100 Hz clock source; storing that in 32 bits keeps only the low bits, so the computed reload is completely wrong. Per the arithmetic in the proposal, a 10-second timer works out to a reload corresponding to roughly 21 hours — in other words, the timer is wrong from the moment it is armed, and fixing only <code class="highlighter-rouge">timer_gettime()</code> will not make the result correct. The proposal fixes both the set and query sides — 4 files, 142 insertions, 5 deletions — and remains in the queue.</p>
+
+<h3 id="23-musl-pthread_exit-thread-list-use-after-free-smp-concurrent-exit-crashes-10-28">2.3 musl pthread_exit thread-list use-after-free, SMP concurrent exit crashes (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-26 (report) / 2026-10-28 (update)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11932">Issue #11932</a></p>
+
+<p>Under RT-Thread Smart 5.2.2, SMP, aarch64, and musl 1.2.5, concurrent pthread_create and pthread_exit crash inside <code class="highlighter-rouge">musl_pthread_exit</code>: when unlinking from the thread list, the code writes to an already-freed or already-unmapped thread descriptor (Data Abort), or the thread return address is overwritten with 0 (Instruction Abort). The report includes a reproducer and detailed analysis; a workload of 1000 rounds with 8 threads reproduces within a few hundred rounds. The issue was updated in this window but has no corresponding fix proposal yet, making it a Smart-side problem to watch in the next batch — it belongs to a different subsystem than 2.1, but both sit on the same “user-mode/kernel-mode boundary” line.</p>
+
+<h3 id="24-the-batch-of-smart-prs-from-10-18-keeps-refreshing-in-the-queue-10-29">2.4 The batch of Smart PRs from 10-18 keeps refreshing in the queue (10-29)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 20:37 ~ 2026-10-29 00:17 (last update)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11896">PR #11896</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11894">PR #11894</a></p>
+
+<p>The PR enabling RT-Thread Smart on qemu-virt64 was still being updated at 00:17 on October 29, and the PR splitting lwp syscall implementations by subsystem refreshed at 20:37 on October 28; both were created on October 18 and remain unmerged. The same batch also includes several lwp, signal, and serial-related PRs that refreshed in a cluster on the afternoon of October 28. This group remains the most active segment of the queue in this window, but none of the four merges that day belonged to Smart, indicating that maintainers cleared older testing and networking backlog first this round.</p>
+
+<h2 id="iii-official-and-community-activity">III. Official and Community Activity</h2>
+
+<h3 id="31-official-news-api-still-at-june-17-fourth-consecutive-month-with-no-additions-10-28">3.1 Official news API still at June 17, fourth consecutive month with no additions (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 (verification time)　<strong>Source</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">Official news API</a></p>
+
+<p>A page-by-page check of the official news API shows the latest entries are still the two published on 2026-06-17, covering the Abu Dhabi Investment Forum and the 4th Software Innovation and Development Conference respectively; there were no additions in either the 24-hour or 7-day window. Compared with the community article channel publishing three pieces in one day, the contrast is stark: official external communications have been low-frequency for four consecutive months, and the daily report’s routine content is effectively carried by GitHub and the community side. This state is itself informative for judging community activity — a slower corporate communications cadence does not mean the engineering side has stalled.</p>
+
+<h3 id="32-community-article-channel-publishes-three-embedded-competition-entries-within-80-minutes-10-28">3.2 Community article channel publishes three embedded competition entries within 80 minutes (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 13:03 ~ 14:12 (publish time)　<strong>Source</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=article">Community article API</a></p>
+
+<p>The community article API gained three new entries between 13:03 and 14:12, all 2026 Embedded Competition entries: an industrial CAN distributed mobile robot based on the NOVOSENSE NS800RT7P65, a multi-slave monitoring and anomaly tracing system with a XuanTie D121 as master, and a lightweight neural-network-enhanced brushless motor controller based on NXP MCXA346. All three include open-source repositories or complete reproduction records, spanning industrial control, industrial connectivity, and motor control. The clustered posting indicates the competition has entered its submission and showcase peak, and that this cohort of authors is accustomed to publishing engineering details alongside code rather than submitting only a report. Detailed technical breakdowns of each are in Chapter IV.</p>
+
+<h3 id="33-fal-maintainer-steps-down-one-entry-removed-from-maintainers-10-28">3.3 FAL maintainer steps down, one entry removed from MAINTAINERS (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 18:48 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11939">PR #11939</a></p>
+
+<p>A merge that only touches MAINTAINERS removes the components_fal entry; the original author states in the description that they no longer have the time or energy to continue participating in community work. FAL (Flash abstraction layer) has long been maintained by a single person; this is a voluntary handover by the maintainer and does not reflect a code quality problem. With the entry removed, the component currently has no registered maintainer, and whether someone steps in is worth watching — by past patterns, once such foundational components go unclaimed, problems only surface when vendors submit BSPs.</p>
+
+<h2 id="iv-ecosystem-and-vendor-adaptation">IV. Ecosystem and Vendor Adaptation</h2>
+
+<h3 id="41-renesas-ra6w1-ek-adds-24-wi-fi-interrupt-vectors-completes-cryptocell-and-mac-txrx-support-10-28">4.1 Renesas RA6W1-EK Adds 24 Wi-Fi Interrupt Vectors, Completes CryptoCell and MAC TX/RX Support (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 18:52 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11934">PR #11934</a></p>
+
+<p>The rafw_gen vector table for the RA6W1-EK previously covered only general-purpose peripherals, leaving an entire group of Wi-Fi-side interrupts without entry points: KDMA, TDES CBC, PSK SHA1, SYSPLL and FPLL lock, the full set of RTC interfaces (external wakeup, power-down, brownout, pulse counting, bus clock, access, mirror, load complete), MRM and D-cache MRM, CryptoCell-312, HSU, MAC timer/receive/transmit/protocol/general/beacon, and the radio controller — 24 in total. All are now declared as weak handlers and wired into the vector table, and two crypto entry points in the ROM symbol table were renamed with a <code class="highlighter-rouge">__rom_</code> prefix to avoid collisions with same-named symbols on the RAM side. The changes land in vector_data.c (49 lines added) and rom_code_gcc.symbols (6 lines changed).</p>
+
+<h3 id="42-industrial-can-distributed-mobile-robot-on-novosense-ns800rt7p65-10-28">4.2 Industrial CAN Distributed Mobile Robot on NOVOSENSE NS800RT7P65 (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:12 (publish time)　<strong>Source</strong>: <a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">Community article: small autonomous mobile robot</a>, <a href="https://gitcode.com/sdcwhy/ns800-amr">open-source repo</a></p>
+
+<p>An industrial control track entry in the 2026 embedded competition, with code released under GPL-3.0. The main controller is a NOVOSENSE NS800RT7P65 (Cortex-M7, 600 MHz) running RT-Thread 4.x, with a single chip handling the FOC 2-axis gimbal, CAN master control, and 40 MSH online diagnostic commands; the chassis uses a five-node CAN architecture (main controller, gimbal FOC, sensor acquisition, chassis drive, vision AI), with each slave running its own local closed loop — consistent with layered industrial AMR design. On the sensing side, a rotating ultrasonic scanner generates a 2D point cloud, an IMU and odometry provide pose estimation, and a camera supplies images while a companion board runs object detection, separating vision compute from control compute. Monitoring runs over a LAN MQTT platform, with a Web page displaying pose, point cloud, detected targets, and trajectory in real time, and supporting multi-step task sequences issued over the intranet — the entire chain does not depend on the public internet.</p>
+
+<h3 id="43-damo-xuantie-d121-master-with-loongson-ls2k0300-slave-for-multi-device-monitoring-and-anomaly-tracing-10-28">4.3 DAMO XuanTie D121 Master with Loongson LS2K0300 Slave for Multi-Device Monitoring and Anomaly Tracing (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 13:03 (publish time)　<strong>Source</strong>: <a href="https://club.rt-thread.org/ask/article/3febce8c6543ba79.html">Community article: multi-slave device monitoring and anomaly tracing system</a></p>
+
+<p>An industrial connectivity solution from the same batch of competition entries. The master is a DAMO XuanTie D121 running RT-Thread with an LVGL touchscreen, polling two slaves over RS485 and Modbus RTU: a Spark STM32F407 collecting temperature, humidity, and six-axis data, and a Loongson LS2K0300 reporting system metrics such as CPU, memory, and uptime. Collected data is written to a TF card with local playback support; key events such as communication interruption, recovery, and vibration limit violations enter a persistent queue and are uploaded to the cloud via ESP8266 for remote viewing through a WeChat mini-program, with data stored locally during network outages and back-filled on recovery. A key design point is that other devices keep logging when a single device goes offline. Putting ARM and LoongArch slaves on the same Modbus bus offers direct reference value for heterogeneous device onboarding scenarios.</p>
+
+<h3 id="44-lightweight-neural-network-enhanced-foc-on-nxp-mcxa346-cuts-steady-state-error-by-426-10-28">4.4 Lightweight Neural Network-Enhanced FOC on NXP MCXA346 Cuts Steady-State Error by 4.26% (10-28)</h3>
+
+<p><strong>Date</strong>: 2026-10-28 14:12 (publish time)　<strong>Source</strong>: <a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">Community article: lightweight neural network-enhanced intelligent brushless motor controller</a>, <a href="https://github.com/2470519590/rtt-mcx-BLDCmotor">open-source repo</a></p>
+
+<p>The third competition entry, built on NXP FRDM-MCXA346 with a 2804 motor, AS5600 magnetic encoder, and SimpleFOC Mini driver. On the control side, feedforward plus PI speed and position loops run first, then a dynamic compensation network with 3 inputs, 8 hidden units, and 1 output is superimposed on the control output; the weights are exported as C code and computed directly on the MCU, with no inference framework in the firmware. Compensation can be toggled independently for same-parameter comparison. In 90 on-board test runs (10 switching types within ±15 RPM, three rounds each): steady-state tail-segment RMSE over a 100 ms window dropped from 2.187 to 2.094 RPM, about 4.26%; full-segment RMSE dropped from 3.327 to 3.291, about 1.07%. In addition, adding 25 ms smoothing to the P-term target reduced the mean full-segment speed error by about 5.83% across 60 test runs. On the RT-Thread side, the control thread runs on a 2 ms period, the serial thread separately handles commands and telemetry, and threads synchronize state via mutex.</p>
+
+<h2 id="v-trend-observations-and-summary">V. Trend Observations and Summary</h2>
+
+<h3 id="51-this-issues-trend-test-infrastructure-and-security-boundaries-both-get-remedial-work">5.1 This Issue’s Trend: Test Infrastructure and Security Boundaries Both Get Remedial Work</h3>
+
+<p><strong>Date</strong>: 2026-10-29 (this issue)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">main repo commit log</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11937">bug #11937</a></p>
+
+<p>Four of this issue’s seven merges are test-related: three change test-case logic and one is formatting only, all aimed at making CI verdicts trustworthy — no longer depending on the public internet, no longer being overwritten by later units, and no longer assuming signal 0 can be installed under musl. Security is the other thread: the DHCP out-of-bounds read was closed, the RT-Smart terminal ioctl issue of user pointers reaching the kernel directly was reported and a fix filed the same day, and the libc timer truncation fix advanced from “query only” to “set as well.” Neither category produces new features, but both point to the same thing: re-establishing the two premises that “tests pass” and “parameters are trustworthy.” By contrast, Smart-side proposals are still being refreshed in the queue without merging that day, indicating this maintenance round is clearing old debts on the test and network sides first.</p>
+
+<h3 id="52-limitations-and-deduplication-notes">5.2 Limitations and Deduplication Notes</h3>
+
+<p><strong>Date</strong>: 2026-10-29 (this issue)　<strong>Source</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">official news API</a>, <a href="https://club.rt-thread.org/api/index/getList?type=article">community article API</a></p>
+
+<ul>
+  <li>The official news API has had no new entries for the fourth consecutive month; this issue’s news-side content comes from the community article API and GitHub. The media search window yielded only one long RTOS retrospective article (10-28 11:48); scraping of the original site was restricted, so whether the body mentions RT-Thread could not be verified, and it was not included.</li>
+  <li>The clang-format 22.1.8 full-formatting proposal #11936 recorded in yesterday’s daily report continued to refresh this issue (10-28 18:50) with no substantive change, so it is not re-included.</li>
+  <li>In the topic:rt-thread ecosystem search window, only zlgopen/awtk had a push (10-28 12:56), a routine improvement to a general-purpose GUI toolkit with no direct relation to RT-Thread, so it was excluded.</li>
+  <li>Both HN Algolia hits this issue were string false matches on threads and ThreadShelf and were dropped as a batch; the Google News English side had no relevant items in the window.</li>
+  <li>Three competition entries were published the same day on similar themes and are included separately by track rather than merged into one, to avoid losing technical detail.</li>
+</ul>
+
+<h2 id="appendix-source-verification-table-and-source-list">Appendix: Source Verification Table and Source List</h2>
+
+<h3 id="source-verification-table">Source Verification Table</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Verification Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Official news API (rt_org)</td>
+      <td>No new items in 24 hours; latest entry remains at 2026-06-17</td>
+    </tr>
+    <tr>
+      <td>Community article API (article)</td>
+      <td>3 new items in the window, all 2026 embedded competition entries (10-28 13:03 to 14:12)</td>
+    </tr>
+    <tr>
+      <td>Main repo commits</td>
+      <td>7 merges in the window, concentrated at 10-28 14:44 and 18:48 to 19:04</td>
+    </tr>
+    <tr>
+      <td>Main repo PRs</td>
+      <td>4 merged (#11601, #11934, #11939, #11940), 2 newly opened (#11938, #11941), 17 proposals under review updated in this window</td>
+    </tr>
+    <tr>
+      <td>Main repo releases / tags</td>
+      <td>No new items; latest remains v5.3.0 (2026-09-10)</td>
+    </tr>
+    <tr>
+      <td>Main repo Issues</td>
+      <td>1 newly opened (#11937, RT-Smart terminal ioctl security), 2 others updated in this window</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/packages</td>
+      <td>No pushes; latest push 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>vscode-rt-smart</td>
+      <td>No pushes; latest push 2026-10-26</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/sdk</td>
+      <td>No pushes; latest push 2026-10-26</td>
+    </tr>
+    <tr>
+      <td>pkgs-test</td>
+      <td>No pushes; latest push 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread ecosystem search</td>
+      <td>Only zlgopen/awtk pushed in the window, not directly related to RT-Thread; excluded</td>
+    </tr>
+    <tr>
+      <td>Google News Chinese</td>
+      <td>1 RTOS retrospective long-form article in the window; original site fetch restricted, not included</td>
+    </tr>
+    <tr>
+      <td>Google News English</td>
+      <td>No relevant hits in the window</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>2 threads and ThreadShelf false matches; entire batch excluded</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="full-source-list">Full Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> RT-Thread main repo commit history<br />
+<a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> Main repo proposal #11601 (utest aggregation and test case stabilization)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11601">https://github.com/RT-Thread/rt-thread/pull/11601</a></li>
+  <li><strong>[3]</strong> Main repo proposal #11940 (DHCP raw option bounds)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11940">https://github.com/RT-Thread/rt-thread/pull/11940</a></li>
+  <li><strong>[4]</strong> Main repo defect #11913 (DHCP out-of-bounds read)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11913">https://github.com/RT-Thread/rt-thread/issues/11913</a></li>
+  <li><strong>[5]</strong> Main repo defect #11937 (RT-Smart terminal ioctl user pointer)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11937">https://github.com/RT-Thread/rt-thread/issues/11937</a></li>
+  <li><strong>[6]</strong> Main repo proposal #11941 (terminal ioctl copyin/copyout)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11941">https://github.com/RT-Thread/rt-thread/pull/11941</a></li>
+  <li><strong>[7]</strong> Main repo proposal #11938 (libc timer 64-bit truncation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11938">https://github.com/RT-Thread/rt-thread/pull/11938</a></li>
+  <li><strong>[8]</strong> Main repo defect #11924 (timer_gettime truncation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11924">https://github.com/RT-Thread/rt-thread/issues/11924</a></li>
+  <li><strong>[9]</strong> Main repo defect #11932 (musl pthread_exit thread list)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11932">https://github.com/RT-Thread/rt-thread/issues/11932</a></li>
+  <li><strong>[10]</strong> Main repo proposal #11896 (enable Smart on qemu-virt64)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11896">https://github.com/RT-Thread/rt-thread/pull/11896</a></li>
+  <li><strong>[11]</strong> Main repo proposal #11894 (lwp subsystem split)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11894">https://github.com/RT-Thread/rt-thread/pull/11894</a></li>
+  <li><strong>[12]</strong> Main repo proposal #11934 (RA6W1-EK system configuration)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11934">https://github.com/RT-Thread/rt-thread/pull/11934</a></li>
+  <li><strong>[13]</strong> Main repo proposal #11939 (remove FAL entry from MAINTAINERS)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11939">https://github.com/RT-Thread/rt-thread/pull/11939</a></li>
+  <li><strong>[14]</strong> Main repo release records<br />
+<a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[15]</strong> Main repo tag list<br />
+<a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[16]</strong> Official news API<br />
+<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[17]</strong> Community article API<br />
+<a href="https://club.rt-thread.org/api/index/getList?type=article">https://club.rt-thread.org/api/index/getList?type=article</a></li>
+  <li><strong>[18]</strong> Community article: Small autonomous mobile robot (NS800RT7P65)<br />
+<a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html</a></li>
+  <li><strong>[19]</strong> Community article: Multi-slave device monitoring and anomaly tracing system (XuanTie D121)<br />
+<a href="https://club.rt-thread.org/ask/article/3febce8c6543ba79.html">https://club.rt-thread.org/ask/article/3febce8c6543ba79.html</a></li>
+  <li><strong>[20]</strong> Community article: Brushless motor controller enhanced with lightweight neural network (MCXA346)<br />
+<a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html</a></li>
+  <li><strong>[21]</strong> Competition entry open-source repo: ns800-amr<br />
+<a href="https://gitcode.com/sdcwhy/ns800-amr">https://gitcode.com/sdcwhy/ns800-amr</a></li>
+  <li><strong>[22]</strong> Competition entry open-source repo: rtt-mcx-BLDCmotor<br />
+<a href="https://github.com/2470519590/rtt-mcx-BLDCmotor">https://github.com/2470519590/rtt-mcx-BLDCmotor</a></li>
+  <li><strong>[23]</strong> RT-Thread organization repository list<br />
+<a href="https://github.com/orgs/RT-Thread/repositories?sort=pushed">https://github.com/orgs/RT-Thread/repositories?sort=pushed</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>
