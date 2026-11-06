@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ru/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ru/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ru/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ru/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ru/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ru/">Главная</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Услуги <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/service/simulator.html">Симулятор</a></li>
+              <li><a class="dropdown-item" href="/ru/service/os.html">Операционная система</a></li>
+              <li><a class="dropdown-item" href="/ru/service/toolchain.html">Инструментальная цепочка</a></li>
+              <li><a class="dropdown-item" href="/ru/service/chip.html">Встраиваемые чипы</a></li>
+
+              <li><a class="dropdown-item" href="/ru/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ru/service/aisys.html">AI-системы</a></li>
+              <li><a class="dropdown-item" href="/ru/service/consultation.html">Консалтинг</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Решения <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Сообщество <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ru/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ru/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ru/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ru/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ru/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ru/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/post.html" style="white-space: nowrap;">Новости и события</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/about.html" style="white-space: nowrap;">О нас</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ru/career.html">Вакансии</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              Русский <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1028.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1028.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1028.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1028.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1028.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>Ежедневный отчёт RT-Thread (2026-10-28) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ru/">Главная</a></li>
+                                <li class="breadcrumb-item"><a href="/ru/post.html#news-list" class="news-list-link">Новости и события</a>
+                                </li>
+                                <li class="breadcrumb-item active">Ежедневный отчёт RT-Thread (2026-10-28)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>Ежедневный отчёт RT-Thread (2026-10-28)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-28</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Окно мониторинга</strong>: 2026-10-27 08:00 ~ 2026-10-28 08:00 (пекинское время, 24 часа)</p>
+
+<p><strong>Источники</strong>: официальный новостной интерфейс RT-Thread и интерфейс статей сообщества, GitHub (коммиты / PR / Issue / releases / tags основного репозитория, RT-Thread/packages, vscode-rt-smart, sdk, pkgs-test, поиск по экосистеме topic:rt-thread), агрегация Google News (семь групп запросов на китайском и английском, через прокси), HN Algolia, отраслевые медиа (EE Times China, Kuaikeji, 21ic) и проверка по каналам производителей (подробнее см. список источников в приложении)</p>
+
+<hr />
+
+<h2 id="индекс-выпуска">Индекс выпуска</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>Динамика ядра и версий
+        <ul>
+          <li>После двух дней тишины основная ветка возобновила слияния: 4 коммита за шесть минут (10-27)</li>
+          <li>В dfs условие UTIME_OMIT перевёрнуто — нежелаемая метка времени перезаписывается (10-27)</li>
+          <li>Проверка протокола RAW socket переведена на белый список: протоколы вроде ICMP больше не блокируются (10-27)</li>
+          <li>poll переведён на получение fops из dfs_file, DFSv1 и DFSv2 совместимы одновременно (10-27)</li>
+          <li>8250 earlycon начал читать reg-io-width: платформы с широкими регистрами больше не обращаются побайтно (10-27)</li>
+          <li>Релизная сторона по-прежнему на v5.3.0; основная ветка 10-17 уже bump до v5.4.0, но tag не проставлен (10-27)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Очередь на слияние и сопровождение безопасности
+        <ul>
+          <li>В пути закрытия signalfd добавлены проверка выхода за границы слота и отвязка слушателя — прямо в адрес вчерашнего выхода за границы (10-27)</li>
+          <li>Предложение по форматированию всего ядра clang-format 22.1.8 на рассмотрении, затрагивает 75 файлов (10-27)</li>
+          <li>Предложение ESP32-S3-DevKitM-1 обновлено в конце окна, суммарно добавлено 295371 строка (10-28)</li>
+          <li>Четыре архитектурных предложения RT-Thread Smart по-прежнему в очереди, все поданы 10-18 (10-27)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Инструментальная цепочка, официальные и сообщественные материалы
+        <ul>
+          <li>Разбор Env v2.0.3 в длинной статье сообщества: команды собраны в rt-env, добавлены система плагинов и WebUI (10-27)</li>
+          <li>Официальный новостной интерфейс за 24 часа без обновлений, последний выпуск по-прежнему от 17 июня (10-27)</li>
+          <li>Сравнительный обзор трёх RTOS в EE Times China: RT-Thread назван предпочтительным в сценариях низкого энергопотребления и потребительского уровня (10-27)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Экосистема и адаптация производителей
+        <ul>
+          <li>Семинар WTCC 2026 Arm China: RT-Thread делает акцент на проектах воплощённого интеллекта и разбирает три типа решений на основе Agent (10-27)</li>
+          <li>Прототип обнаружения огня на кухне на K230: открыты исходный код и записи воспроизведения, база — RT-Thread Smart (10-27)</li>
+          <li>Распознавание рукописных символов на двухъядерном RISC-V CH32H417 с RT-Thread, LVGL и TFLM (10-27)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Отраслевые применения и воплощённый интеллект
+        <ul>
+          <li>Работы конкурса AIoT смещаются в промышленную сторону: AI-мониторинг дефектов BLDC-двигателя на Titan Board (10-27)</li>
+          <li>Тема выпуска: производители чипов, плат и стороны ОС выступают вместе в рамках альянса, и все они указывают на воплощённый интеллект (10-27)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Итоги и наблюдения за трендами
+        <ul>
+          <li>Тренд выпуска: слияния возобновились, исправления сосредоточены на граничных проверках, а не на новых функциях</li>
+          <li>Ограничения и пояснения по дедупликации</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>Приложение: таблица проверки источников и список источников</li>
+</ul>
+
+<hr />
+
+<h2 id="1-динамика-ядра-и-версий">1. Динамика ядра и версий</h2>
+
+<h3 id="11-после-двух-дней-тишины-основная-ветка-возобновила-слияния-4-коммита-за-шесть-минут-10-27">1.1 После двух дней тишины основная ветка возобновила слияния: 4 коммита за шесть минут (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:20 ~ 19:26 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">история коммитов основного репозитория</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11885">предложение #11885</a></p>
+
+<p>Основная ветка простояла около двух дней после вечера 10-25; с 19:20 по 19:26 10-27 за шесть минут подряд было слито 4 коммита, все выполнены одним и тем же сопровождающим, изменения затронули четыре области: dfs, net/sal, libc/posix и drivers/serial, суммарно добавлено 46 строк, удалено 6 строк. У трёх из четырёх коммитов время author — 10-18, это централизованная посадка накопившихся предложений, а не код, написанный в тот день. Это единственное изменение основной ветки за выпуск.</p>
+
+<h3 id="12-в-dfs-условие-utime_omit-перевёрнуто--нежелаемая-метка-времени-перезаписывается-10-27">1.2 В dfs условие UTIME_OMIT перевёрнуто — нежелаемая метка времени перезаписывается (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:20 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11885">предложение #11885</a></p>
+
+<p>В реализации utimensat в dfs_v2 условие ветки UTIME_OMIT было перевёрнуто. По семантике POSIX элемент с установленным UTIME_OMIT должен сохранять метку времени без изменений; исходный код под инвертированным условием продолжал записывать mtime, то есть перезаписывал метку времени, которую вызывающая сторона явно требовала не трогать, и при этом терял одну действительную метку времени. Исправление меняет только один оператор сравнения, чистое изменение в файле dfs_posix.c — одна строка. Такого рода семантические отклонения не видны в тестах, проверяющих только «успешную установку времени», и относятся к скрытым дефектам.</p>
+
+<h3 id="13-проверка-протоколов-raw-socket-переведена-на-белый-список-протоколы-вроде-icmp-больше-не-блокируются-2710">1.3 Проверка протоколов RAW socket переведена на белый список, протоколы вроде ICMP больше не блокируются (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:21 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11888">предложение #11888</a></p>
+
+<p>При создании RAW socket на уровне SAL ранее проверка осуществлялась одним равенством: равен ли protocol значению IPPROTO_RAW. В результате все протоколы, кроме IPPROTO_RAW, отклонялись, и сценарии, требующие нативных сокетов, такие как ICMP, были недоступны. В этот раз проверка заменена на белый список VALID_PROTOCOL; существующие проверки domain и type остаются без изменений. В том же предложении добавлено чисто форматное выравнивание макросов без изменения функциональности. Изменения внесены в sal_socket.c, чистое изменение — одна строка.</p>
+
+<h3 id="14-poll-переведён-на-получение-fops-через-dfs_file-одновременно-совместим-с-dfsv1-и-dfsv2-2710">1.4 poll переведён на получение fops через dfs_file, одновременно совместим с DFSv1 и DFSv2 (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:21 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11887">предложение #11887</a></p>
+
+<p>Ранее poll напрямую брал fops из vnode, и в DFSv2 полученная структура не совпадала с фактической таблицей файловых операций — иначе говоря, poll подключался к неверной точке диспетчеризации. Теперь fops разрешается через dfs_file, при этом сохраняется совместимый путь DFSv1, а перед разыменованием добавлена проверка указателя на NULL. Изменения сосредоточены в poll.c: добавлено 14 строк, удалено 2. Это класс адаптационных проблем, оставшихся после перехода на DFSv2; исправление скорее консервативное, чем переписывание.</p>
+
+<h3 id="15-8250-earlycon-начинает-читать-reg-io-width-платформы-с-широкими-регистрами-больше-не-обращаются-побайтово-2710">1.5 8250 earlycon начинает читать reg-io-width, платформы с широкими регистрами больше не обращаются побайтово (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:26 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11889">предложение #11889</a></p>
+
+<p>Ранее ранняя последовательная консоль обращалась к регистрам побайтово независимо от того, что было указано в дереве устройств. Теперь из дерева устройств читаются reg-shift и reg-io-width, ширина доступа MMIO выбирается по reg-io-width, а на этапе ранней инициализации неподдерживаемые ширины сразу отклоняются; остальные compatible по-прежнему идут по общему пути 8250. Изменения внесены в early.c: добавлено 30 строк, удалено 2. Для платформ с нестандартным шагом регистров или разрядностью появилось единое решение проблем смещения и искажения ранних логов — больше не нужно править код под каждую плату.</p>
+
+<h3 id="16-сторона-релизов-по-прежнему-на-v530-основная-ветка-1710-поднята-до-v540-но-тег-не-выставлен-2710">1.6 Сторона релизов по-прежнему на v5.3.0; основная ветка 17.10 поднята до v5.4.0, но тег не выставлен (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 (время проверки)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/releases">записи о релизах</a>, <a href="https://github.com/RT-Thread/rt-thread/tags">список тегов</a></p>
+
+<p>За 24 часа ни в releases, ни в tags не появилось новых записей; последний релиз — по-прежнему v5.3.0 от 10.09. В основной ветке 17.10 есть коммит с повышением номера версии до v5.4.0, что означает, что ветка разработки уже дошла до версии 5.4.0, но в репозитории пока нет соответствующего тега и записи о релизе. Судя по ритму прошлых лет, официальный релиз обычно анонсируется только после выставления тега; в этом выпуске это пока не является сигналом релиза.</p>
+
+<h2 id="2-очередь-на-слияние-и-сопровождение-безопасности">2. Очередь на слияние и сопровождение безопасности</h2>
+
+<h3 id="21-в-пути-закрытия-signalfd-добавлены-проверка-выхода-за-границы-слота-и-отвязка-слушателя-2710">2.1 В пути закрытия signalfd добавлены проверка выхода за границы слота и отвязка слушателя (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 08:34 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11935">предложение #11935</a></p>
+
+<p>В ответ на зафиксированное во вчерашнем ежедневном отчёте переполнение глобального счётчика signalfd сообщество в тот же день подало предложение об исправлении. Суть: глобальный счётчик индексов заменён на поиск слота с верхней границей, привязанный к контексту; при signalfd_close выполняется обход зарегистрированных lwp, соответствующий узел уведомления снимается из списка и структура слушателя освобождается, затем указатель файлового контекста сбрасывается, а запись таблицы обнуляется, чтобы остаточный указатель не был разыменован повторно. Предложение добавляет 41 строку, изменение в одном файле, в настоящее время может быть слито. Между исходным Issue и предложением прошло менее суток — редкая скорость реакции.</p>
+
+<h3 id="22-на-рассмотрении-предложение-о-форматировании-всего-ядра-clang-format-2218-затрагивает-75-файлов-2710">2.2 На рассмотрении предложение о форматировании всего ядра clang-format 22.1.8, затрагивает 75 файлов (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 17:42 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11936">предложение #11936</a></p>
+
+<p>В очередь поступило предложение, фиксирующее версию clang-format на 22.1.8 и форматирующее исходный код ядра; затрагивает 75 файлов, добавлено 3922 строки, удалено 3040 строк. Это шаг вслед за слиянием 23.10 уточнения правил стиля — применение правил ко всему коду ядра. Подобные предложения сами по себе не содержат функциональных изменений, но создают массовые текстовые конфликты с другими предложениями по ядру, находящимися на рассмотрении; порядок слияния должен координироваться мейнтейнерами и обычно требует сначала очистить волну функциональных предложений.</p>
+
+<h3 id="23-предложение-esp32-s3-devkitm-1-обновлено-в-конце-окна-мониторинга-суммарно-добавлено-295371-строка-2810">2.3 Предложение ESP32-S3-DevKitM-1 обновлено в конце окна мониторинга, суммарно добавлено 295371 строка (28.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-28 07:38 (последнее обновление)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11844">предложение #11844</a></p>
+
+<p>Предложение BSP для ESP32-S3-DevKitM-1 вновь обновлено в конце окна мониторинга: суммарно добавлено 295371 строка, удалено 22825 строк — это самый крупный коммит в очереди на рассмотрении. С момента создания 28.09 предложению уже исполнился месяц; повторные обновления показывают, что автор продолжает реагировать на замечания ревью. При таком объёме внимание ревьюеров обычно сосредоточено на том, нужно ли включать вендорский SDK целиком, а также на бинарных библиотеках и условиях лицензирования, а не только на работоспособности функциональности — именно поэтому предложение так долго остаётся в очереди.</p>
+
+<h3 id="24-четыре-архитектурных-предложения-rt-thread-smart-по-прежнему-в-очереди-все-поданы-1810-2710">2.4 Четыре архитектурных предложения RT-Thread Smart по-прежнему в очереди, все поданы 18.10 (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 (последнее обновление)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11894">предложение #11894</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11896">предложение #11896</a></p>
+
+<p>Четыре предложения, связанные с RT-Thread Smart, по-прежнему находятся в очереди; все созданы 18.10 и относятся к одной партии работ: разделение реализации системных вызовов lwp по подсистемам (добавлено 12223 строки, удалено 11638 строк), включение Smart в qemu-virt64 (добавлено 1263 строки, удалено 1075 строк), исправление MMU и обработки страничных отказов в пользовательском режиме в libcpu/riscv (добавлено 105 строк, удалено 8 строк), добавление поддержки K230D в k230 (добавлено 587 строк, удалено 511 строк). Все четыре обновлялись в период с 23.10 по 27.10, что говорит об итерациях автора по замечаниям ревью, но ни одно ещё не слито. Предложения из той же партии от 18.10 сегодня начинают интегрироваться; группа Smart, вероятнее всего, будет следующей.</p>
+
+<h2 id="3-инструментальная-цепочка-официальные-каналы-и-сообщество">3. Инструментальная цепочка, официальные каналы и сообщество</h2>
+
+<h3 id="31-подробная-статья-сообщества-разбирает-env-v203-команды-перенесены-в-rt-env-добавлены-система-плагинов-и-webui-2710">3.1 Подробная статья сообщества разбирает Env v2.0.3: команды перенесены в rt-env, добавлены система плагинов и WebUI (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 11:01 (время публикации)　<strong>Источник</strong>: <a href="https://club.rt-thread.org/ask/article/7fc18cb6f8b7ddbc.html">статья сообщества: полная запись использования Env Tool v2.0.3</a></p>
+
+<p>В сообществе опубликована полная запись использования инструментальной цепочки Env после обновления до v2.0.3. В статье отмечается, что начиная с версии 2.0 Env претерпел архитектурную переработку: единой точкой входа для команд стал rt-env, menuconfig, pkgs и scons больше не являются отдельными разрозненными подкомандами, а также добавлены sdk, plugin, webui и system; все зависимости работают в виртуальном окружении Python, изолированно от системного Python; добавлены система плагинов и WebUI, позволяющие управлять инструментальной цепочкой, SDK и пакетами программного обеспечения прямо в браузере; платой за это стала необходимость активировать окружение в каждом терминале перед использованием команд. Автор протестировал комбинацию версий: rt-env 2.0.3 с SCons 4.11.1 и kconfiglib 14.1.0. В статье особо отмечена граница совместимости: Env 2.0 полностью поддерживает версии выше 5.1.0 и ветку master; проекты на 5.1.0 и более ранних версиях по-прежнему должны оставаться на дистрибутиве 1.5.x.</p>
+
+<h3 id="32-официальный-новостной-интерфейс-без-обновлений-за-24-часа-последний-выпуск-по-прежнему-датирован-17-июня-2710">3.2 Официальный новостной интерфейс без обновлений за 24 часа, последний выпуск по-прежнему датирован 17 июня (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 (время проверки)　<strong>Источник</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">официальный новостной интерфейс</a></p>
+
+<p>После постраничной проверки официального новостного интерфейса последними записями остаются две от 2026-06-17 — об Инвестиционном форуме в Абу-Даби и о четвёртой конференции по инновационному развитию программного обеспечения; в окнах 24 часов и 7 дней новых записей нет. Для сравнения, в интерфейсе статей сообщества за текущее окно появилась одна новая публикация (см. 3.1), что показывает: официальные внешние материалы и материалы сообщества идут по двум независимым каналам, а официальная сторона уже четыре месяца подряд работает в режиме низкой активности. Поэтому повседневное содержание ежедневного отчёта фактически обеспечивается GitHub и стороной сообщества.</p>
+
+<h3 id="33-ee-times-china-публикует-сравнение-трёх-основных-rtos-rt-thread-назван-предпочтительным-для-сценариев-с-низким-энергопотреблением-и-потребительских-сценариев-2710">3.3 EE Times China публикует сравнение трёх основных RTOS, RT-Thread назван предпочтительным для сценариев с низким энергопотреблением и потребительских сценариев (27.10)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 22:27 (время публикации)　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a534651.html">EE Times China: углублённое сравнение трёх основных RTOS</a></p>
+
+<p>Колонка под эгидой EE Times China опубликовала сравнительный обзор трёх RTOS, сопоставив FreeRTOS, RT-Thread и Zephyr по шести измерениям: реальному времени, потреблению памяти, экосистеме, сообществу, поддержке AI и затратам на миграцию. В статье RT-Thread позиционируется как лёгкий универсальный набор под Apache 2.0: ядро 3KB Flash плюс 1.2KB RAM, встроенные POSIX, GUI, файловая система и AI-пакет; компонент низкого энергопотребления в режиме Stop экономит на 15–20% энергии по сравнению с двумя другими. Таблица выбора отводит RT-Thread проектам с экстремально низкой стоимостью при RAM ниже 64KB, а также потребительской электронике и носимым устройствам. Статья одновременно признаёт, что Zephyr сильнее в сценариях с множеством протоколов, множеством плат и долгосрочным сопровождением; вывод — разделение на три, а не односторонняя поддержка; данные взяты из официальной документации проектов и сторонних бенчмарков, следов размещения со стороны производителей не обнаружено.</p>
+
+<h2 id="4-экосистема-и-адаптация-производителей">4. Экосистема и адаптация производителей</h2>
+
+<h3 id="41-семинар-arm-china-wtcc-2026-rt-thread-делает-акцент-на-проектах-воплощённого-интеллекта-и-разбирает-три-типа-agent-решений-10-27">4.1 Семинар Arm China WTCC 2026: RT-Thread делает акцент на проектах воплощённого интеллекта и разбирает три типа Agent-решений (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-23 (мероприятие) / 2026-10-27 14:13 (репортаж)　<strong>Источник</strong>: <a href="https://news.mydrivers.com/1/1160/1160930.htm">репортаж Kuaikeji</a>, <a href="https://www.21ic.com/a/1015393.html">тот же материал на 21ic</a></p>
+
+<p>Arm China провела в Шанхае в рамках Международного фестиваля технологий и потребительской электроники West Bund (WTCC 2026) небольшой семинар по решениям воплощённого интеллекта, в котором Rockchip, Radxa Computer и RT-Thread участвовали как партнёры альянса открытых AIOS. Старший инженер RT-Thread AI Чжэн Вэй представил три типа Agent-решений — для роботов-собак, HyperCar и оркестрации Codex, — рассказал о том, как интеллектуальные агенты переходят от диалога к исполнению, и чётко обозначил, что RT-Thread в дальнейшем делает акцент на проектах воплощённого интеллекта и вместе с Arm China выводит возможности Agent на реальные приложения. Rockchip отметила, что инференс больших моделей переходит от вычислительной интенсивности к интенсивности по памяти, а пропускная способность становится узким местом на стороне устройства, и предложила разделять вычисления и управление с помощью основного SoC плюс AI-сопроцессора. Arm China на том же мероприятии представила два практических результата — JishuFriends и JishuBuddy.</p>
+
+<h3 id="42-прототип-обнаружения-пламени-на-кухне-на-k230-опубликовал-исходный-код-и-запись-воспроизведения-база--rt-thread-smart-10-27">4.2 Прототип обнаружения пламени на кухне на K230 опубликовал исходный код и запись воспроизведения, база — RT-Thread Smart (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 19:19 (время публикации)　<strong>Источник</strong>: <a href="https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian">SRTP-K230-Fire-Guardian</a></p>
+
+<p>Прототип обнаружения пламени на кухне на базе K230 и RT-Thread Smart опубликовал исходный код, включающий мультисенсорное объединение, адаптивную стратегию联动, запись воспроизведения и оценку модели; в репозитории также размещены справочные материалы, чтобы третьи стороны могли повторить запуск по записи. Сам проект позиционируется как исследовательский прототип, а не продукт. Это редкий для данного выпуска со стороны экосистемы публичный проект, применяющий RT-Thread Smart в реальном замкнутом контуре восприятия; он ценен для оценки применимости Smart в визуальных сценариях и показывает, что в сообществе за пределами производителей плат уже начинают работать с этим решением.</p>
+
+<h3 id="43-распознавание-рукописных-символов-на-двухъядерном-risc-v-ch32h417-с-rt-thread-lvgl-и-tflm-10-27">4.3 Распознавание рукописных символов на двухъядерном RISC-V CH32H417 с RT-Thread, LVGL и TFLM (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 08:41 (время публикации)　<strong>Источник</strong>: <a href="https://github.com/TTTao163/ch32h417-tinyml-symbol-recognition">ch32h417-tinyml-symbol-recognition</a></p>
+
+<p>Проект распознавания рукописных символов на двухъядерной платформе RISC-V CH32H417 от WCH, технический стек — RT-Thread плюс LVGL плюс TFLM, цепочка включает захват с OV5640, предварительную обработку изображения с фиксированной точкой, инференс модели с квантованием INT8 и отображение интерфейса; на стороне обучения приложен отдельный инструментарий. Проект только создан и пока не привлёк внимания; его ценность в том, что он подробно и ясно раскрывает полную лёгкую визуальную цепочку на RISC-V — от сбора данных до квантованного развёртывания всё можно сопоставить, что делает его многоразовым образцом для команд, готовящихся к инференсу на стороне устройства на отечественных RISC-V MCU.</p>
+
+<h2 id="5-отраслевые-применения-и-воплощённый-интеллект">5. Отраслевые применения и воплощённый интеллект</h2>
+
+<h3 id="51-работы-конкурса-aiot-смещаются-в-промышленную-сторону-ai-мониторинг-дефектов-bldc-двигателей-на-titan-board-10-27">5.1 Работы конкурса AIoT смещаются в промышленную сторону: AI-мониторинг дефектов BLDC-двигателей на Titan Board (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 11:50 (перепечатка в СМИ)　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a534069.html">EE Times China: система AI-мониторинга дефектов BLDC-двигателей</a></p>
+
+<p>EE Times China перепечатал одно из конкурсных решений 2026 RT-Thread AIoT Contest: AI-мониторинг дефектов рабочих состояний BLDC-двигателя на плате Renesas Titan Board. Аппаратная часть — RA8P1, двухъядерный 1 ГГц Cortex-M85 плюс 250 МГц Cortex-M33, с NPU Ethos-U55, 256 GOPS на одном чипе. Система собирает трёхфазный ток, напряжение шины и температуру инвертора, после предварительной обработки на ядре M85 отправляет их в лёгкую CNN, развёрнутую на NPU, для распознавания дефектов в реальном времени; на программной стороне с помощью RT-Thread запускаются три основных потока, отвечающих соответственно за отображение интерфейса, передачу данных и AI-инференс, интерфейс построен на LVGL, модель через RUHMI конвертируется из TFLite в C-код и интегрируется. Решение подчёркивает отказ от дополнительных датчиков — состояние анализируется только по току и напряжению привода, что соответствует направлению низкозатратного предиктивного обслуживания.</p>
+
+<h3 id="52-линии-этого-выпуска-чипмейкеры-производители-плат-и-сторона-операционной-системы-на-одной-сцене-в-рамках-альянса-все-указывают-на-воплощённый-интеллект-10-27">5.2 Линии этого выпуска: чипмейкеры, производители плат и сторона операционной системы на одной сцене в рамках альянса, все указывают на воплощённый интеллект (10-27)</h3>
+
+<p><strong>Дата</strong>: 2026-10-27 (текущий выпуск)　<strong>Источники</strong>: <a href="https://news.mydrivers.com/1/1160/1160930.htm">репортаж KuaiKeJi</a>, <a href="https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian">SRTP-K230-Fire-Guardian</a></p>
+
+<p>Если сопоставить три линии этого выпуска, они указывают в одном направлении. На стороне восходящих IP и чипов Arm China через альянс AIOS с открытым исходным кодом посадила Rockchip, Radxa и RT-Thread за один стол — речь идёт о развязке вычислительной мощности и узком месте пропускной способности на стороне устройств; на стороне операционной системы RT-Thread вывела проект воплощённого интеллекта в приоритеты — речь идёт о переходе Agent от диалога к исполнению; на стороне сообщества и плат два проекта, K230 и CH32H417, соответственно реализуют Smart и лёгкий инференс в конкретных задачах вроде обнаружения пламени и распознавания символов. Все три стороны сходятся к направлению «запуск полного контура восприятия и принятия решений на небольших устройствах», а не к расширению списков функций каждым по отдельности.</p>
+
+<h2 id="6-итоги-и-наблюдения-за-тенденциями">6. Итоги и наблюдения за тенденциями</h2>
+
+<h3 id="61-тенденция-выпуска-слияния-возобновились-исправления-сосредоточены-на-проверке-границ-а-не-на-новых-функциях">6.1 Тенденция выпуска: слияния возобновились, исправления сосредоточены на проверке границ, а не на новых функциях</h3>
+
+<p><strong>Дата</strong>: 2026-10-28 (текущий выпуск)　<strong>Источники</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">записи коммитов основного репозитория</a></p>
+
+<p>Самое примечательное в этом выпуске — восстановление ритма слияний и их состав. У трёх из четырёх слияний время author — 10-18, то есть та партия предложений пролежала на ревью девять дней и теперь начинает поочерёдно приземляться; в той же партии в очереди висят ещё четыре предложения, связанные со Smart, так что можно ожидать, что в ближайшие дни основная ветка будет в основном из этой партии. Техническая направленность всех четырёх слияний едина: семантика временных меток файловой системы, белый список протоколов сокетов, источник таблицы диспетчеризации poll, разрядность регистров последовательного порта — всё это проверка границ и согласование семантики, ни одной новой функции. Эти четыре типа мест обычно не дают ошибок, а если проблема возникает, её трудно локализовать; устранение их всех в одной партии положительно сказывается на долгосрочной стабильности.</p>
+
+<h3 id="62-ограничения-и-пояснения-по-дедупликации">6.2 Ограничения и пояснения по дедупликации</h3>
+
+<p><strong>Дата</strong>: 2026-10-28 (текущий выпуск)　<strong>Источники</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">официальный новостной интерфейс</a></p>
+
+<ul>
+  <li>Официальный новостной интерфейс с июня не пополнялся; три материала медийной стороны этого выпуска сначала прошли агрегированный поиск, затем сверены с исходными сайтами; из них две статьи EE Times China — это соответственно обзорная колонка и перепечатка конкурсной работы, ни то ни другое не является официальной публикацией RT-Thread.</li>
+  <li>Зафиксированное в ежедневном отчёте за вчера переполнение signalfd (Issue #11933) в этом выпуске предстало в виде предложения #11935 и включено как новое продвижение, не считаясь дублирующей записью.</li>
+  <li>Не включено: 5 коммитов zlgopen/awtk за день не имеют прямого отношения к RT-Thread; pushed_at у Nuclei nuclei-sdk хотя и попадает в последнюю неделю, фактический последний коммит остановился на 10 июня — это изменение ветки или тега, а не обновление кода.</li>
+  <li>7 попаданий HN Algolia в этом выпуске — все ошибочные совпадения строк threads и Threads, отброшены целой партией; на англоязычной стороне Google News в пределах окна мониторинга релевантных материалов нет.</li>
+</ul>
+
+<h2 id="приложение-таблица-проверки-источников-и-перечень-источников">Приложение: таблица проверки источников и перечень источников</h2>
+
+<h3 id="таблица-проверки-источников">Таблица проверки источников</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Источники</th>
+      <th>Результаты проверки</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Официальный новостной интерфейс (rt_org)</td>
+      <td>За 24 часа новых записей нет, последняя запись остановилась на 2026-06-17</td>
+    </tr>
+    <tr>
+      <td>Интерфейс статей сообщества (article)</td>
+      <td>В окне мониторинга 1 новая статья: запись об использовании Env v2.0.3 (10-27 11:01)</td>
+    </tr>
+    <tr>
+      <td>Коммиты основного репозитория</td>
+      <td>В окне мониторинга 4 слияния (10-27 с 19:20 по 19:26), до этого тишина около двух дней</td>
+    </tr>
+    <tr>
+      <td>PR основного репозитория</td>
+      <td>Добавлено 2 PR (#11935, #11936), из находящихся на рассмотрении предложений 10 обновлены в этом окне</td>
+    </tr>
+    <tr>
+      <td>Релизы / теги основного репозитория</td>
+      <td>Новых нет, последний по-прежнему v5.3.0 (2026-09-10)</td>
+    </tr>
+    <tr>
+      <td>Issue основного репозитория</td>
+      <td>Новых нет, два старых Issue 2023 года были затронуты</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/packages</td>
+      <td>Пушей нет, последний коммит 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>vscode-rt-smart</td>
+      <td>Пушей нет, последний коммит 2026-10-26</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/sdk</td>
+      <td>Пушей нет, последний коммит 2026-10-25</td>
+    </tr>
+    <tr>
+      <td>pkgs-test</td>
+      <td>Пушей нет, последний коммит 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>Поиск по экосистеме topic:rt-thread</td>
+      <td>В окне мониторинга пуши в 4 репозиториях: добавлены SRTP-K230 и CH32H417; исключены awtk, nuclei-sdk</td>
+    </tr>
+    <tr>
+      <td>Google News на китайском (семь запросов)</td>
+      <td>В окне мониторинга 4 совпадения, включены 3, 1 дубликат того же материала удалён</td>
+    </tr>
+    <tr>
+      <td>Google News на английском</td>
+      <td>В окне мониторинга релевантных совпадений нет</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>Все 7 записей — ошибочные совпадения с threads и Threads, вся выборка исключена</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="полный-список-источников">Полный список источников</h3>
+
+<ul>
+  <li><strong>[1]</strong> Коммиты основного репозитория RT-Thread<br />
+<a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> Предложение основного репозитория #11885 (dfs UTIME_OMIT)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11885">https://github.com/RT-Thread/rt-thread/pull/11885</a></li>
+  <li><strong>[3]</strong> Предложение основного репозитория #11887 (libc poll получение fops)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11887">https://github.com/RT-Thread/rt-thread/pull/11887</a></li>
+  <li><strong>[4]</strong> Предложение основного репозитория #11888 (net/sal проверка RAW socket)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11888">https://github.com/RT-Thread/rt-thread/pull/11888</a></li>
+  <li><strong>[5]</strong> Предложение основного репозитория #11889 (ширина регистра 8250 earlycon)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11889">https://github.com/RT-Thread/rt-thread/pull/11889</a></li>
+  <li><strong>[6]</strong> Предложение основного репозитория #11935 (путь закрытия signalfd)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11935">https://github.com/RT-Thread/rt-thread/pull/11935</a></li>
+  <li><strong>[7]</strong> Предложение основного репозитория #11936 (полное форматирование clang-format 22.1.8)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11936">https://github.com/RT-Thread/rt-thread/pull/11936</a></li>
+  <li><strong>[8]</strong> Предложение основного репозитория #11844 (BSP ESP32-S3-DevKitM-1)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11844">https://github.com/RT-Thread/rt-thread/pull/11844</a></li>
+  <li><strong>[9]</strong> Предложение основного репозитория #11894 (разделение подсистемы lwp)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11894">https://github.com/RT-Thread/rt-thread/pull/11894</a></li>
+  <li><strong>[10]</strong> Предложение основного репозитория #11896 (включение Smart в qemu-virt64)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11896">https://github.com/RT-Thread/rt-thread/pull/11896</a></li>
+  <li><strong>[11]</strong> Предложение основного репозитория #11892 (MMU riscv и обработка ошибок страниц в пользовательском режиме)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11892">https://github.com/RT-Thread/rt-thread/pull/11892</a></li>
+  <li><strong>[12]</strong> Предложение основного репозитория #11897 (добавление K230D в k230)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11897">https://github.com/RT-Thread/rt-thread/pull/11897</a></li>
+  <li><strong>[13]</strong> Записи релизов основного репозитория<br />
+<a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[14]</strong> Список тегов основного репозитория<br />
+<a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[15]</strong> Официальный интерфейс новостей<br />
+<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[16]</strong> Статья сообщества: полная запись использования Env Tool v2.0.3<br />
+<a href="https://club.rt-thread.org/ask/article/7fc18cb6f8b7ddbc.html">https://club.rt-thread.org/ask/article/7fc18cb6f8b7ddbc.html</a></li>
+  <li><strong>[17]</strong> EE Times China: глубокое сравнительное тестирование трёх основных RTOS<br />
+<a href="https://www.eet-china.com/mp/a534651.html">https://www.eet-china.com/mp/a534651.html</a></li>
+  <li><strong>[18]</strong> EE Times China: система AI-мониторинга дефектов двигателя BLDC<br />
+<a href="https://www.eet-china.com/mp/a534069.html">https://www.eet-china.com/mp/a534069.html</a></li>
+  <li><strong>[19]</strong> Kuaikeji: семинар альянса AIOS с открытым исходным кодом в сообществе Jishu Arm Technology<br />
+<a href="https://news.mydrivers.com/1/1160/1160930.htm">https://news.mydrivers.com/1/1160/1160930.htm</a></li>
+  <li><strong>[20]</strong> 21ic: сообщество Jishu Arm Technology на WTCC 2026<br />
+<a href="https://www.21ic.com/a/1015393.html">https://www.21ic.com/a/1015393.html</a></li>
+  <li><strong>[21]</strong> Репозиторий SRTP-K230-Fire-Guardian<br />
+<a href="https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian">https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian</a></li>
+  <li><strong>[22]</strong> Репозиторий ch32h417-tinyml-symbol-recognition<br />
+<a href="https://github.com/TTTao163/ch32h417-tinyml-symbol-recognition">https://github.com/TTTao163/ch32h417-tinyml-symbol-recognition</a></li>
+  <li><strong>[23]</strong> Список репозиториев организации RT-Thread<br />
+<a href="https://github.com/orgs/RT-Thread/repositories?sort=pushed">https://github.com/orgs/RT-Thread/repositories?sort=pushed</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ru/post.html#news-list" class="btn btn-main news-list-link">Назад</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Контакты</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Эл. почта:</strong> contact@kubuds.cn<br>
+            <strong>Адрес:</strong> Комната 108, 1-й этаж, корпус 1, ул. Гаои, д. 88, район Баошань, Шанхай<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Ссылки</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>
