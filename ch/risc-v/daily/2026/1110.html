@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ch/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/ch/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ch/">首页</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服务与支持 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/service/simulator.html">模拟器</a></li>
+              <li><a class="dropdown-item" href="/ch/service/os.html">操作系统</a></li>
+              <li><a class="dropdown-item" href="/ch/service/toolchain.html">软件工具链</a></li>
+              <li><a class="dropdown-item" href="/ch/service/chip.html">嵌入式芯片</a></li>
+
+              <li><a class="dropdown-item" href="/ch/service/ide.html">集成开发环境</a></li>
+              <li><a class="dropdown-item" href="/ch/service/aisys.html">AI软件栈服务</a></li>
+              <li><a class="dropdown-item" href="/ch/service/consultation.html">专家咨询</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解决方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社区 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ch/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ch/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ch/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ch/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ch/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ch/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/post.html" style="white-space: nowrap;">新闻与活动</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/about.html" style="white-space: nowrap;">关于我们</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ch/career.html">招贤纳士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1110.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1110.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1110.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/risc-v/daily/2026/1110.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1110.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 全球动态日报（2026-11-10） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ch/">首页</a></li>
+                                <li class="breadcrumb-item"><a href="/ch/post.html#news-list" class="news-list-link">新闻与活动</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 全球动态日报（2026-11-10）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 全球动态日报（2026-11-10）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-10</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>调研窗口</strong>：2026-11-09 05:00 ~ 2026-11-10 05:00（北京时间，24 小时）
+<strong>信源</strong>：Google News 聚合（中英文 30 余组查询，走代理）、Hacker News、Phoronix、CNX Software、LinuxGizmos、RISC-V International 官网与周报、openRuyi 官网与主仓、RISC-V 会员企业官网巡检（391 家）、riscv100.top 榜单巡检，以及 GitHub 上达摩院玄铁、奕斯伟、算能、芯来、乐鑫、进迭时空与 spacemit-robotics、矽速、revyos、openRuyi-Project、Radxa Linkr、CORE-V 与香山等组织与重点仓库的提交检索。</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>今日重点：芯来发布 NI1000，首款支持 VME 矩阵扩展的 RISC-V 通用 AI 算力核（11-09）</li>
+  <li>一、开源社区与软件生态
+    <ul>
+      <li>openRuyi 主仓单日 20 笔：wlroots 0.20.2、wget2 2.3.0 与 LLVM 22 至 24 的 Python 绑定修正（11-09／11-10）</li>
+      <li>CORE-V CVW 合并 11 笔：16550 UART 的 LSR 错误位、SPI 空 RX 归零与锁步非对齐豁免（11-09／11-10）</li>
+      <li>M9B 在 Tang Nano 9K 上搭出 RISC-V 电脑，五款 DOS 时代游戏跑进 36MHz 软核（11-09）</li>
+      <li>RISC-V Day Tokyo 2026 Autumn 明日开幕，Tenstorrent 与 AIST 到场（11-11）</li>
+    </ul>
+  </li>
+  <li>二、产品与生态动态
+    <ul>
+      <li>M5Stack Core Matrix 用 ESP32-C61 加 16×16 LED 矩阵，29.99 美元开卖（11-09）</li>
+      <li>英飞凌 AURIX RC1 的 RISC-V 核被指来自 MIPS IP、由格芯代工（11-09）</li>
+    </ul>
+  </li>
+  <li>三、国内团队深挖
+    <ul>
+      <li>平头哥拟 2027 年赴港 IPO，募资 20 亿至 30 亿美元（11-09）</li>
+      <li>进迭时空：ggml-spacemit 单日四笔，门控 delta 网络用 RVV 与 TCM 重写（11-09）</li>
+      <li>进迭时空：数字人管线改名 bianbu-avatar，对齐 K3 的 EP 核分配（11-09）</li>
+      <li>算能：LLM-TPU 支持 Qwen3.5 稠密模型的 MTP，bootloader 改用 SG2044 工具链编 SG2042（11-09）</li>
+      <li>芯来：工具链文档 12 笔，2026.10 版本升级说明与 QEMU 发布说明落地（11-09）</li>
+      <li>达摩院玄铁与奕斯伟：窗口内组织级零推送（11-10）</li>
+    </ul>
+  </li>
+  <li>四、具身智能与机器人专章
+    <ul>
+      <li>MIPS Actus 用双颗 Atlas M8500 实时 RISC-V 核做机器人关节，带 TSN 与后量子安全（11-09）</li>
+      <li>spacemit-robotics：unitree-go2 支持 smallcore 电机通信，perception 把推理运行时打包进 las2（11-09）</li>
+    </ul>
+  </li>
+  <li>五、总结与趋势观察</li>
+  <li>附录：完整信源清单与信源核查表</li>
+</ul>
+
+<hr />
+
+<h2 id="今日重点芯来发布-ni1000首款支持-vme-矩阵扩展的-risc-v-通用-ai-算力核11-09">今日重点：芯来发布 NI1000，首款支持 VME 矩阵扩展的 RISC-V 通用 AI 算力核（11-09）</h2>
+
+<p>芯来科技 11 月 9 日发布 NI1000 RISC-V CPU IP，官方称这是其第一款支持 Vector Matrix Extension（VME）的高性能通用 AI 处理器 IP。NI 系列是芯来面向 AI 应用的单列产品线，可配置为 900 或 1000 系列；RVV 1.0 向量单元（VPU）的 VLEN 可设为 512、1024、2048 或 4096 位，且集群内每个核可以独立配置自己的 VPU。核间通过 IOCP（IO Coherent Port）与 NPU 加速器紧耦合并保持缓存一致性，NICE／VNICE 接口则允许用户自定义标量与向量指令，NICE 还能用于与 NPU 的紧耦合交互。</p>
+
+<p>技术要点在 VME 的实现方式。VME 与 CPU、RVV 在同一个核内紧耦合，源操作数直接复用 RVV 的向量寄存器组，运算单元也复用 RVV 的执行单元，只额外增加 Matrix Tiles 的面积；新增的原生矩阵指令把外积结果累加进专用的 N×N 累加器，四套独立 Matrix Tiles 做乒乓并行以提升吞吐，并新增对 FP8 数据类型的原生支持。芯来给出的数据是：在 NI1020（VLEN 1024）上执行 32×32 的 FP32 矩阵乘法，整体面积只增加 15%（主要是 Matrix Tiles），矩阵乘法性能提升 2.5 倍。</p>
+
+<p>定位讲得比较克制。官方明确写着 NI 系列不打算取代 NPU、GPU 等加速器 IP，而是与之结合、更好地服务 AI SoC 上的加速器。这一点与 VME 的取舍一致：对比 IME 有独立矩阵累加硬件、矩阵运算能效更高，对比 AME 省去完整独立矩阵寄存器堆与硬件矩阵加速器；VME 站在中间，用可控的硬件开销换矩阵算力，代价是峰值能效不如专用矩阵单元。芯来同时强调 VME 完全以 RVV 为基座，软件生态可复用，并判断 VME 会成为最早标准化的 RISC-V 矩阵扩展。</p>
+
+<p>把这条放进本月的坐标里看，它补的是「通用算力核」这一层。此前一周的新闻集中在车规 MCU（英飞凌 AURIX RC1）、端侧视觉 SoC（为旌 VS815V）与安全核（AMD 的 RISC-V TEE），都是把 RISC-V 放进特定功能单元；NI1000 面对的是 AI 芯片里那颗「什么都要干一点」的通用核——要跑标量控制、要跑向量算子、还要能承接一般规模的矩阵乘，然后与 NPU 分工。国内 AI 芯片公司长期在这层二选一：要么外购高性能应用核，要么自研但背软件栈。VME 复用 RVV 的路子，实质是把这道选择题的成本压低，能不能被客户接受，取决于工具链与算子库跟不跟得上。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://www.nucleisys.com/newsdetail.php?id=475">芯来科技新闻稿（中文）</a>、<a href="https://www.design-reuse.com/news/202531411-nuclei-releases-the-ni1000-series-general-purpose-compute-core-with-support-for-the-vme-matrix-extension">Design And Reuse 报道</a></p>
+
+<h2 id="一开源社区与软件生态">一、开源社区与软件生态</h2>
+
+<h3 id="openruyi-主仓单日-20-笔wlroots-0202wget2-230-与-llvm-22-至-24-的-python-绑定修正11-0911-10">openRuyi 主仓单日 20 笔：wlroots 0.20.2、wget2 2.3.0 与 LLVM 22 至 24 的 Python 绑定修正（11-09／11-10）</h3>
+
+<p>openRuyi 主仓在窗口内落地 20 笔 SPECS 提交，节奏是典型的「滚动发行版日常」而非集中发布：桌面栈把 wlroots 升到 0.20.2，网络工具把 wget2 升到 2.3.0，Python 侧一口气更新了 httpx2 与 httpcore2 到 2.13.0、idna 到 3.20、langgraph-sdk 到 0.4.11，并让 python-pymongo 把 BSON 打进主包。另有几笔是打包正确性修复：llvm22、llvm23、llvm24 三个包用 sed 把 clang 的 Python 绑定改为链接 libclang，openruyi-linux-build 修掉 devel 文件冲突并安装带版本号的文档。</p>
+
+<p>值得记一笔的是 llvm 那三笔。LLVM 各版本的 Python 绑定长期靠动态库路径推断，发行版打包时若把 clang 的 Python 模块指向静态库或错误的 soname，用户在 RISC-V 上装 llvmlite、triton 这类依赖就会在导入阶段失败。三个版本同步改成显式链接 libclang，属于「装得上但用不了」这一类问题的根因修复，对做 RISC-V AI 栈的团队比版本号本身更有意义。</p>
+
+<p><strong>日期</strong>：2026-11-09 至 2026-11-10　<strong>来源</strong>：<a href="https://github.com/openRuyi-Project/openRuyi">openRuyi-Project/openRuyi</a></p>
+
+<h3 id="core-v-cvw-合并-11-笔16550-uart-的-lsr-错误位spi-空-rx-归零与锁步非对齐豁免11-0911-10">CORE-V CVW 合并 11 笔：16550 UART 的 LSR 错误位、SPI 空 RX 归零与锁步非对齐豁免（11-09／11-10）</h3>
+
+<p>CORE-V CVW 在窗口内合并 11 笔，主线仍是「把外设与验证环境做扎实」而不是改微架构：16550 UART 补上 LSR（线路状态寄存器）的错误位行为，SPI 在接收 FIFO 为空时读回零，分支预测重定向的覆盖率统计加上排除项，锁步（lockstep）模式对非对齐访问给出豁免规则，另有一批示例与脚本整理——删除 SHA 的 Questa 脚本、移除 Docker 构建与回归脚本、统一 ruff 与 uv 的脚本入口。</p>
+
+<p>这组提交与上周「删两套局部分支预测器、公开 RV32GC CoreMark/MHz 4.33」是同一轮收口的两半。上周动的是性能与面积，这周动的是可验证性：UART 的错误位与 SPI 的空读语义都属于「协议规定了、实现里容易漏」的细节，漏了不会让核跑不起来，但会让驱动在错误路径上挂死；锁步豁免与覆盖率排除则直接决定验证报告能不能作为交付证据。对拿 CVW 做车规或工业评估的团队，这类提交比多跑几百 MHz 更值钱。</p>
+
+<p><strong>日期</strong>：2026-11-09 至 2026-11-10　<strong>来源</strong>：<a href="https://github.com/openhwfoundation/cvw">openhwfoundation/cvw</a></p>
+
+<h3 id="m9b-在-tang-nano-9k-上搭出-risc-v-电脑五款-dos-时代游戏跑进-36mhz-软核11-09">M9B 在 Tang Nano 9K 上搭出 RISC-V 电脑，五款 DOS 时代游戏跑进 36MHz 软核（11-09）</h3>
+
+<p>开发者 Mika Tammi 的 m9b 项目在 Hacker News 上出现：在一块售价约二十美元的 Sipeed Tang Nano 9K（Gowin GW1NR-9）上，用 VexiiRiscv 软核搭出一台完整的小电脑——36MHz、带缓存、用板载 8MB PSRAM 作内存、720×480 HDMI 视频、48kHz 音频、两个 USB 口接键鼠、SD 卡存程序。开机进一个列出 SD 卡程序的界面，能跑五款 DOS 时代游戏，且都带音效与音乐：Doom（shareware，timedemo 约 22 fps）、Descent（约 10 fps）、Tyrian 2.1（满速 35 fps）、System Shock（约 7 fps）、Ultima VII（两套引擎，7 至 13 fps）。</p>
+
+<p>这类项目的价值不在「能玩游戏」，而在把「一台电脑最少需要什么」这条线画出来。9K 的逻辑资源装不下乱序核，也装不下 Linux 级别的内存管理，于是取舍变得非常具体：要 HDMI 就得砍缓存，要音效就得把音乐预先渲染成流从卡里读。项目把 SoC、运行时、五套游戏移植与 SD 卡镜像拆成独立仓库并全部开源，每个仓库都写明改动了上游哪里——对做 RISC-V 教学板与 FPGA 上手的团队，这是一份可直接复用的工程分层样本。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/the-parts-bin/m9b-system">m9b-system 仓库</a>、<a href="https://news.ycombinator.com/item?id=50428584">Hacker News 讨论</a></p>
+
+<h3 id="risc-v-day-tokyo-2026-autumn-明日开幕tenstorrent-与-aist-到场11-11">RISC-V Day Tokyo 2026 Autumn 明日开幕，Tenstorrent 与 AIST 到场（11-11）</h3>
+
+<p>RISC-V 协会（日本）将于 11 月 11 日在东京大学本乡校区举办 RISC-V Day Tokyo 2026 Autumn，预计约 400 人参加。议程上午是芯片设计教程，下午为技术演讲与展位：Tenstorrent 讲物理 AI 与 Open Chiplet Atlas，产业技术综合研究所（AIST）讲 2nm 边缘 AI，Andes Technology 有现场演示，会场另设 Chip Museum 特展，展出 Google TPU v3 的硬件规格与软件概览。</p>
+
+<p>把这场活动与上周的 RISC-V 中国峰会并排放，可以看到区域性活动正在形成固定的分工：中国场偏产业落地与国产替代，日本场偏设计与教育（教程、Chip Museum、大学会场）。对国内团队，值得关注的是 Tenstorrent 与 AIST 两场——前者在 chiplet 与开放互联上的表态会影响 RISC-V 服务器路线的叙事，后者代表日本在先进制程边缘 AI 上的投入方向。</p>
+
+<p><strong>日期</strong>：2026-11-11（活动）　<strong>来源</strong>：<a href="https://riscv.or.jp/en/risc-v-day-tokyo-2026-autumn-2">RISC-V Day Tokyo 2026 Autumn</a></p>
+
+<h2 id="二产品与生态动态">二、产品与生态动态</h2>
+
+<h3 id="m5stack-core-matrix-用-esp32-c61-加-1616-led-矩阵2999-美元开卖11-09">M5Stack Core Matrix 用 ESP32-C61 加 16×16 LED 矩阵，29.99 美元开卖（11-09）</h3>
+
+<p>M5Stack 推出 Core Matrix，一颗基于 ESP32-C61 的 IoT 控制器：SoC 为 ESP32-C61HR8，单核 32 位 RISC-V 最高 160MHz，320KB SRAM 加 8MB PSRAM、16MB QSPI flash，2.4GHz Wi-Fi 6 与蓝牙 LE 5.0；正面是 16×16 白光 LED 矩阵（256 颗，TM1680 驱动），配 Bosch BMI270 六轴 IMU、microSD、无源蜂鸣器、三个用户按键与电源键，扩展走 30 pin M5-Bus 与 Grove I2C，支持 USB 或 3.7V 外接电池供电，尺寸 54×54×11.6mm，售价 29.99 美元。软件侧支持 Arduino IDE 与 UIFlow2，提供 M5Unified、M5GFX 与电源管理芯片的驱动库。</p>
+
+<p>这块板的意义是把「显示」从屏幕换成点阵。ESP32-C61 是乐鑫面向低成本 Wi-Fi 6 的 RISC-V 型号，算力与内存都不足以驱动 LCD，但足以驱动 256 颗单色 LED 并跑状态机与联网逻辑；用点阵做图标、动画与通知，等于在「没有屏幕」与「有屏幕」之间补了一档。对做桌面状态灯、机房指示器与低成本交互设备的团队，这是一个现成的参考形态，价格也落在可以批量铺开的区间。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://www.cnx-software.com/2026/11/09/m5stack-core-matrix-esp32-c61-iot-controller-features-16x16-led-matrix-wifi-6-and-6-axis-imu/">CNX Software 报道</a></p>
+
+<h3 id="英飞凌-aurix-rc1-的-risc-v-核被指来自-mips-ip由格芯代工11-09">英飞凌 AURIX RC1 的 RISC-V 核被指来自 MIPS IP、由格芯代工（11-09）</h3>
+
+<p>Design And Reuse 11 月 9 日转载 jonpeddie.com 的分析，指出英飞凌 AURIX RC1 采用的是 MIPS 的处理器 IP，由 GlobalFoundries 代工，并称这是 MIPS 与格芯在 RISC-V 上的一笔重要设计胜利。文章同时提出一个问题：RISC-V 是否会最终取代英飞凌自有的 TriCore 架构。此前 11 月 4 日英飞凌发布 RC1 时，官方口径是「首条基于 RISC-V 的车规 MCU 平台、TriCore 系列继续供货」，未展开 IP 来源。</p>
+
+<p>这条补的是供应链层的空白。车规芯片公告通常只讲平台与生态，不讲核从哪来；而对做国产车规 RISC-V 的团队，核的来源直接决定两件事——功能安全证据链由谁提供（ISO 26262 ASIL D 的 IP 级证据不是整机厂能自己补的），以及产能与制程落在哪家代工厂。MIPS 在被格芯收购后把路线整体转到 RISC-V，这次若确为 RC1 的核供应商，等于「RISC-V 车规核」这个市场多了一个有代工厂背景的玩家；对国内 IP 厂商，这是一个需要正面对比的竞争者，而不是远处的概念。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://www.design-reuse.com/news/202531415-infineon-s-risc-v-aurix-platform-is-a-major-win-for-mips-and-globalfoundries">Design And Reuse 转载</a></p>
+
+<h2 id="三国内团队深挖">三、国内团队深挖</h2>
+
+<h3 id="平头哥拟-2027-年赴港-ipo募资-20-亿至-30-亿美元11-09">平头哥拟 2027 年赴港 IPO，募资 20 亿至 30 亿美元（11-09）</h3>
+
+<p>多家媒体 11 月 9 日援引路透社报道，阿里巴巴旗下芯片公司平头哥半导体计划于 2027 年在香港交易所上市，目标募资 20 亿至 30 亿美元（约 156 亿至 234 亿港元）。公开信息显示，平头哥 2018 年 10 月由中天微与达摩院芯片团队整合成立，产品覆盖 AI 加速芯片（真武系列）、Arm 服务器 CPU（倚天系列）、RISC-V 处理器 IP（玄铁系列）与存储主控等；2026 年 3 月阿里 CEO 吴泳铭在财报电话会上披露，平头哥芯片累计出货超过 47 万片、年化营收超过百亿元，8 月披露真武系列已服务超过 650 家客户、外部付费客户占比超过六成。9 月云栖大会发布的真武 V900 标称 216GB 显存、1200GB/s 片间带宽，计划 2027 年第一季度量产。</p>
+
+<p>需要把口径分清楚：报道把玄铁系列 RISC-V 处理器 IP 计入平头哥的产品线，而玄铁团队 2024 年已转入达摩院、专做 RISC-V 处理器（C950 一类），平头哥自身的产品重心是 PPU（AI 加速卡）与倚天（Arm CPU）；「玄铁累计出货 60 亿颗」是集团层面的历史累计口径，不等于当前由平头哥经营。上市主体最终如何切分资产、玄铁 IP 归属是否随之调整，目前没有披露，这也是这条消息最需要跟踪的部分。</p>
+
+<p>对 RISC-V 产业，IPO 本身不改变技术路线，但会改变资本对这条赛道的定价方式。过去两年国内 RISC-V 公司的估值锚是「替代空间」，平头哥若以百亿元级年化营收、六成外部客户的身份上市，锚就换成「已商业化的算力供应商」；这对正在融资的 RISC-V 服务器、AI 芯片与 IP 公司是双向影响——可比公司变清晰了，但资本市场也会用同一套营收与毛利标准来要求它们。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://www.iyiou.com/briefing/202611091945019">亿欧快讯</a>、<a href="https://t.cj.sina.cn/articles/view/5105460195/1304f23e3001024aqo">新浪财经转载</a></p>
+
+<h3 id="进迭时空ggml-spacemit-单日四笔门控-delta-网络用-rvv-与-tcm-重写11-09">进迭时空：ggml-spacemit 单日四笔，门控 delta 网络用 RVV 与 TCM 重写（11-09）</h3>
+
+<p>spacemit-com 的 llama.cpp fork（mtmd-backend 分支）在窗口内合并四笔 ggml-spacemit 后端提交：用 RVV 与 TCM 优化循环版门控 delta 网络（#54）、按 head size 对门控 delta 网络做展开特化（#59）、优化 MoE 矩阵乘并新增稠密 Q4_0 与 F16 的 GEMM（#53），以及修掉 softplus 缺少 log1p 项的实现错误（#57）。</p>
+
+<p>四笔凑在一起，指向的是同一类模型结构。门控 delta 网络（GDN）是线性注意力一系的循环层，推理时每步只做小规模矩阵运算，瓶颈不在算力而在访存与状态驻留——这正是 TCM（紧耦合内存）该用的地方；把 head size 作为特化维度展开，则是为了消掉内层循环的分支与索引开销。MoE 矩阵乘与 Q4_0／F16 GEMM 是另一条线：K3 的向量单元要同时伺候稀疏专家路由与低比特稠密层，缺一条都会让整机吞吐掉到下一个档。softplus 那笔最不起眼，但 log1p 缺失属于数值稳定性问题，长序列推理会累积成可见偏差。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/spacemit-com/llama.cpp">spacemit-com/llama.cpp</a></p>
+
+<h3 id="进迭时空数字人管线改名-bianbu-avatar对齐-k3-的-ep-核分配11-09">进迭时空：数字人管线改名 bianbu-avatar，对齐 K3 的 EP 核分配（11-09）</h3>
+
+<p>spacemit-com/model-zoo-avatar 仓库在窗口内提交九笔，围绕一条数字人（avatar）推理管线：新增 FeatherHuBERT 与 UNet 两个推理组件，把资源下载路径统一到 model_zoo/avatar，去掉仓库里的通用测试音频改为按人设下载，修掉原生贴回（paste-back）路径下人脸替换的问题，并把项目名从 FeatherTalk 改为 bianbu-avatar。其中一笔提交明确写着「匹配 K3 上 bianbu-avatar 的 EP 核分配」。</p>
+
+<p>这组提交透露的是端侧数字人的部署形态：语音侧用 HuBERT 一类模型做特征，视觉侧用 UNet 做生成，两段都要落在同一颗 SoC 的不同计算单元上，于是「EP 核分配」（哪个核跑哪个子图）成了必须显式对齐的参数。改名同样有信息量——从第三方模型名收回到自有发行版品牌（Bianbu），说明这条管线已经从「跑通某个开源项目」进入「作为发行版组件维护」的阶段。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/spacemit-com/model-zoo-avatar">spacemit-com/model-zoo-avatar</a></p>
+
+<h3 id="算能llm-tpu-支持-qwen35-稠密模型的-mtpbootloader-改用-sg2044-工具链编-sg204211-09">算能：LLM-TPU 支持 Qwen3.5 稠密模型的 MTP，bootloader 改用 SG2044 工具链编 SG2042（11-09）</h3>
+
+<p>算能 LLM-TPU 仓库合入一笔「Qwen3.5 dense model support mtp」，为 Qwen3.5 稠密模型加上 MTP（多 token 预测）支持；bootloader-riscv 有三笔：改用 SG2044 的工具链来编译 SG2042、改为从 devel-sophgo 分支构建、以及把 BMC 固件打包脚本统一到 sophgo-edk2 的 gen-tar-for-bmc.sh；sophon-tools 侧继续 bmssm 组件的收尾，把默认模型切到 DeepSeek-V4.1-Flash 系列、让迁移与回滚落在同一事务，并把 RELEASE.md 对齐 2.4.x 版本。</p>
+
+<p>MTP 那条对推理吞吐的意义大于版本号。多 token 预测让模型一次前向产出多个候选 token，再由验证环节接受，实测收益高度依赖后端能否高效处理「批量小、序列短」的验证步；算能把这条接进 LLM-TPU，说明其 TPU 后端已经把投机解码的调度算进去了。bootloader 改用 SG2044 工具链编 SG2042，则是把两代平台的构建链收敛到一条，减少「同一份固件在两代板子上行为不一致」这类问题。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/sophgo/LLM-TPU">sophgo/LLM-TPU</a>、<a href="https://github.com/sophgo/bootloader-riscv">sophgo/bootloader-riscv</a>、<a href="https://github.com/sophgo/sophon-tools">sophgo/sophon-tools</a></p>
+
+<h3 id="芯来工具链文档-12-笔202610-版本升级说明与-qemu-发布说明落地11-09">芯来：工具链文档 12 笔，2026.10 版本升级说明与 QEMU 发布说明落地（11-09）</h3>
+
+<p>Nuclei-Software/nuclei-tool-guide 仓库在窗口内提交 12 笔，全部是文档与版本说明：新增 2026.10 升级说明并统一「已知问题」锚点，补 QEMU 2026.10 的发布说明、OpenOCD 与 Nuclei Studio IDE 的已知问题章节，把 libncrt 的修复条目按版本拆分到各自的 Known Issues，并把 VS Code 扩展版本推进到 0.3.0。</p>
+
+<p>把这些与同日发布的 NI1000 放在一起看，能看清芯来的产品节奏：IP 发布只是开始，客户真正落地要等工具链（编译器、libncrt、QEMU、OpenOCD、IDE）在同一版本号下齐活。文档仓库单日 12 笔、且大量是「已知问题」，说明 2026.10 这个版本已经进入客户交付阶段——已知问题清单是交付物的一部分，不是内部备忘。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/Nuclei-Software/nuclei-tool-guide">Nuclei-Software/nuclei-tool-guide</a></p>
+
+<h3 id="达摩院玄铁与奕斯伟窗口内组织级零推送11-10">达摩院玄铁与奕斯伟：窗口内组织级零推送（11-10）</h3>
+
+<p>XUANTIE-RV 组织最近一次推送仍停在 11 月 4 日（damo-rv-priv-ats 与 torq-tile），llvm-project 与 bcc 分别停在 10 月下旬；奕斯伟 eswincomputing 最近推送为 10 月 19 日。两家在 24 小时窗口内没有可核对的新开发成果。</p>
+
+<p>这并不代表产品线静默。玄铁的高性能核（C950 系列）与车规 E908A 进展已在 10 月各期报告收录，奕斯伟的 RISAA 生态平台与 RDI 联盟动作集中在 10 月的 RISC-V 中国峰会期间；窗口内的公开信息主要来自平头哥 IPO 报道对玄铁出货量的引用，属集团层面的历史数据，不构成新的技术进展。本期不重复收录。</p>
+
+<p><strong>日期</strong>：2026-11-10　<strong>来源</strong>：<a href="https://github.com/XUANTIE-RV">XUANTIE-RV 组织页</a>、<a href="https://github.com/eswincomputing">eswincomputing 组织页</a></p>
+
+<h2 id="四具身智能与机器人专章">四、具身智能与机器人专章</h2>
+
+<h3 id="mips-actus-用双颗-atlas-m8500-实时-risc-v-核做机器人关节带-tsn-与后量子安全11-09">MIPS Actus 用双颗 Atlas M8500 实时 RISC-V 核做机器人关节，带 TSN 与后量子安全（11-09）</h3>
+
+<p>MIPS（已被格芯收购）11 月 9 日在 electronica 2026 前发布 Actus 参考平台的进展：一颗面向紧凑机器人关节的芯片，把确定性电机控制、机器人体内网络与边缘推理放在同一颗 die 上，基于格芯的 FDX FD-SOI 工艺。核心是两颗 MIPS Atlas M8500 实时 RISC-V 处理器，用硬件多线程消除中断服务时的上下文切换开销；专用三角函数加速在磁场定向控制（FOC）算法上比标准三角函数库快 16 倍以上；配 100 皮秒级高分辨率 PWM 与 sigma-delta ADC 驱动大电流电机，另用 ARC VPX 512 位向量单元在同一颗芯片上跑传感器融合与预测性维护模型。</p>
+
+<p>系统侧同样给足了：三端口时间敏感网络（TSN）千兆以太网加 CAN-FD 与串口，让各关节控制器与中央控制器交换位置与力矩数据；片内硬件安全模块支持后量子密码，并对功能安全提供支持。Actus 与 Acies（推理原生平台）、Aegis（安全原生 CPU 平台）共同构成 MIPS 的物理 AI 产品线。</p>
+
+<p>这条的分量在「关节」这个位置。人形机器人的算力叙事长期集中在大脑（谁家的 NPU、多少 TOPS），而真正卡量产的是从肘到指尖这一段：空间、功耗、散热都极紧，却要求平滑的人形运动与确定性时序。把双实时核、电机控制外设、TSN 与安全模块塞进一颗关节芯片，等于把「大脑给指令、关节自己闭环」这套分布式架构做成可采购的器件。对国内做机器人关节与实时控制的团队，这是与「MCU 加外置驱动」路线正面对比的一种方案，关键差异在硬实时与网络确定性，而不在算力。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://mips.com/press-releases/mips-unveils-actus-platform-for-precise-secure-robotic-motion-control">MIPS 新闻稿</a></p>
+
+<h3 id="spacemit-roboticsunitree-go2-支持-smallcore-电机通信perception-把推理运行时打包进-las211-09">spacemit-robotics：unitree-go2 支持 smallcore 电机通信，perception 把推理运行时打包进 las2（11-09）</h3>
+
+<p>spacemit-robotics 的 unitree-go2 仓库合并 #6，新增对 smallcore 电机通信的支持（feat/smallcore-motor-tra… 分支）；perception 仓库有两笔围绕 las2 的修正：把匹配的推理运行时打包进发布物（#14），并在此之前先把打包进源码仓库的模型文件移除（#13）。</p>
+
+<p>两件事都指向「交付形态」。unitree-go2 是宇树 Go2 四足机器人在 K3 平台上的移植工程，此前已经做完 IMU 快照读取、地形行走策略与模型下载；补 smallcore 电机通信，意味着控制链路要能对接不同批次的关节驱动板，这是把 demo 变成可复现工程必须过的一关。perception 的 #13 与 #14 是一对：先把大模型文件从源码仓库剥离（避免仓库膨胀），再把推理运行时随发布物一起打包（避免用户自己找依赖）——一减一加，说明这套感知栈开始按「可安装的软件包」而不是「一堆脚本」来组织。</p>
+
+<p><strong>日期</strong>：2026-11-09　<strong>来源</strong>：<a href="https://github.com/spacemit-robotics/unitree-go2">spacemit-robotics/unitree-go2</a>、<a href="https://github.com/spacemit-robotics/perception">spacemit-robotics/perception</a></p>
+
+<h2 id="五总结与趋势观察">五、总结与趋势观察</h2>
+
+<p><strong>一、AI 芯片的「通用核」这一层开始有专用产品。</strong> 芯来 NI1000 用 VME 把矩阵能力嫁接到 RVV 上，面积只加 15%、矩阵乘法快 2.5 倍，定位是与 NPU 分工而不是取代。这与过去两年「谁的 NPU 峰值高」的叙事不同：AI SoC 里那颗通用核长期靠外购应用核或自研大核解决，现在出现了第三条路——以向量为基座、按需加矩阵。真正的门槛不在 IP，而在算子库与编译器能否把 VME 用起来。</p>
+
+<p><strong>二、机器人关节成了 RISC-V 实时核的新战场，且路线开始分叉。</strong> MIPS Actus 用双颗 Atlas M8500 加 TSN 与后量子安全做关节级单芯片，国内 spacemit-robotics 则继续在 K3 上做四足移植与控制链路适配。前者卖的是器件与实时性保证，后者攒的是可复现的工程与生态；两条路都说明一件事：具身智能的算力竞争正从「大脑」下沉到「小脑与关节」，而这一层的评价标准是确定性与功耗，不是 TOPS。</p>
+
+<p><strong>三、国内侧的资本市场动作开始影响技术叙事。</strong> 平头哥拟 2027 年赴港 IPO、募资 20 亿至 30 亿美元，若成行，RISC-V 与国产 AI 芯片公司第一次有了「已商业化、有外部客户、有营收」的可比标的。需要留一分清醒：报道把玄铁 IP 计入平头哥产品线，而玄铁团队 2024 年已转入达摩院，上市主体的资产边界尚未披露；对产业观察者，接下来要看的不是估值，而是招股材料里外部客户收入与关联交易的切分方式。</p>
+
+<p><strong>四、软件侧的进展集中在「装得上、用得了」这类细节。</strong> openRuyi 单日 20 笔里，llvm22 至 24 的 Python 绑定改为显式链接 libclang 是最有代表性的一笔——它不提升任何指标，却决定 RISC-V 上能不能正常装 llvmlite 与 triton；CORE-V CVW 这一周合并的 UART LSR 错误位、SPI 空读归零与锁步豁免，同属「不影响跑分、影响能不能交付」的类别；算能把 bootloader 的两代平台构建链收敛、进迭把数字人管线收进 Bianbu 品牌，也都是从 demo 走向维护的动作。</p>
+
+<p><strong>五、平静的新闻面与不平静的仓库面。</strong> 本期 Google News 侧的有效新增只有芯来 NI1000、MIPS Actus、M5Stack Core Matrix 与英飞凌 AURIX 的 IP 来源四条，另有为旌 VS815V、AMD RISC-V TEE、Openchip BER10 三条属旧闻二次传播，已在此前报告收录，本期不重复。这与上周的节奏一致：大厂发布稀疏，但 GitHub 侧的提交密度在上升——进迭、算能、芯来、openRuyi 与 CORE-V 在同一个 24 小时里合计有 60 余笔可核对的提交。</p>
+
+<p><strong>局限性说明</strong>：本机匿名访问 GitHub API 在采集时段触发每小时 60 次的限流，组织与仓库活跃度改由 GitHub 组织页嵌入数据与各仓库 Atom 提交流获取，不消耗 API 额度；因此「窗口内有推送」的判定以默认分支提交时间为准，非默认分支的推送（如进迭的 wip 分支）可能被低估。达摩院玄铁与奕斯伟的「零推送」结论同样受此方法约束，仅表示默认分支在窗口内无提交。Google News 的中文查询仍有博彩与股市稿噪音，已按标题语义剔除；RISC-V 会员官网巡检的 108 项「变化」均为首页营销轮换或安全拦截页，未发现实质产品与架构发布。</p>
+
+<hr />
+
+<h2 id="附录完整信源清单与信源核查表">附录：完整信源清单与信源核查表</h2>
+
+<h3 id="完整信源清单">完整信源清单</h3>
+
+<ul>
+  <li><strong>[1]</strong> 芯来科技 NI1000 新闻稿（中文） — <a href="https://www.nucleisys.com/newsdetail.php?id=475">https://www.nucleisys.com/newsdetail.php?id=475</a></li>
+  <li><strong>[2]</strong> Nuclei Releases the NI1000 Series（Design And Reuse） — <a href="https://www.design-reuse.com/news/202531411-nuclei-releases-the-ni1000-series-general-purpose-compute-core-with-support-for-the-vme-matrix-extension">https://www.design-reuse.com/news/202531411-nuclei-releases-the-ni1000-series-general-purpose-compute-core-with-support-for-the-vme-matrix-extension</a></li>
+  <li><strong>[3]</strong> openRuyi-Project/openRuyi 主仓 — <a href="https://github.com/openRuyi-Project/openRuyi">https://github.com/openRuyi-Project/openRuyi</a></li>
+  <li><strong>[4]</strong> openhwfoundation/cvw 仓库 — <a href="https://github.com/openhwfoundation/cvw">https://github.com/openhwfoundation/cvw</a></li>
+  <li><strong>[5]</strong> m9b-system 仓库 — <a href="https://github.com/the-parts-bin/m9b-system">https://github.com/the-parts-bin/m9b-system</a></li>
+  <li><strong>[6]</strong> M9B 讨论（Hacker News） — <a href="https://news.ycombinator.com/item?id=50428584">https://news.ycombinator.com/item?id=50428584</a></li>
+  <li><strong>[7]</strong> RISC-V Day Tokyo 2026 Autumn — <a href="https://riscv.or.jp/en/risc-v-day-tokyo-2026-autumn-2">https://riscv.or.jp/en/risc-v-day-tokyo-2026-autumn-2</a></li>
+  <li><strong>[8]</strong> M5Stack Core Matrix 报道（CNX Software） — <a href="https://www.cnx-software.com/2026/11/09/m5stack-core-matrix-esp32-c61-iot-controller-features-16x16-led-matrix-wifi-6-and-6-axis-imu/">https://www.cnx-software.com/2026/11/09/m5stack-core-matrix-esp32-c61-iot-controller-features-16x16-led-matrix-wifi-6-and-6-axis-imu/</a></li>
+  <li><strong>[9]</strong> 英飞凌 AURIX RC1 的 IP 来源分析（Design And Reuse 转载） — <a href="https://www.design-reuse.com/news/202531415-infineon-s-risc-v-aurix-platform-is-a-major-win-for-mips-and-globalfoundries">https://www.design-reuse.com/news/202531415-infineon-s-risc-v-aurix-platform-is-a-major-win-for-mips-and-globalfoundries</a></li>
+  <li><strong>[10]</strong> 平头哥拟 2027 年赴港 IPO（亿欧快讯） — <a href="https://www.iyiou.com/briefing/202611091945019">https://www.iyiou.com/briefing/202611091945019</a></li>
+  <li><strong>[11]</strong> 平头哥 IPO 报道（新浪财经转载） — <a href="https://t.cj.sina.cn/articles/view/5105460195/1304f23e3001024aqo">https://t.cj.sina.cn/articles/view/5105460195/1304f23e3001024aqo</a></li>
+  <li><strong>[12]</strong> spacemit-com/llama.cpp — <a href="https://github.com/spacemit-com/llama.cpp">https://github.com/spacemit-com/llama.cpp</a></li>
+  <li><strong>[13]</strong> spacemit-com/model-zoo-avatar — <a href="https://github.com/spacemit-com/model-zoo-avatar">https://github.com/spacemit-com/model-zoo-avatar</a></li>
+  <li><strong>[14]</strong> sophgo/LLM-TPU — <a href="https://github.com/sophgo/LLM-TPU">https://github.com/sophgo/LLM-TPU</a></li>
+  <li><strong>[15]</strong> sophgo/bootloader-riscv — <a href="https://github.com/sophgo/bootloader-riscv">https://github.com/sophgo/bootloader-riscv</a></li>
+  <li><strong>[16]</strong> sophgo/sophon-tools — <a href="https://github.com/sophgo/sophon-tools">https://github.com/sophgo/sophon-tools</a></li>
+  <li><strong>[17]</strong> Nuclei-Software/nuclei-tool-guide — <a href="https://github.com/Nuclei-Software/nuclei-tool-guide">https://github.com/Nuclei-Software/nuclei-tool-guide</a></li>
+  <li><strong>[18]</strong> 达摩院玄铁组织页 — <a href="https://github.com/XUANTIE-RV">https://github.com/XUANTIE-RV</a></li>
+  <li><strong>[19]</strong> 奕斯伟计算组织页 — <a href="https://github.com/eswincomputing">https://github.com/eswincomputing</a></li>
+  <li><strong>[20]</strong> MIPS Actus 新闻稿 — <a href="https://mips.com/press-releases/mips-unveils-actus-platform-for-precise-secure-robotic-motion-control">https://mips.com/press-releases/mips-unveils-actus-platform-for-precise-secure-robotic-motion-control</a></li>
+  <li><strong>[21]</strong> spacemit-robotics/unitree-go2 — <a href="https://github.com/spacemit-robotics/unitree-go2">https://github.com/spacemit-robotics/unitree-go2</a></li>
+  <li><strong>[22]</strong> spacemit-robotics/perception — <a href="https://github.com/spacemit-robotics/perception">https://github.com/spacemit-robotics/perception</a></li>
+</ul>
+
+<h3 id="信源核查表">信源核查表</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News 聚合（中英文 30 余组，走代理）</td>
+      <td>窗口内有效新增 4 条：芯来 NI1000、MIPS Actus、M5Stack Core Matrix、英飞凌 AURIX 的 IP 来源分析；为旌 VS815V、AMD RISC-V TEE、Openchip BER10（7 月发布）属旧闻二次传播，不重复收录；SiFive、Tenstorrent、香山、进迭时空、算能等查询窗口内零命中</td>
+    </tr>
+    <tr>
+      <td>Hacker News</td>
+      <td>1 条有效：Tang Nano 9K 上的 M9B RISC-V 电脑；其余为无关技术讨论</td>
+    </tr>
+    <tr>
+      <td>Phoronix</td>
+      <td>窗口内无新 RISC-V 条目（最近一篇为 10-21 的 Linux 7.4 加密库优化）</td>
+    </tr>
+    <tr>
+      <td>CNX Software</td>
+      <td>1 条：M5Stack Core Matrix（ESP32-C61）</td>
+    </tr>
+    <tr>
+      <td>LinuxGizmos / Design And Reuse / EEWorld</td>
+      <td>Design And Reuse 2 条（NI1000、AURIX 的 IP 来源）；LinuxGizmos 窗口内无 RISC-V 条目；EEWorld 与 IAR 的「RISC-V 中国峰会回顾」属厂商博客，不作为条目收录</td>
+    </tr>
+    <tr>
+      <td>RISC-V International 官网与周报</td>
+      <td>官网博客无窗口内更新；11-06 周报提供 M9B 与 riski5 的线索，作为背景核对，未单列条目</td>
+    </tr>
+    <tr>
+      <td>openRuyi 双源（官网新闻页 + 主仓）</td>
+      <td>官网新闻页最新仍为 2026 年 10 月的两篇（Ruyi Firmware、生态基础设施），11 月版本未发布；主仓窗口内 20 笔 SPECS 提交，已收录</td>
+    </tr>
+    <tr>
+      <td>GitHub 组织与重点仓库核查（24 小时）</td>
+      <td>窗口内活跃：算能 7 仓、进迭 10 仓、openRuyi 5 仓、CORE-V 5 仓、矽速 4 仓、spacemit-robotics 2 仓、芯来 1 仓、乐鑫（工具链与 ESP-IDF 生态）多仓、RevyOS 2 仓；达摩院玄铁、奕斯伟、Radxa Linkr、riscv-software-src 零推送</td>
+    </tr>
+    <tr>
+      <td>香山 XiangShan 主线</td>
+      <td>窗口内无提交；llvm-project 停在 11-03，NEMU、difftest 的近期提交已在 11-09 报告收录</td>
+    </tr>
+    <tr>
+      <td>RISC-V 会员企业官网巡检</td>
+      <td>391 家：无变化 214、变化 108、失败 69；变化项均为首页营销轮换或安全拦截页，无实质产品与架构发布</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 榜单巡检</td>
+      <td>无变化</td>
+    </tr>
+    <tr>
+      <td>微信公众号与厂商官网</td>
+      <td>核对芯来、算能、进迭时空官网与 GitHub 组织页，未发现窗口内其他实质发布</td>
+    </tr>
+  </tbody>
+</table>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ch/post.html#news-list" class="btn btn-main news-list-link">返回新闻列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>联系我们</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>邮箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市宝山区高逸路88号1幢1层108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>链接</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-4 col-md-4 ">
+          <h4>关注我们</h4>
+          <img src="/assets/img/contact/qrcode_wechat_public_account_100px.webp" class="img-fluid text-left"
+            alt="weixin_public_qrcode">
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

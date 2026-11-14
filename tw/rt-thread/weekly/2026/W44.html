@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/tw/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/tw/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 周报" href="/rss/tw/rt-thread/weekly.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/tw/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/tw/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/tw/">首頁</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服務與支援 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/service/simulator.html">模擬器</a></li>
+              <li><a class="dropdown-item" href="/tw/service/os.html">作業系統</a></li>
+              <li><a class="dropdown-item" href="/tw/service/toolchain.html">軟體工具鏈</a></li>
+              <li><a class="dropdown-item" href="/tw/service/chip.html">嵌入式晶片</a></li>
+
+              <li><a class="dropdown-item" href="/tw/service/ide.html">整合開發環境</a></li>
+              <li><a class="dropdown-item" href="/tw/service/aisys.html">AI軟體棧服務</a></li>
+              <li><a class="dropdown-item" href="/tw/service/consultation.html">專家諮詢</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解決方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社群 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/tw/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/tw/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/tw/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/tw/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/tw/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/tw/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/post.html" style="white-space: nowrap;">新聞與活動</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/about.html" style="white-space: nowrap;">關於我們</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/tw/career.html">招賢納士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              繁體中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/weekly/2026/W44.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/weekly/2026/W44.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/weekly/2026/W44.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/weekly/2026/W44.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/weekly/2026/W44.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread週報（2026-10-26 ~ 2026-10-30） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/tw/">首頁</a></li>
+                                <li class="breadcrumb-item"><a href="/tw/post.html#news-list" class="news-list-link">新聞與活動</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread週報（2026-10-26 ~ 2026-10-30）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread週報（2026-10-26 ~ 2026-10-30）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-30</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>報告週期</strong>：2026 年 10 月 26 日（週一）至 10 月 30 日（週五），5 個工作日、5 期日報；另含釋出日（10 月 31 日）對主倉庫提交流、提案與缺陷佇列、釋出頁與標籤頁的核查，覆蓋 10-30 08:00 至 10-31 17:00 的收尾變動<br />
+<strong>素材來源</strong>：本刊每日 RT-Thread 動態日報 5 期（10-26、10-27、10-28、10-29、10-30），合計有效視窗 10-23 08:00 至 10-30 08:00（週一期為跨週末 72 小時視窗）；釋出日核查基於 GitHub 主倉庫與各組織倉庫 API 實測<br />
+<strong>編制說明</strong>：覆蓋核心與版本、安全與穩定性、生態與廠商適配、官方與社群活動、行業應用五個維度；正文事實與日期逐條來自當期日報原文，釋出日補錄條目單獨標註核查方式</p>
+
+<hr />
+
+<h2 id="一本週要聞">一、本週要聞</h2>
+
+<ul>
+  <li>
+    <p><strong>RT-Thread Smart 十天排隊後集中在一天落地，七個半小時後又被收回預設配置（10-29）</strong>：10 月 18 日建立的提案 #11896 於 09:29 合入，給 qemu-virt64-riscv 與 qemu-virt64-aarch64 開啟 RT-Thread Smart，14 個檔案、+1263/-1075、14 筆提交，新增 <code class="highlighter-rouge">applications/mnt.c</code> 把 virtio-blk0 掛成根目錄並掛載 ptyfs 與 procfs；14:48 與 14:50，終端相容提案 #11890 與 lwp 系統呼叫拆分提案 #11894 接連落地；16:59，提案 #11942 又把兩個 BSP 的預設配置整體恢復為標準核心（7 個檔案、+51/-220），Smart 改由 utest 的配置覆蓋層單獨執行。同一天完成「開啟—驗證—收回」，實際是維護者在給 Smart 劃定位置：預設配置保持可預測，Smart 走獨立覆蓋層。</p>
+  </li>
+  <li>
+    <p><strong>RT-Smart 的 ioctl 使用者指標邊界連報四單，從終端一路延伸到塊裝置、管道與郵箱（10-28 ~ 10-31）</strong>：10-28 的 #11937 指出終端子系統移植時丟掉了 FreeBSD 的 copyin 前提，非特權程序用 open 加 ioctl 即可讀寫任意核心記憶體；10-29 的 #11952 在塊裝置側重複了同一形態，24 位元組分割槽表被寫進呼叫者指定的核心地址；10-30 的 #11958 落在 POSIX 管道，FIONREAD 與 FIONWRITE 直接把環緩衝長度寫進未經校驗的使用者指標；10-31 的 #11960 上升到郵箱，<code class="highlighter-rouge">sys_mb_send()</code> 把使用者給的指標當核心物件直接轉發，可構成任意核心讀寫。四單共同成因是 RT-Smart 的 ioctl 適配層預設「引數已是核心地址」，而使用者態入口沒有做這一層轉換。終端側的修復提案 #11941 已於 10-28 晚提交（6 個檔案、+577/-52），其餘三處尚無對應修復。</p>
+  </li>
+  <li>
+    <p><strong>主線 21 筆提交、16 個提案，節奏是「先停擺、再集中清賬」（10-25 ~ 10-30）</strong>：本週 master 共落 21 筆提交、16 個提案合入，分佈為 10-25 一筆、10-26 零筆、10-27 四筆、10-28 七筆、10-29 七筆、10-30 兩筆。10-27 至 10-29 的合入裡有相當比例是壓了九天以上的積壓提案——10-27 那四筆的作者時間是 10-18，10-29 的 Smart 一組也是 10-18 建立。這與上週「三日靜默、三小時收尾」的判斷同源：開發側產出集中在評審透過後一次性落地，而不是每日勻速推進。</p>
+  </li>
+  <li>
+    <p><strong>車規 TriCore（AURIX）以「工具鏈先行」的方式進入 Env SDK（10-26）</strong>：RT-Thread/sdk 的兩個提案先後合入，<code class="highlighter-rouge">tricore-gcc</code> v13.4.1（GCC 13.4.1、binutils 2.40、newlib、GDB 14.0，覆蓋 TC2xx／TC3xx／TC4xx 三代晶片）與 <code class="highlighter-rouge">qemu-tricore</code> v1.0.0（QEMU 10.2.94，支援 TC277、TC397B 與 TC4D7 三臺機型）分別釋出在 toolchains-ci 的 v1.12 與 v1.13。需要分清的是這只是編譯與模擬通路：主倉庫 <code class="highlighter-rouge">libcpu</code> 現有 19 個架構中沒有 tricore，<code class="highlighter-rouge">bsp</code> 下也沒有 AURIX 板級目錄，2020 年前後那批依賴 TASKING 商業工具鏈的嘗試均已關閉。與舊路徑相比，這一步先解決了「能編、能跑、能調」。</p>
+  </li>
+  <li>
+    <p><strong>壓了三個多月的測試提案一次合入四筆，測試基礎設施集中補課（10-28）</strong>：7 月 9 日建立的 #11601 於 10-28 14:44 合入，帶進 utest 彙總統計修復（後續 unit 透過不再抹掉前面 testcase 的失敗數）、netdev 用例切斷對 8.8.8.8 與百度的公網依賴、musl 下 signal 0 不再參與安裝，以及兩處 clang-format 整理。三類問題都屬「測試跑錯了但報表說沒事」的反向風險，修完之後 CI 的判定才可信。與之配套的是 10-29 的 #11942 重寫了 utest_auto_run 的配置選擇邏輯，把「整份 git checkout 覆蓋」改成向 .config 追加一行關閉開關。</p>
+  </li>
+  <li>
+    <p><strong>時間子系統一夜開出四單，兩筆修復轉入可合入狀態（10-23 ~ 10-26）</strong>：同一研究者在 <code class="highlighter-rouge">ctime.c</code> 上連續報出 <code class="highlighter-rouge">settimeofday()</code> 的 long 型別窄化（ILP32 下 2040-01-01 這類合法時間戳被截成負數拒絕）、<code class="highlighter-rouge">gmtime_r()</code> 對負時間戳輸出非法欄位（-1 得 <code class="highlighter-rouge">1970-01-01 00:00:-1</code>）、<code class="highlighter-rouge">timer_gettime()</code> 的 32 位截斷，另外提交一份帶 A 至 F 六項工作項的時間基線調研單。修復提案 #11928（+185/-135）與 #11929（+104/-9）在 10-26 均勾選「成熟版本，可合入」，本週內未合入。10-29 又進一步查出 <code class="highlighter-rouge">timer_settime()</code> 用 32 位變數承接 1e13 量級結果，10 秒定時器實際被 arm 成約 21 小時（#11938，+142/-5）。</p>
+  </li>
+  <li>
+    <p><strong>版本號抬到 5.4.0 開發態，版本管理與釋出流程同日提出制度化的兩份材料（10-29 ~ 10-30）</strong>：10-29 的 #11942 把 RT_VER_NUM 從 0x50301 抬到 0x50400，主線正式進入 5.4.0 開發態；但 releases 與 tags 兩側仍停在 09-10 的 v5.3.0，沒有預釋出標籤與二進位制。10-30 出現兩份配套材料：缺陷單 #11956 提出建立版本管理 CI 與釋出流程（Z 線月度報告加人工批准、Y 線每 3 至 6 個月結合硬體驗證，分 B01 至 B05 與 C01 至 C08 兩組工作項），提案 #11955 補上主管線版本與釋出流程文件。這是本週少見的「流程側」訊號，值得下一期複核是否落到程式碼。</p>
+  </li>
+  <li>
+    <p><strong>廠商側仍是提案先行：RA6W1 二期落地，全志與 ESP32-S3 的大體積提案繼續在佇列裡泡（10-26 ~ 10-30）</strong>：瑞薩 RA6W1 的提案 #11934 於 10-28 18:52 合入，補 24 個 Wi-Fi 側中斷向量並把 ROM 符號表兩個 crypto 入口改名為 <code class="highlighter-rouge">__rom_</code> 字首。全志 F101 YuzukiNeko 與 H616 的 #11877（172 個檔案、+35428/-6）、ESP32-S3-DevKitM-1 的 #11844（10-28 重新整理後累計 +295371/-22825）仍在佇列，後者自 9-28 建立已滿一個月，評審關注點落在整包引入廠商 SDK 與許可條款，而不只是功能能否執行。</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="二核心與版本動態">二、核心與版本動態</h2>
+
+<h3 id="版本與主線">版本與主線</h3>
+
+<p><strong>日期</strong>：2026-10-26 ~ 2026-10-31　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/releases">主倉庫 releases 頁</a></p>
+
+<ul>
+  <li><strong>正式版本</strong>：本週仍無新 Release 與標籤，最新發布物是 09-10 的 v5.3.0。v5.4.0 自 10-17 起只有版本宏，10-29 的 #11942 把 RT_VER_NUM 抬到 0x50400，此後仍無釋出說明、二進位制與預釋出標籤。全文按「版本號已進入 5.4.0 開發態、尚未釋出」口徑表述。</li>
+  <li><strong>主線提交</strong>：本週 master 共 21 筆提交、16 個提案合入；組織級另有 RT-Thread/sdk 兩筆（TriCore 工具鏈與 QEMU 模擬器）、RT-Thread-packages 一筆（ai/Agent 配置）、pkgs-test 一筆（STM32 包測試併發鎖）。</li>
+  <li><strong>節奏特徵</strong>：週一零提交，週二四筆、週三五筆以上、週四七筆、週五兩筆，屬典型的積壓提案批次落地；合入集中在傍晚時段（19:20 至 19:26、14:44、09:29 至 16:59），由同一位維護者集中處理。</li>
+  <li><strong>釋出日核查（10-30 至 10-31）</strong>：主倉庫再落兩筆（#11915 dlmodule 全域性量修復、#11936 clang-format 固定 22.1.8 並全量格式化），releases 與 tags 終點狀態與週五日報一致，無新版本。</li>
+</ul>
+
+<h3 id="本週合入清單21-筆提交--16-個提案">本週合入清單（21 筆提交 / 16 個提案）</h3>
+
+<p><strong>日期</strong>：2026-10-25 ~ 2026-10-30　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/commits/master">主倉庫 master 提交流</a></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>日期</th>
+      <th>提交</th>
+      <th>內容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10-25</td>
+      <td>1 筆</td>
+      <td>lwIP 迴環 netdev（#11893，3 檔案 +54/-0，新增迴環網口開關）</td>
+    </tr>
+    <tr>
+      <td>10-26</td>
+      <td>0 筆</td>
+      <td>24 小時無提交，13 個提案在佇列翻動</td>
+    </tr>
+    <tr>
+      <td>10-27</td>
+      <td>4 筆</td>
+      <td>dfs 的 UTIME_OMIT（#11885）、SAL 的 RAW socket 協議白名單（#11888）、poll 改從 dfs_file 取 fops（#11887）、8250 earlycon 讀 reg-io-width（#11889）</td>
+    </tr>
+    <tr>
+      <td>10-28</td>
+      <td>7 筆</td>
+      <td>utest 四筆（#11601）、MAINTAINERS 刪 FAL 條目（#11939）、RA6W1 向量表（#11934）、DHCP raw 選項邊界（#11940）</td>
+    </tr>
+    <tr>
+      <td>10-29</td>
+      <td>7 筆</td>
+      <td>qemu-virt64 啟用 Smart（#11896）、ping 統計（#11900）、TIOCLINUX 與預設視窗（#11890，兩筆）、lwp 拆分（#11894，兩筆）、恢復標準核心預設配置（#11942）</td>
+    </tr>
+    <tr>
+      <td>10-30</td>
+      <td>2 筆</td>
+      <td>dlmodule 未初始化全域性量（#11915）、clang-format 固定 22.1.8 並全量格式化（#11936，75 個檔案）</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>lwIP 迴環（10-25）</strong>：此前 lwIP 的迴環口沒有註冊成 netdev，走 127.0.0.1 的工具鏈跑不起來，沒有物理鏈路的網路名稱空間也缺預設可介面。改動新增一個迴環網口開關，把 <code class="highlighter-rouge">lo</code>／<code class="highlighter-rouge">lo0</code> 註冊為 netdev 並置為 link up，未指定介面時選迴環作預設介面。這一筆是後續 qemu-virt64 啟用 Smart 的前置依賴。</li>
+  <li><strong>10-27 的四筆邊界修補</strong>：UTIME_OMIT 分支條件寫反，呼叫方明確要求不動的時間戳反被覆蓋；RAW socket 原來只放行 IPPROTO_RAW，ICMP 等原生套接字場景走不通，改為白名單校驗；poll 在 DFSv2 下從 vnode 取 fops 拿到的是另一套結構，改為經 dfs_file 解析並保留 DFSv1 相容路徑；earlycon 不看裝置樹位寬，寬暫存器平臺的早期日誌錯位與亂碼有了統一解法。四筆合計新增 46 行、刪除 6 行，三筆的 author 時間是 10-18。</li>
+  <li><strong>10-29 的 Smart 一組</strong>：見本章「評審佇列觀察」與第一章要聞第一條。</li>
+  <li><strong>10-30 的兩筆</strong>：dlmodule 的未初始化全域性量修復自 10-24 起在佇列裡（#11915），本週五上午合入；clang-format 固定版本 22.1.8 並格式化全部核心原始碼（#11936），是把 10-23 合入的規則細化落到全量程式碼上的收尾一步，涉及 75 個檔案。</li>
+</ul>
+
+<h3 id="安全與缺陷">安全與缺陷</h3>
+
+<p><strong>日期</strong>：2026-10-23 ~ 2026-10-31　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/11960">Issue #11960</a></p>
+
+<ul>
+  <li><strong>本週新開 16 單，安全類佔十單以上</strong>。按族分三條線：時間與 libc 語義（#11922 settimeofday 窄化、#11923 gmtime_r 負時間戳、#11924 timer_gettime 截斷、#11925 sys_poll 計數迴繞、#11927 時間基線調研）、RT-Smart 邊界（#11932 musl 執行緒連結串列釋放後使用、#11933 signalfd 全域性計數越界、#11937 終端 ioctl、#11952 塊裝置 ioctl、#11958 管道 ioctl、#11960 郵箱物件指標）、驅動引數校驗（#11948 Bluetrum AB32、#11949 Bouffalo、#11951 HPM 三家 ADC 通道越界，以及 #11950 DM365 SPI 除零）。另有 #11956 為版本管理流程的功能單。</li>
+  <li><strong>RT-Smart 邊界這條線最重</strong>：終端、塊裝置、管道、郵箱四處的形態完全一致，都是適配層把使用者指標當核心地址用。郵箱一單最嚴重——<code class="highlighter-rouge">sys_mb_send()</code> 不做任何校驗就轉發，攻擊者可構造偽物件，讀寫範圍不再受值域約束。四單的影響版本都回溯到 2022-12-03 的 RT-Smart 同步提交 <code class="highlighter-rouge">ecf2d821</code>，首個受影響版本為 v5.0.0，v5.3.0 與當前 master 全部在列，在 QEMU 上即可復現。</li>
+  <li><strong>本週內已閉環</strong>：#11913 的 DHCP raw 選項越界讀由 10-28 合入的 #11940 修掉（+23/-5，12 項主機側 ASAN 迴歸）；#11915 的 dlmodule 未初始化全域性量於 10-30 10:54 合入；#11933 的 signalfd 越界在開單次日即收到修復提案 #11935（+41 行，改為按上下文定位的有上限槽位查詢，關閉路徑補監聽器解綁）；#11925 的前半部分由 #11954（+28 行）在 10-30 提交，<code class="highlighter-rouge">sys_poll()</code> 在 32 位下對「位元組數迴繞」的計數直接拒絕。</li>
+  <li><strong>仍在佇列或無人認領</strong>：#11878（lwip-dhcpd 租約池耗盡死迴圈）、#11905（cromfs 目錄名越界）、#11917（NFS 越界寫）、#11919（NVMe 堆洩漏，修復提案 #11920 未合入）、#11902 與 #11910（tmpfs 截斷後使用，修復在 #11910）、#11918（9PFS 長度收斂）、#11901（FDT 深度限制）、#11931（串列埠 rx_indicate 被誤清）、#11932（musl 執行緒連結串列），以及新開的 #11937、#11952、#11958、#11960 四單（其中 #11937 有提案 #11941，#11938 修的是它引出的定時器截斷）。</li>
+</ul>
+
+<h3 id="評審佇列觀察">評審佇列觀察</h3>
+
+<p><strong>日期</strong>：2026-10-26 ~ 2026-10-31　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pulls">主倉庫提案列表</a></p>
+
+<ul>
+  <li><strong>Smart 這批被拆成兩段推進</strong>：10-18 建立的六筆中，#11890、#11894、#11896、#11900 已在 10-29 落地；#11892（RISC-V 側 MMU 與使用者態缺頁處理，4 個檔案 +105/-8）與 #11897（K230 增加 K230D 支援）仍在佇列。前者的內容是玄鐵架構選擇與 SVPBMT 選項、早期頁表指標按核心物理偏移換算、未處理使用者缺頁時只終止當前 LWP 而不拖垮核心；後者涉及真實板卡，等硬體側確認。規律是「能在 QEMU 驗證的先合、依賴實機的後合」。</li>
+  <li><strong>大體量新硬體支援在審</strong>：#11944 Realtek RTL8125 乙太網驅動（新增 1934 行，覆蓋原生 PCI、描述符環 DMA、10/100/1000/2500M 自協商、lwIP 軟體校驗和，可選 PTP 與 PPS）；#11943 RK3588 與 RK3528 顯示與音訊（36 個檔案、+5483/-391，含 HDMI 控制器與 HDPTX PHY、VOP2 路由、SAI 與 codec 音訊時鐘）；#11959 NXP RT1180 工業乙太網連結指令碼（20 個檔案、+7499/-18，CM33 跑片內 RAM、CM7 從 Flash XIP）。三筆都屬「一大類硬體成批進入」，評審週期通常以周計。</li>
+  <li><strong>工具與文件側</strong>：#11930 把 <code class="highlighter-rouge">__RT_KERNEL_SOURCE__</code> 提到 Kernel 組的全域性 CPPDEFINES，修掉 Studio 匯出工程裡的 24 個 <code class="highlighter-rouge">rt_sched_*</code> 隱式宣告警告；#11953 修 <code class="highlighter-rouge">rt_sprintf()</code> 在啟用 libc vsnprintf 時把 <code class="highlighter-rouge">(size_t)-1</code> 交給 libc 導致一個位元組都不寫的問題（+11 行，改走 <code class="highlighter-rouge">vsprintf()</code>）；#11961 為原生執行緒初始化靜態 TLS（6 個檔案、+189/-3，AArch64 每次上下文切換恢復 TPIDR_EL0，RISC-V 僅在 MMU 的 S 模式啟用）。</li>
+  <li><strong>長期掛起項</strong>：#11844（ESP32-S3 BSP）重新整理後體量達 +295371/-22825，自 9-28 建立已一個月，評審焦點在整包 SDK 與許可；#10096（按需編譯）被建議先變基；#11860（aarch64 中斷應答）、#11864（IAR 隱式宣告）仍在補測試記錄。另 #11947（DHCP raw 地址池耗盡無界迴圈）改動不大（+17/-4），但附了 3586 組池大小與佔用點陣圖組合的對照測試與 ASAN 結果，驗證強度在本週佇列裡最高。</li>
+</ul>
+
+<hr />
+
+<h2 id="三生態與廠商適配">三、生態與廠商適配</h2>
+
+<h3 id="廠商-bsp-與驅動">廠商 BSP 與驅動</h3>
+
+<p><strong>日期</strong>：2026-10-26 ~ 2026-10-30　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11896">PR #11896</a></p>
+
+<ul>
+  <li><strong>英飛凌 TriCore（AURIX）</strong>：Env SDK 側補進 <code class="highlighter-rouge">tricore-gcc</code> 13.4.1 與 <code class="highlighter-rouge">qemu-tricore</code> 1.0.0 兩個包，覆蓋 TC2xx／TC3xx／TC4xx。工具鏈上游是 <code class="highlighter-rouge">NoMore201/tricore-gcc-toolchain</code>（EEESlab 11.3.0 的下游），Windows 包補了上游漏帶的 <code class="highlighter-rouge">libwinpthread-1.dll</code>；模擬器只做 ASCLIN0 串列埠、STM、IR 中斷路由、SCU 與時鐘、SFR 橋與 RAM/Flash 對映，CAN、乙太網、ADC、GPIO、DMA 均無，夠跑核心與串列埠 shell，不夠做外設驅動驗證。</li>
+  <li><strong>瑞薩</strong>：RA6W1-EK 的 rafw_gen 向量表補 24 個 Wi-Fi 側中斷入口（KDMA、TDES CBC、PSK SHA1、SYSPLL 與 FPLL 鎖定、整組 RTC 介面、MRM 與 D-cache MRM、CryptoCell-312、HSU、MAC 定時器／接收／傳送／協議／通用／信標、radio controller），全部宣告為 weak 處理函式並掛進向量表，同時把 ROM 符號表兩個 crypto 入口改名為 <code class="highlighter-rouge">__rom_</code> 字首避免與 RAM 側同名衝突。</li>
+  <li><strong>全志</strong>：F101 YuzukiNeko 與 H616 的 BSP 提案（#11877，172 個檔案、+35428/-6）仍在佇列，F101 側補 Sun252i 裝置模型驅動集與 Sunxi DE0／TCON0 顯示後端（RGB、LVDS、MIPI-DSI），H616 側是另一套驅動集並新增 AXP313A 調壓器支援；D1s 的 QEMU 啟動指令碼（#11903，4 個檔案 +145）同樣在審，評審建議改成統一的目標機子目錄。</li>
+  <li><strong>樂鑫</strong>：ESP-IDF v6.1 適配的收尾落在包側——主倉提案 #11926 於 10-26 11:37 關閉，包倉提案 #19（<code class="highlighter-rouge">fix(scons): prioritize RT-Thread FreeRTOS headers</code>）於同日 09:15 合入，標頭檔案優先順序在 SCons 指令碼層解決；ESP32-S3-DevKitM-1 的板級支援（#11844）仍待評審。需要分清核心：ESP32-S3 是 Xtensa，C3／C6 才是 RISC-V。</li>
+  <li><strong>意法半導體</strong>：OSPI 與 OctaFlash 提案（#11912，32 個檔案）在元件層補 OSPI 匯流排、裝置與訊息定義，接進 SFUD 並覆蓋讀、寫、擦與狀態查詢，另加通用 STM32 OctoSPI 驅動與 stm32l4r9-st-eval 板級配置，使 SFUD 能以 1-1-1 與 8-8-8 兩種模式訪問；#11819 一次性補 STM32 乙太網 ops 回撥集、SR8201F PHY 支援，並把 ADC 預設日誌等級從刷屏降到 <code class="highlighter-rouge">DBG_WARNING</code>。</li>
+  <li><strong>NXP</strong>：RT1180 工業乙太網連結指令碼提案（#11959）為 CM33 與 CM7 各補 Keil 分散載入（.scf）與 IAR 配置檔案（.icf），並在 Kconfig、rtconfig.py 與模板中加對應 target。</li>
+</ul>
+
+<h3 id="軟體包與中介軟體">軟體包與中介軟體</h3>
+
+<p><strong>日期</strong>：2026-10-23 ~ 2026-10-26　<strong>來源</strong>：<a href="https://github.com/RT-Thread-packages/esp-idf/pull/19">RT-Thread-packages/esp-idf PR #19</a></p>
+
+<ul>
+  <li><strong>ai/Agent 包</strong>：Kconfig 一筆 +32/-4，預設模型由 DeepSeek-V4-Pro 改為 deepseek-flash，預設服務端點由第三方聚合平臺改為 DeepSeek 官方 API；新增語音轉寫（STT）開關與檔案伺服器地址，多模態說明從「影象／檔案」擴成「影象／檔案／音訊」。同周社群大賽作品裡 agent 包把 MQTT 訂閱、退訂與查歷史註冊成工具供核心排程，兩件事指向同一種用法：把 RTOS 當作 agent 的執行時。</li>
+  <li><strong>esp-idf 包</strong>：v6.1 整包升級後的標頭檔案順序問題在 SCons 層修掉，<code class="highlighter-rouge">#include_next</code> 不再解析到 ESP-IDF 自帶的 FreeRTOS V11 頭，Wrapper 提供的 <code class="highlighter-rouge">configNUMBER_OF_CORES</code>、<code class="highlighter-rouge">configMINIMAL_STACK_SIZE</code> 等預設值不再落空。</li>
+  <li><strong>pkgs-test</strong>：STM32 軟體包測試的併發鎖上移到 <code class="highlighter-rouge">__build()</code>，依賴更新與編譯進入同一臨界區，避免多工對同一 HAL 目錄 <code class="highlighter-rouge">git pull</code> 時被 Git 中止並誤報成 compile failure。</li>
+</ul>
+
+<h3 id="工具鏈與開發環境">工具鏈與開發環境</h3>
+
+<p><strong>日期</strong>：2026-10-26 ~ 2026-10-30　<strong>來源</strong>：<a href="https://github.com/RT-Thread/vscode-rt-smart/pull/38">vscode-rt-smart PR #38</a></p>
+
+<ul>
+  <li><strong>vscode-rt-smart 0.4.14（10-26 22:35 合入）</strong>：49 個檔案、+883/-4826，一次砍掉近五千行。Kconfig 檢視、SDK 管理器、工具鏈設定、符號分析四塊功能整體移除，ELF 與 DWARF 解析器（合計約 887 行）與 291 行設定文件隨之退場；RT-Thread Setting 檢視收窄到只做 Env 的安裝、更新與狀態顯示，新增編輯器內建瀏覽器與 <code class="highlighter-rouge">code --open-url</code> 的 URI 處理。定位上是從「IDE 替身」退回「Env 入口加內嵌瀏覽器」。</li>
+  <li><strong>Eclipse 工程生成器（#11930）</strong>：<code class="highlighter-rouge">LOCAL_CPPDEFINES</code> 不進生成的 <code class="highlighter-rouge">rtconfig_preinc.h</code>，導致 Studio 構建報 24 個隱式宣告警告；改法是把宏移到全域性 <code class="highlighter-rouge">CPPDEFINES</code>，只動工程生成指令碼、不碰核心原始碼。</li>
+  <li><strong>klibc（#11953）</strong>：啟用 libc 委託的 vsnprintf 後，<code class="highlighter-rouge">rt_sprintf()</code> 把 <code class="highlighter-rouge">(size_t)-1</code> 當 size 傳給 libc，64 位下 <code class="highlighter-rouge">buf + size</code> 溢位，呼叫失敗且一個位元組都不寫；改用 <code class="highlighter-rouge">vsprintf()</code> 後恢復。</li>
+  <li><strong>Env 文件側</strong>：社群本週連續兩篇長文拆解 Env v2.0.3——命令入口統一為 <code class="highlighter-rouge">rt-env</code>，新增 sdk／plugin／webui／system 子命令，依賴跑在 Python 虛擬環境，新增外掛體系與瀏覽器 WebUI；相容紅線是 v2.0 完整支援 5.1.0 以上與 master，5.1.0 及更早仍需 v1.5.x。</li>
+</ul>
+
+<h3 id="核驗說明">核驗說明</h3>
+
+<ul>
+  <li>主倉庫釋出頁與標籤頁本週無新版本；官網新聞列表頁為前端動態渲染，抓取只得載入空殼，新聞資料以官方介面為準。</li>
+  <li>topic:rt-thread 生態檢索本週零散命中若干個人倉庫與通用 GUI（zlgopen/awtk），均與 RT-Thread 無專項關聯；K230 火焰檢測、CH32H417 手寫符號識別兩個社群專案已按生態側收錄，見第五章。</li>
+  <li>TriCore 兩個包的 Windows 構建僅做 PE 匯入表檢查，未在 Windows 實機執行，作者在提案裡建議合入前補跑一次編譯；本報告相關結論均按來源原文表述，不外推。</li>
+</ul>
+
+<hr />
+
+<h2 id="四官方與社群活動">四、官方與社群活動</h2>
+
+<h3 id="官方渠道">官方渠道</h3>
+
+<p><strong>日期</strong>：2026-10-26 ~ 2026-10-30　<strong>來源</strong>：<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">RT-Thread 官方新聞介面</a></p>
+
+<ul>
+  <li><strong>新聞介面連續第五個月靜默</strong>：組織分類存檔稿最新一條仍是 2026-06-17，此後六至十月無新增，各期核查返回條數在 5 條上下波動，屬介面分頁差異。官網新聞列表頁無新稿，公司側的對外動態在 Google News 中英文查詢裡同樣零命中，睿擎與睿擎派的七天內查詢為空。</li>
+  <li><strong>維護者變動</strong>：10-28 18:48 合入的 #11939 從 MAINTAINERS 刪掉 <code class="highlighter-rouge">components_fal</code> 條目，原作者說明已無時間與精力繼續參與。FAL（Flash 抽象層）長期由單人維護，條目刪除後該元件暫無登記維護者，後續是否有人補位值得跟蹤——這類基礎元件無人認領時，問題往往在廠商提 BSP 時才暴露。</li>
+  <li><strong>資訊首發渠道</strong>：產品與活動資訊繼續由微信公眾號、社群論壇與 GitHub 首發，官方自有渠道的缺位在本週延續；社群的對外敘事由大賽作品與行業媒體承擔。</li>
+</ul>
+
+<h3 id="媒體與評測">媒體與評測</h3>
+
+<p><strong>日期</strong>：2026-10-24 ~ 2026-10-27　<strong>來源</strong>：<a href="https://www.eet-china.com/mp/a534651.html">電子工程專輯：三大 RTOS 深度橫評</a></p>
+
+<ul>
+  <li><strong>三大 RTOS 橫評（10-27）</strong>：按實時性、記憶體佔用、生態、社群、AI 支援與遷移成本六個維度對比 FreeRTOS、RT-Thread 與 Zephyr。文中給 RT-Thread 的定位是 Apache 2.0 的輕量全家桶，核心 3KB Flash 加 1.2KB RAM，內建 POSIX、GUI、檔案系統與 AI 包；低功耗元件在 Stop 模式下比另兩者省電 15% 至 20%；選型表把 64KB RAM 以下的極致低成本專案與消費電子、可穿戴劃給 RT-Thread。文章同時承認 Zephyr 在多協議多板卡與長期維護場景更強，結論是三分而不是一邊倒。</li>
+  <li><strong>RISC-V 峰會側記（10-24）</strong>：電子工程專輯 RT-Thread 專欄刊出第六屆 RISC-V 中國峰會的系統軟體視角報道，規模為 1 場主論壇、7 場平行分論壇加 Member Day 技術專場。與 RT-Thread 直接相關的表述有兩段：峰會期間與多家 RISC-V IP 及晶片廠商就核心適配、工具鏈打通與聯合方案落地交換意見；業內判斷 RISC-V 在嵌入式與物聯網已具備規模化條件，瓶頸正從「核」轉向系統軟體，作業系統的參與補的是實時性、功能安全與工程化交付。</li>
+  <li><strong>安謀科技 WTCC 2026 研討會（10-23 活動 / 10-27 報道）</strong>：安謀科技在上海西岸國際科技消費嘉年華期間辦小型具身智慧方案研討會，瑞芯微、瑞莎計算機與 RT-Thread 以開源 AIOS 聯盟夥伴身份參加。RT-Thread AI 資深工程師鄭煒按機器狗、HyperCar 與 Codex 編排三類 Agent 方案，講智慧體如何從對話走向執行，並明確後續以具身智慧專案為重點；瑞芯微提出大模型推理正從計算密集轉向記憶體密集、頻寬成為端側瓶頸。安謀同場釋出 JishuFriends 與 JishuBuddy 兩項落地成果。</li>
+</ul>
+
+<h3 id="社群作品與賽事">社群作品與賽事</h3>
+
+<p><strong>日期</strong>：2026-10-24 ~ 2026-10-30　<strong>來源</strong>：<a href="https://club.rt-thread.org/api/index/getList?type=article">社群文章介面</a></p>
+
+<ul>
+  <li><strong>2026 嵌入式大賽作品進入提交高峰</strong>：本週視窗內至少七篇作品集中釋出——10-24 至 10-25 的端側 Agent 多感測融合監測、ART-Pi2 USB 列舉診斷儀、OpenMV 協議行人跟蹤；10-28 的納芯微 NS800RT7P65 工業 CAN 移動機器人、玄鐵 D121 多從機監控、NXP MCXA346 神經網路增強 FOC；10-30 的英飛凌 Edgi Talk「Little Watcher」。共同點是都附開源倉庫或完整復現記錄，把工程細節連同程式碼一起公開，而不只是交一份報告。</li>
+  <li><strong>GDR 除錯工具（10-25）</strong>：一篇少見地把除錯腳手架當正式工程做的社群長文。工具把 RT-Thread 核心物件檢視固化成 GDB 的 Python 命令，提供聚合命令（threads／timers／system／semaphores／objects，執行緒錶帶基於棧填充模式的峰值水位）、便捷函式與 pretty-printer 三層能力；與 FinSH 的本質區別是完全無侵入，只透過 GDB 讀符號與目標記憶體，適用於沒有 shell 的 Nano 場景與 HardFault 之後的死後分析。CI 用 QEMU 啟動真實韌體做 pytest 斷言，矩陣覆蓋 Cortex-A9（3.1.0 至 3.1.5、4.x）與 RV64（4.0.4 至 4.1.1），作者寫明尚未經真實板卡檢驗。</li>
+  <li><strong>核心與工具鏈長文三篇</strong>：10-26 的《rtthread 啟動鏈路分析》把 Reset_Handler 到 main 拆成彙編、C 初始化、排程器啟動三段，並指出 <code class="highlighter-rouge">SystemInit</code> 並不把主頻配到 72MHz 這一常見誤解；10-29 的核心物件分佈長文以 4.0.3 的 <code class="highlighter-rouge">object.c</code> 與 <code class="highlighter-rouge">rtdef.h</code> 講清「按型別管理、按名字查詢、能遍歷、能統計」如何落到 rt_object_information、侵入式連結串列與 container_of 三件東西上；Env v2.0.3 與 Studio 24 個隱式宣告警告兩篇屬工具鏈踩坑記錄。</li>
+  <li><strong>直播</strong>：10-26 20:00 至 21:00，社群開發者崔竣碩分享手部康復外骨骼專案，面向腦卒中、手外傷術後及周圍神經損傷人群，看點是肌電訊號到運動意圖的識別鏈路與一塊開發板上雙核如何分工。</li>
+</ul>
+
+<hr />
+
+<h2 id="五行業應用與商業動向">五、行業應用與商業動向</h2>
+
+<h3 id="工業控制與工業互聯">工業控制與工業互聯</h3>
+
+<p><strong>日期</strong>：2026-10-28 ~ 2026-10-29　<strong>來源</strong>：<a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">社群文章：小型自主移動機器人</a></p>
+
+<ul>
+  <li><strong>工業 CAN 分散式移動機器人</strong>：主控納芯微 NS800RT7P65（Cortex-M7，600MHz），跑 RT-Thread 4.x，單晶片承擔 FOC 二維雲臺、CAN 主控與 40 條 MSH 線上診斷命令；底盤是 CAN 五節點架構（主控、雲臺 FOC、感測器採集、底盤驅動、視覺 AI），從站各自本地閉環。感知側用超聲波旋轉掃描生成二維點雲加慣性單元與里程計做位姿推算，監控走區域網 MQTT，整條鏈路不依賴公網，程式碼以 GPL-3.0 公開。</li>
+  <li><strong>玄鐵 D121 主站配龍芯 LS2K0300 從機</strong>：主站跑 RT-Thread 加 LVGL 觸控式螢幕，經 RS485 與 Modbus RTU 輪詢兩個從站——星火 STM32F407 採集溫溼度與六軸資料，龍芯 LS2K0300 上報 CPU、記憶體與執行時間等系統指標。採集資料落 TF 卡並支援本地回放，通訊中斷、恢復與振動越限進持久化佇列，經 ESP8266 上雲後用微信小程式遠端檢視，斷網先存本地、恢復後補傳。把 ARM 與 LoongArch 兩類從站放進同一條 Modbus 匯流排，對異構裝置接入有直接參考價值。</li>
+  <li><strong>BLDC 電機缺陷 AI 監測</strong>：瑞薩 Titan Board（RA8P1，1GHz Cortex-M85 加 250MHz Cortex-M33，帶 Ethos-U55 NPU、單晶片 256 GOPS）上採集三相電流、母線電壓與逆變器溫度，M85 核預處理後送 NPU 上的輕量 CNN 做實時缺陷識別；軟體側用 RT-Thread 起介面、通訊與推理三個執行緒，模型經 RUHMI 從 TFLite 轉 C 程式碼整合。方案強調不額外加感測器，走低成本預測性維護路線。</li>
+</ul>
+
+<h3 id="電機控制與端側-ai">電機控制與端側 AI</h3>
+
+<p><strong>日期</strong>：2026-10-27 ~ 2026-10-30　<strong>來源</strong>：<a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">社群文章：輕量神經網路增強的無刷電機控制器</a></p>
+
+<ul>
+  <li><strong>NXP MCXA346 的神經網路增強 FOC</strong>：硬體為 FRDM-MCXA346 加 2804 電機、AS5600 磁編碼器與 SimpleFOC Mini 驅動。控制側先做前饋加 PI 的速度環與位置環，再在輸出上疊一個 3 輸入、8 隱藏單元、1 輸出的動態補償網路，權重匯出成 C 程式碼直接在 MCU 上算，韌體不引入推理框架，補償可單獨開關便於同引數對照。90 段實板測試（正負 15 RPM 內 10 種切換各三輪）顯示穩態尾段 100 毫秒視窗的 RMSE 從 2.187 降到 2.094 RPM（約 4.26%），整段 RMSE 從 3.327 降到 3.291（約 1.07%）；P 專案標加 25 毫秒平滑後，60 段測試的整段速度誤差均值降約 5.83%。</li>
+  <li><strong>K230 廚房火焰檢測</strong>：以 K230 與 RT-Thread Smart 為底座公開原始碼，含多感測器融合、自適應聯動策略、復現記錄與模型評測，倉庫同時放參考資料，便於第三方按記錄復跑，專案自述定位是研究原型而非產品。這是本週少見的、把 Smart 用在真實感知閉環裡的公開專案。</li>
+  <li><strong>CH32H417 手寫符號識別</strong>：沁恆雙核 RISC-V 平臺，技術棧是 RT-Thread 加 LVGL 加 TFLM，鏈路含 OV5640 採集、定點影象預處理、INT8 量化推理與介面顯示，訓練側另附工具鏈。專案剛建立、尚無關注度，價值在於把 RISC-V 上一條完整的輕量視覺鏈路攤開寫清楚。</li>
+  <li><strong>英飛凌 Edgi Talk「Little Watcher」</strong>：用一句中文指定一個可見目標的出現或消失，檢測到變化就提醒並儲存前後畫面。板卡 M55 側負責語音錄製上傳、攝像頭採集上傳與提醒播放，視覺判斷跑在電腦側的現成模型上；單次會話上限 300 秒、60 次影象上傳，網頁保留最近 100 條事件，重啟預設暫停。看點在於把「AI 參與開發」的過程也當作交付物——需求拆解、程式碼整合、故障排查、測試驗證與文件各環節都記錄了 AI 的參與方式。</li>
+</ul>
+
+<h3 id="海外生態與商業動向">海外生態與商業動向</h3>
+
+<p><strong>日期</strong>：2026-10-28 ~ 2026-10-30　<strong>來源</strong>：<a href="https://www.hackster.io/monxx-ie/smart-water-bottle-reminder-edge-ai-on-rt-spark-462a9b">Hackster 專案：Smart Water Bottle Reminder</a></p>
+
+<ul>
+  <li><strong>RT-Spark 板卡的海外專案</strong>：Hackster 上出現一個以 RT-Spark 板卡為硬體的離線邊緣 AI 專案，用六軸 IMU 判斷躺放、攜帶、飲用、晃動四種狀態，30 秒未檢測到飲用即 LCD 紅字提示並鳴笛；深度 5 的決策樹經 Python 訓練後匯出為純 C，在 STM32F407 上單次推理約 154 微秒，留出集準確率 95%，同資料的閾值規則基線為 97.5%，作者如實寫明這一差距。需分清：專案用的是 RT-Thread 的 RT-Spark 開發板，但韌體跑的是 FreeRTOS，屬板卡層面的生態複用，不構成核心採用案例。</li>
+  <li><strong>商業動向</strong>：本週無新增商用落地、融資或訂單類報道。廠商動作集中在工具鏈與包側鋪底——TriCore 補編譯與模擬、RA6W1 補向量表、ai/Agent 換預設後端；節奏上更像為後續方案鋪底，而非單點提交。</li>
+</ul>
+
+<hr />
+
+<h2 id="六趨勢觀察">六、趨勢觀察</h2>
+
+<ul>
+  <li><strong>Smart 的定位在本週被明確成「測試覆蓋層」而不是「預設配置」</strong>：10-29 一天之內先開 Smart、再收回預設配置，看似反覆，實際是維護者在做邊界劃分——預設配置必須保持可預測，讓不帶 Smart 的常規迴歸穩定；Smart 透過 utest 的配置覆蓋層單獨跑，兩條路徑共用一個 BSP。這樣既拿到了 QEMU 上的使用者態測試覆蓋，又不打亂既有的 BSP 編譯矩陣。隨之而來的觀察點是 #11892 與 #11897：能在 QEMU 驗證的先合、依賴實機板卡確認的後合，這條排期規律在本週得到了兩次印證。</li>
+  <li><strong>RT-Smart 的使用者態／核心態邊界成為本週最重的安全主線，且已呈族化</strong>：終端、塊裝置、管道、郵箱四處形態完全一致，都是適配層預設引數已是核心地址、使用者態入口沒有 copyin/copyout。四單的影響版本全部回溯到 2022 年的同一次 RT-Smart 同步提交，說明這不是新引入的缺陷，而是移植時被整體帶進來的結構性缺口。修復路徑也已明確（#11941 的核心棧暫存加 copy_from_user/copy_to_user 加 <code class="highlighter-rouge">lwp_in_user_space()</code> 界限校驗），接下來的看點是這套做法能否被抽成通用層，而不是在每個子系統各修一遍。</li>
+  <li><strong>主線節奏由「積壓提案的批次清賬」主導，而不是當日新開發</strong>：10-27 四筆、10-29 七筆的合入中，多數提案的 author 時間早於合入時間一週以上，10-29 那批更是 10-18 建立、排隊十一天。這個形態對判斷專案健康度有影響：單看提交數會高估當週開發強度，單看零提交日又會低估評審活動。真正穩定的指標是「提案佇列的週轉時間」——本週它從十天收斂到一天（#11896 合入後 #11942 當天跟上），屬正向變化。</li>
+  <li><strong>測試可信度被當成基礎設施來修，而不是當測試來修</strong>：本週修的三件事都不是「多加用例」，而是讓判定本身可信——後續 unit 透過不再抹掉前面 testcase 的失敗（#11601）、CI 不再依賴公網與非法 IP 字串（#11601）、musl 下不再假定 signal 0 可安裝（#11601），再加上 #11942 把 CI 的配置覆蓋方式從「整份 checkout」改成「追加一行關閉開關」。這與上週 pkgs-test 的併發鎖修復同屬一條線：先把「測試透過」這個前提做實，再談覆蓋率。</li>
+  <li><strong>版本釋出從「等待」轉向「制度化」，但釋出動作仍未開閘</strong>：v5.4.0 的版本號在 10-17 就 bump 過，10-29 又抬到 0x50400，而 releases 與 tags 停在 09-10 的 v5.3.0 已七週。10-30 出現的兩份材料（#11956 的版本管理 CI 與釋出流程、#11955 的版本與釋出流程文件）說明社群自己也在處理這個落差——Z 線月度報告加人工批准、Y 線每 3 至 6 個月結合硬體驗證，並把「QEMU 結論不擴大為實機結論」寫進非目標。下一期應以 release 頁與 ChangeLog 複核是否真正開閘，而不是以版本宏為準。</li>
+  <li><strong>廠商適配的形態在變：一邊是工具鏈與模擬先行，一邊是一大類硬體成批進入</strong>：TriCore 進的是 Env SDK 而非主倉庫，先用開源 GCC 加 QEMU 解決「能編、能跑、能調」，BSP 與驅動留到後面；同時 RTL8125、RK3588、RT1180 三筆大體量提案同期在審，說明適配重心正從「單塊開發板點亮」轉向「整類平臺與外設棧」。兩條路徑的評審成本差別很大：前者是包索引層面的低風險增量，後者動輒上千行、需要板卡側確認，這也是為什麼 BSP 佇列裡始終壓著 172 個檔案與 29 萬行量級的提案。</li>
+</ul>
+
+<hr />
+
+<h2 id="附錄素材與核查">附錄：素材與核查</h2>
+
+<h3 id="素材清單">素材清單</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>期號</th>
+      <th>日期</th>
+      <th>有效視窗</th>
+      <th>收錄條目（按小標題計）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>第 1 期</td>
+      <td>2026-10-26（週一）</td>
+      <td>10-23 08:00 至 10-26 08:00（72 小時）</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>第 2 期</td>
+      <td>2026-10-27（週二）</td>
+      <td>10-26 08:00 至 10-27 08:00（24 小時）</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>第 3 期</td>
+      <td>2026-10-28（週三）</td>
+      <td>10-27 08:00 至 10-28 08:00（24 小時）</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <td>第 4 期</td>
+      <td>2026-10-29（週四）</td>
+      <td>10-28 08:00 至 10-29 08:00（24 小時）</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>第 5 期</td>
+      <td>2026-10-30（週五）</td>
+      <td>10-29 08:00 至 10-30 08:00（24 小時）</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>五期日報齊全，無缺失日期；週一期為跨週末 72 小時視窗，起點沿用上一期截點，10-23 17:09 合入的 clang-format 規則細化（#11859）已在上一期週報的釋出日核查中記錄，本期不重複敘述。</li>
+  <li>週報正文在五期日報基礎上合併同主題條目，條目數與上表不等，屬正常歸併；安全類缺陷單按族合併，不逐單展開。</li>
+</ul>
+
+<h3 id="核查說明">核查說明</h3>
+
+<ul>
+  <li><strong>釋出日核查</strong>：2026-10-31 對主倉庫 master 提交流、releases 與 tags、合併與在審提案、新建缺陷單逐項實測，核查時點 10-31 17:00 前。核查發現兩筆落在週五日報截點（10-30 08:00）之後的合入：#11915 於 10-30 10:54 合入、#11936 於 10-30 18:20 合入，已併入第二章合入清單並標註；同時新見三筆缺陷單（#11956 版本管理流程、#11958 管道 ioctl、#11960 郵箱物件指標）與六筆新提案（#11953、#11954、#11955、#11957、#11959、#11961），均按核查方式單獨標註。</li>
+  <li><strong>版本口徑</strong>：v5.4.0 只有 RT_VER_NUM 實測值（0x50400），正式 Release、標籤與 ChangeLog 均未更新，全文按「已進入 5.4.0 開發態、尚未釋出」表述。</li>
+  <li><strong>未收錄項</strong>：zlgopen/awtk 的常規提交（通用 GUI，與 RT-Thread 無專項關聯）、若干星標個位數的個人新建倉庫、Hackster 的 RT-Spark 專案按板卡生態參考處理（韌體為 FreeRTOS，不計入核心採用）、海外稿件的商業結論（視窗內無商用落地與融資類報道）。</li>
+  <li><strong>渠道限制</strong>：Google News 中英文多組查詢與 HN Algolia 本週均無有效的新 RT-Thread 稿，HN 候選多為 threads 與 Threads 字面誤匹配；官網新聞列表頁前端渲染，新聞資料以官方介面為準；GitHub 匿名介面限額在部分期次採集中途接近上限，組織級核查以單次 <code class="highlighter-rouge">sort=pushed</code> 請求完成，主倉庫提交以 commits 介面前 100 條為準。</li>
+</ul>
+
+<h3 id="完整信源清單">完整信源清單</h3>
+
+<ul>
+  <li><strong>[1]</strong> PR #11893（lwIP 迴環 netdev） — <a href="https://github.com/RT-Thread/rt-thread/pull/11893">https://github.com/RT-Thread/rt-thread/pull/11893</a></li>
+  <li><strong>[2]</strong> 主倉庫 master 提交流 — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[3]</strong> PR #11896（qemu-virt64 啟用 RT-Thread Smart） — <a href="https://github.com/RT-Thread/rt-thread/pull/11896">https://github.com/RT-Thread/rt-thread/pull/11896</a></li>
+  <li><strong>[4]</strong> PR #11942（qemu-virt64 恢復標準核心預設配置） — <a href="https://github.com/RT-Thread/rt-thread/pull/11942">https://github.com/RT-Thread/rt-thread/pull/11942</a></li>
+  <li><strong>[5]</strong> PR #11894（lwp 系統呼叫按子系統拆分） — <a href="https://github.com/RT-Thread/rt-thread/pull/11894">https://github.com/RT-Thread/rt-thread/pull/11894</a></li>
+  <li><strong>[6]</strong> PR #11890（終端 TIOCLINUX 與預設視窗尺寸） — <a href="https://github.com/RT-Thread/rt-thread/pull/11890">https://github.com/RT-Thread/rt-thread/pull/11890</a></li>
+  <li><strong>[7]</strong> PR #11900（ping 最大最小延遲統計） — <a href="https://github.com/RT-Thread/rt-thread/pull/11900">https://github.com/RT-Thread/rt-thread/pull/11900</a></li>
+  <li><strong>[8]</strong> PR #11885（dfs 的 UTIME_OMIT 處理） — <a href="https://github.com/RT-Thread/rt-thread/pull/11885">https://github.com/RT-Thread/rt-thread/pull/11885</a></li>
+  <li><strong>[9]</strong> PR #11888（SAL 的 RAW socket 協議校驗） — <a href="https://github.com/RT-Thread/rt-thread/pull/11888">https://github.com/RT-Thread/rt-thread/pull/11888</a></li>
+  <li><strong>[10]</strong> PR #11887（poll 改從 dfs_file 取 fops） — <a href="https://github.com/RT-Thread/rt-thread/pull/11887">https://github.com/RT-Thread/rt-thread/pull/11887</a></li>
+  <li><strong>[11]</strong> PR #11889（8250 earlycon 暫存器寬度） — <a href="https://github.com/RT-Thread/rt-thread/pull/11889">https://github.com/RT-Thread/rt-thread/pull/11889</a></li>
+  <li><strong>[12]</strong> PR #11601（utest 彙總與用例穩定化） — <a href="https://github.com/RT-Thread/rt-thread/pull/11601">https://github.com/RT-Thread/rt-thread/pull/11601</a></li>
+  <li><strong>[13]</strong> PR #11939（MAINTAINERS 移除 FAL 條目） — <a href="https://github.com/RT-Thread/rt-thread/pull/11939">https://github.com/RT-Thread/rt-thread/pull/11939</a></li>
+  <li><strong>[14]</strong> PR #11934（RA6W1 系統配置與向量表） — <a href="https://github.com/RT-Thread/rt-thread/pull/11934">https://github.com/RT-Thread/rt-thread/pull/11934</a></li>
+  <li><strong>[15]</strong> PR #11940（DHCP raw 選項邊界） — <a href="https://github.com/RT-Thread/rt-thread/pull/11940">https://github.com/RT-Thread/rt-thread/pull/11940</a></li>
+  <li><strong>[16]</strong> PR #11915（dlmodule 未初始化全域性量） — <a href="https://github.com/RT-Thread/rt-thread/pull/11915">https://github.com/RT-Thread/rt-thread/pull/11915</a></li>
+  <li><strong>[17]</strong> PR #11936（clang-format 固定 22.1.8 與核心格式化） — <a href="https://github.com/RT-Thread/rt-thread/pull/11936">https://github.com/RT-Thread/rt-thread/pull/11936</a></li>
+  <li><strong>[18]</strong> PR #11935（signalfd 關閉路徑與槽位查詢） — <a href="https://github.com/RT-Thread/rt-thread/pull/11935">https://github.com/RT-Thread/rt-thread/pull/11935</a></li>
+  <li><strong>[19]</strong> Issue #11933（signalfd 全域性計數越界） — <a href="https://github.com/RT-Thread/rt-thread/issues/11933">https://github.com/RT-Thread/rt-thread/issues/11933</a></li>
+  <li><strong>[20]</strong> Issue #11932（musl 執行緒連結串列併發釋放後使用） — <a href="https://github.com/RT-Thread/rt-thread/issues/11932">https://github.com/RT-Thread/rt-thread/issues/11932</a></li>
+  <li><strong>[21]</strong> Issue #11925（sys_poll 計數迴繞） — <a href="https://github.com/RT-Thread/rt-thread/issues/11925">https://github.com/RT-Thread/rt-thread/issues/11925</a></li>
+  <li><strong>[22]</strong> PR #11954（lwp 拒絕迴繞的計數） — <a href="https://github.com/RT-Thread/rt-thread/pull/11954">https://github.com/RT-Thread/rt-thread/pull/11954</a></li>
+  <li><strong>[23]</strong> Issue #11922（settimeofday 窄化校驗） — <a href="https://github.com/RT-Thread/rt-thread/issues/11922">https://github.com/RT-Thread/rt-thread/issues/11922</a></li>
+  <li><strong>[24]</strong> Issue #1</li>
+</ul>
+
+<p>1923（gmtime_r 負時間戳） — <a href="https://github.com/RT-Thread/rt-thread/issues/11923">https://github.com/RT-Thread/rt-thread/issues/11923</a></p>
+<ul>
+  <li><strong>[25]</strong> Issue #11924（timer_gettime 截斷） — <a href="https://github.com/RT-Thread/rt-thread/issues/11924">https://github.com/RT-Thread/rt-thread/issues/11924</a></li>
+  <li><strong>[26]</strong> Issue #11927（時間子系統基線調研） — <a href="https://github.com/RT-Thread/rt-thread/issues/11927">https://github.com/RT-Thread/rt-thread/issues/11927</a></li>
+  <li><strong>[27]</strong> PR #11928（settimeofday 按欄位型別校驗） — <a href="https://github.com/RT-Thread/rt-thread/pull/11928">https://github.com/RT-Thread/rt-thread/pull/11928</a></li>
+  <li><strong>[28]</strong> PR #11929（gmtime_r 紀元前時間戳） — <a href="https://github.com/RT-Thread/rt-thread/pull/11929">https://github.com/RT-Thread/rt-thread/pull/11929</a></li>
+  <li><strong>[29]</strong> PR #11938（libc 定時器 64 位截斷） — <a href="https://github.com/RT-Thread/rt-thread/pull/11938">https://github.com/RT-Thread/rt-thread/pull/11938</a></li>
+  <li><strong>[30]</strong> Issue #11937（RT-Smart 終端 ioctl 使用者指標） — <a href="https://github.com/RT-Thread/rt-thread/issues/11937">https://github.com/RT-Thread/rt-thread/issues/11937</a></li>
+  <li><strong>[31]</strong> PR #11941（終端 ioctl copyin／copyout） — <a href="https://github.com/RT-Thread/rt-thread/pull/11941">https://github.com/RT-Thread/rt-thread/pull/11941</a></li>
+  <li><strong>[32]</strong> Issue #11952（塊裝置 ioctl 分割槽表寫入） — <a href="https://github.com/RT-Thread/rt-thread/issues/11952">https://github.com/RT-Thread/rt-thread/issues/11952</a></li>
+  <li><strong>[33]</strong> Issue #11958（POSIX 管道 ioctl 使用者指標） — <a href="https://github.com/RT-Thread/rt-thread/issues/11958">https://github.com/RT-Thread/rt-thread/issues/11958</a></li>
+  <li><strong>[34]</strong> Issue #11960（RT-Smart 郵箱偽物件） — <a href="https://github.com/RT-Thread/rt-thread/issues/11960">https://github.com/RT-Thread/rt-thread/issues/11960</a></li>
+  <li><strong>[35]</strong> Issue #11948（Bluetrum AB32 ADC 通道索引） — <a href="https://github.com/RT-Thread/rt-thread/issues/11948">https://github.com/RT-Thread/rt-thread/issues/11948</a></li>
+  <li><strong>[36]</strong> Issue #11949（Bouffalo ADC 越界讀） — <a href="https://github.com/RT-Thread/rt-thread/issues/11949">https://github.com/RT-Thread/rt-thread/issues/11949</a></li>
+  <li><strong>[37]</strong> Issue #11950（DM365 SPI 除零） — <a href="https://github.com/RT-Thread/rt-thread/issues/11950">https://github.com/RT-Thread/rt-thread/issues/11950</a></li>
+  <li><strong>[38]</strong> Issue #11951（HPM ADC 通道狀態索引） — <a href="https://github.com/RT-Thread/rt-thread/issues/11951">https://github.com/RT-Thread/rt-thread/issues/11951</a></li>
+  <li><strong>[39]</strong> PR #11957（DM365 SPI 拒絕零頻率） — <a href="https://github.com/RT-Thread/rt-thread/pull/11957">https://github.com/RT-Thread/rt-thread/pull/11957</a></li>
+  <li><strong>[40]</strong> Issue #11956（版本管理 CI 與釋出流程） — <a href="https://github.com/RT-Thread/rt-thread/issues/11956">https://github.com/RT-Thread/rt-thread/issues/11956</a></li>
+  <li><strong>[41]</strong> PR #11955（主管線版本與釋出流程文件） — <a href="https://github.com/RT-Thread/rt-thread/pull/11955">https://github.com/RT-Thread/rt-thread/pull/11955</a></li>
+  <li><strong>[42]</strong> PR #11944（Realtek RTL8125 乙太網驅動） — <a href="https://github.com/RT-Thread/rt-thread/pull/11944">https://github.com/RT-Thread/rt-thread/pull/11944</a></li>
+  <li><strong>[43]</strong> PR #11943（RK3588 與 RK3528 顯示與音訊） — <a href="https://github.com/RT-Thread/rt-thread/pull/11943">https://github.com/RT-Thread/rt-thread/pull/11943</a></li>
+  <li><strong>[44]</strong> PR #11959（NXP RT1180 工業乙太網連結指令碼） — <a href="https://github.com/RT-Thread/rt-thread/pull/11959">https://github.com/RT-Thread/rt-thread/pull/11959</a></li>
+  <li><strong>[45]</strong> PR #11892（RISC-V Smart MMU 與使用者態缺頁） — <a href="https://github.com/RT-Thread/rt-thread/pull/11892">https://github.com/RT-Thread/rt-thread/pull/11892</a></li>
+  <li>
+    <p><strong>[46]</strong> PR #11897（K230D 支援與 Smart 改進） — <a href="https://github.com/RT-Thread/rt-thread/pull/11897">https://github.com/RT-Thread/rt-thread/pull/11897</a></p>
+  </li>
+  <li><strong>[47]</strong> PR #11877（全志 F101 與 H616 BSP） — <a href="https://github.com/RT-Thread/rt-thread/pull/11877">https://github.com/RT-Thread/rt-thread/pull/11877</a></li>
+  <li><strong>[48]</strong> PR #11844（ESP32-S3-DevKitM-1 板級支援） — <a href="https://github.com/RT-Thread/rt-thread/pull/11844">https://github.com/RT-Thread/rt-thread/pull/11844</a></li>
+  <li><strong>[49]</strong> PR #11903（全志 D1s 的 QEMU 啟動指令碼） — <a href="https://github.com/RT-Thread/rt-thread/pull/11903">https://github.com/RT-Thread/rt-thread/pull/11903</a></li>
+  <li><strong>[50]</strong> PR #11912（OSPI 與 OctaFlash 支援） — <a href="https://github.com/RT-Thread/rt-thread/pull/11912">https://github.com/RT-Thread/rt-thread/pull/11912</a></li>
+  <li><strong>[51]</strong> PR #11819（STM32 乙太網 ops 與 SR8201F PHY） — <a href="https://github.com/RT-Thread/rt-thread/pull/11819">https://github.com/RT-Thread/rt-thread/pull/11819</a></li>
+  <li><strong>[52]</strong> PR #11930（Eclipse 匯出漏傳核心宏） — <a href="https://github.com/RT-Thread/rt-thread/pull/11930">https://github.com/RT-Thread/rt-thread/pull/11930</a></li>
+  <li><strong>[53]</strong> PR #11953（klibc 的 rt_sprintf 寫不出內容） — <a href="https://github.com/RT-Thread/rt-thread/pull/11953">https://github.com/RT-Thread/rt-thread/pull/11953</a></li>
+  <li><strong>[54]</strong> PR #11961（原生執行緒靜態 TLS 初始化） — <a href="https://github.com/RT-Thread/rt-thread/pull/11961">https://github.com/RT-Thread/rt-thread/pull/11961</a></li>
+  <li><strong>[55]</strong> PR #11947（DHCP raw 地址池耗盡無界迴圈） — <a href="https://github.com/RT-Thread/rt-thread/pull/11947">https://github.com/RT-Thread/rt-thread/pull/11947</a></li>
+  <li><strong>[56]</strong> 主倉庫 releases 頁 — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[57]</strong> 主倉庫 tags 頁 — <a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[58]</strong> 主倉庫提案列表 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[59]</strong> RT-Thread/sdk PR #9（tricore-gcc 工具鏈包） — <a href="https://github.com/RT-Thread/sdk/pull/9">https://github.com/RT-Thread/sdk/pull/9</a></li>
+  <li><strong>[60]</strong> RT-Thread/sdk PR #10（qemu-tricore 模擬器包） — <a href="https://github.com/RT-Thread/sdk/pull/10">https://github.com/RT-Thread/sdk/pull/10</a></li>
+  <li><strong>[61]</strong> toolchains-ci v1.12（tricore-gcc-13.4.1） — <a href="https://github.com/RT-Thread/toolchains-ci/releases/tag/v1.12">https://github.com/RT-Thread/toolchains-ci/releases/tag/v1.12</a></li>
+  <li><strong>[62]</strong> toolchains-ci v1.13（qemu-tricore-1.0.0） — <a href="https://github.com/RT-Thread/toolchains-ci/releases/tag/v1.13">https://github.com/RT-Thread/toolchains-ci/releases/tag/v1.13</a></li>
+  <li><strong>[63]</strong> RT-Thread-packages/esp-idf PR #19（FreeRTOS 標頭檔案優先順序） — <a href="https://github.com/RT-Thread-packages/esp-idf/pull/19">https://github.com/RT-Thread-packages/esp-idf/pull/19</a></li>
+  <li><strong>[64]</strong> RT-Thread-packages PR #2046（ai/Agent 語音轉寫與預設後端） — <a href="https://github.com/RT-Thread-packages/packages/pull/2046">https://github.com/RT-Thread-packages/packages/pull/2046</a></li>
+  <li><strong>[65]</strong> RT-Thread/pkgs-test PR #37（STM32 包測試併發鎖） — <a href="https://github.com/RT-Thread/pkgs-test/pull/37">https://github.com/RT-Thread/pkgs-test/pull/37</a></li>
+  <li><strong>[66]</strong> vscode-rt-smart PR #38（擴充套件瘦身與編輯器瀏覽器） — <a href="https://github.com/RT-Thread/vscode-rt-smart/pull/38">https://github.com/RT-Thread/vscode-rt-smart/pull/38</a></li>
+  <li><strong>[67]</strong> libcpu 架構目錄 — <a href="https://github.com/RT-Thread/rt-thread/tree/master/libcpu">https://github.com/RT-Thread/rt-thread/tree/master/libcpu</a></li>
+  <li><strong>[68]</strong> RT-Thread 官方新聞介面 — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[69]</strong> 社群文章介面 — &lt;https://club.rt-thread.org/api/index/getList?type=</li>
+</ul>
+
+<p>article&gt;</p>
+<ul>
+  <li><strong>[70]</strong> 社群文章：rtthread 啟動鏈路分析 — <a href="https://club.rt-thread.org/api/index/getContent?id=a52580158973b199">https://club.rt-thread.org/api/index/getContent?id=a52580158973b199</a></li>
+  <li><strong>[71]</strong> 社群文章：rtthread 核心物件分佈 — <a href="https://club.rt-thread.org/ask/article/2d9ad33665a03fd8.html">https://club.rt-thread.org/ask/article/2d9ad33665a03fd8.html</a></li>
+  <li><strong>[72]</strong> 社群文章：Env Tool v2.0.3 使用全記錄 — <a href="https://club.rt-thread.org/ask/article/7fc18cb6f8b7ddbc.html">https://club.rt-thread.org/ask/article/7fc18cb6f8b7ddbc.html</a></li>
+  <li><strong>[73]</strong> 社群文章：Studio 24 個隱式宣告警告排查 — <a href="https://club.rt-thread.org/api/index/getContent?id=c187e8f9a3ef6c61">https://club.rt-thread.org/api/index/getContent?id=c187e8f9a3ef6c61</a></li>
+  <li><strong>[74]</strong> 社群文章：端側 Agent 核心多感測融合監測系統 — <a href="https://club.rt-thread.org/api/index/getContent?id=ce003e1250633345">https://club.rt-thread.org/api/index/getContent?id=ce003e1250633345</a></li>
+  <li><strong>[75]</strong> 社群文章：ART-Pi2 USB 列舉視覺化與描述符診斷儀 — <a href="https://club.rt-thread.org/api/index/getContent?id=77f924d81e8a8607">https://club.rt-thread.org/api/index/getContent?id=77f924d81e8a8607</a></li>
+  <li><strong>[76]</strong> 社群文章：OpenMV 協議行人跟蹤系統 — <a href="https://club.rt-thread.org/api/index/getContent?id=03fbc71bc4dd0a45">https://club.rt-thread.org/api/index/getContent?id=03fbc71bc4dd0a45</a></li>
+  <li><strong>[77]</strong> 社群文章：小型自主移動機器人（NS800RT7P65） — <a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html</a></li>
+  <li><strong>[78]</strong> 社群文章：多從機裝置監控與異常追溯系統（玄鐵 D121） — <a href="https://club.rt-thread.org/ask/article/3febce8c6543ba79.html">https://club.rt-thread.org/ask/article/3febce8c6543ba79.html</a></li>
+  <li><strong>[79]</strong> 社群文章：輕量神經網路增強的無刷電機控制器（MCXA346） — <a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html</a></li>
+  <li><strong>[80]</strong> 社群文章：Little Watcher（Edgi Talk） — <a href="https://club.rt-thread.org/ask/article/ff3129c06ab15ce6.html">https://club.rt-thread.org/ask/article/ff3129c06ab15ce6.html</a></li>
+  <li><strong>[81]</strong> 大賽作品倉庫：ns800-amr — <a href="https://gitcode.com/sdcwhy/ns800-amr">https://gitcode.com/sdcwhy/ns800-amr</a></li>
+  <li><strong>[82]</strong> 大賽作品倉庫：rtt-mcx-BLDCmotor — <a href="https://github.com/2470519590/rtt-mcx-BLDCmotor">https://github.com/2470519590/rtt-mcx-BLDCmotor</a></li>
+  <li><strong>[83]</strong> 生態專案：SRTP-K230-Fire-Guardian — <a href="https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian">https://github.com/1nuoiscute/SRTP-K230-Fire-Guardian</a></li>
+  <li><strong>[84]</strong> 生態專案：ch32h417-tinyml-symbol-recognition — <a href="https://github.com/TTTao163/ch32h417-tinyml-symbol-recognition">https://github.com/TTTao163/ch32h417-tinyml-symbol-recognition</a></li>
+  <li><strong>[85]</strong> GDR 除錯工具倉庫 — <a href="https://github.com/flespark/gdr">https://github.com/flespark/gdr</a></li>
+  <li><strong>[86]</strong> 電子工程專輯：三大 RTOS 深度橫評 — <a href="https://www.eet-china.com/mp/a534651.html">https://www.eet-china.com/mp/a534651.html</a></li>
+  <li><strong>[87]</strong> 電子工程專輯：端側 AI 成 RISC-V 新戰場（第六屆 RISC-V 中國峰會） — <a href="https://www.eet-china.com/mp/a533499.html">https://www.eet-china.com/mp/a533499.html</a></li>
+  <li><strong>[88]</strong> 電子工程專輯：GDR 除錯工具 — <a href="https://www.eet-china.com/mp/a533585.html">https://www.eet-china.com/mp/a533585.html</a></li>
+  <li><strong>[89]</strong> 電子工程專輯：手部康復外骨骼直播預告 — <a href="https://www.eet-china.com/mp/a533586.html">https://www.eet-china.com/mp/a533586.html</a></li>
+  <li><strong>[90]</strong> 電子工程專輯：BLDC 電機缺陷 AI 監測系統 — <a href="https://www.eet-china.com/mp/a534069.html">https://www.eet-china.com/mp/a534069.html</a></li>
+  <li><strong>[91]</strong> 快科技：安謀科技極術社群開源 AIOS 聯盟研討會 — <a href="https://news.mydrivers.com/1/1160/1160930.htm">https://news.mydrivers.com/1/1160/1160930.htm</a></li>
+  <li><strong>[92]</strong> 21ic：安謀科技極術社群亮相 WTCC 2026 — <a href="https://www.21ic.com/a/1015393.html">https://www.21ic.com/a/1015393.html</a></li>
+  <li><strong>[93]</strong> Hackster：Smart W</li>
+</ul>
+
+<p>ater Bottle Reminder（RT-Spark） — <a href="https://www.hackster.io/monxx-ie/smart-water-bottle-reminder-edge-ai-on-rt-spark-462a9b">https://www.hackster.io/monxx-ie/smart-water-bottle-reminder-edge-ai-on-rt-spark-462a9b</a></p>
+<ul>
+  <li><strong>[94]</strong> RT-Thread 組織倉庫列表（按 pushed 排序） — <a href="https://github.com/orgs/RT-Thread/repositories?sort=pushed">https://github.com/orgs/RT-Thread/repositories?sort=pushed</a></li>
+</ul>
+
+<p><em>資料來源：每日 RT-Thread 動態日報（2026-10-26 至 2026-10-30 共五期）及本週期釋出日核查；報告週期為 2026-10-26 至 2026-10-30。下一期週報週期建議：2026-11-02 ~ 2026-11-06。</em></p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/tw/post.html#news-list" class="btn btn-main news-list-link">返回新聞列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>聯絡我們</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>郵箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市寶山區高逸路88號1幢1層108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>連結</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

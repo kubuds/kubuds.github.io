@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/en/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1102.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1102.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1102.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1102.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1102.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Daily Intelligence Report (2026-11-02) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Daily Intelligence Report (2026-11-02)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Daily Intelligence Report (2026-11-02)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-02</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Research window</strong>: 2026-10-30 08:00 ~ 2026-11-02 08:00 (Beijing time, 72 hours, covering Saturday and Sunday)</p>
+
+<p><strong>Sources</strong>: RT-Thread official news API and community article channel; GitHub (main repository commits / PR / Issue / releases / tags; all 35 repositories in the RT-Thread org checked by push time, with packages / vscode-rt-smart / sdk / pkgs-test listed separately); GitHub repository search (rt-thread keyword, filtered by creation time); Google News six queries in Chinese and English (via proxy); HN Algolia; EETimes China RT-Thread official column; club.rt-thread.org forum (this issue was limited by the site’s WAF; lists and post bodies could not be read directly)</p>
+
+<hr />
+
+<h2 id="index-for-this-issue">Index for This Issue</h2>
+
+<ul>
+  <li>I. Kernel and Release Dynamics
+    <ul>
+      <li>clang-format pinned to 22.1.8; 73 kernel source files under src/ reformatted in one pass (10-30)</li>
+      <li>dlmodule closes #5705 reported in 2022: four root causes of uninitialized global variables fixed together (10-30)</li>
+      <li>Release management CI and release process enter planning: monthly Z reports, Y reviews every 3 to 6 months (10-30)</li>
+    </ul>
+  </li>
+  <li>II. Security Follow-up and Merge Queue
+    <ul>
+      <li>RT-Smart mailbox does not validate kernel object pointers; forged objects can read and write kernel memory (10-31)</li>
+      <li>pipe’s FIONREAD writes directly to a user-supplied pointer; third occurrence of the same defect type (10-30)</li>
+      <li>Count multiplication wraparound in poll and epoll: validation passes at 8 bytes, but iteration walks 530 million entries (10-30)</li>
+      <li>RISC-V AIA: APLIC level-triggered interrupt EOI unconditionally writes setipnum; delayed thread does not resume under older QEMU (11-01)</li>
+    </ul>
+  </li>
+  <li>III. Official and Community Events
+    <ul>
+      <li>Wuhan stop of the roadshow training held on 10-31: Edgi-Talk dual-core four major labs, project code taken home on site (10-31)</li>
+      <li>Livestream on November 4: keep the large model on the PC and recreate the DeepSeek blue whale desktop pet with Ruiqing 3576 (10-30)</li>
+      <li>Official news API still stuck at June 17; release-side coverage shifts to media columns (11-02)</li>
+    </ul>
+  </li>
+  <li>IV. Ecosystem and Vendor Adaptation
+    <ul>
+      <li>NXP RT1180 industrial Ethernet linker script enters the review queue (10-30)</li>
+      <li>Patches already exist for the two driver defects reported last issue: DM365 SPI divide-by-zero, Bluetrum AB32 ADC channel (10-30 ~ 10-31)</li>
+    </ul>
+  </li>
+  <li>V. Industry Applications
+    <ul>
+      <li>Contest entries open-sourced in bulk after the competition: four edge AI vision projects packed onto two boards (10-30 ~ 11-01)</li>
+      <li>From contest board to production line: 20 kHz sensorless FOC and encoder closed-loop positioning on dual Cortex-M7 (10-31)</li>
+    </ul>
+  </li>
+  <li>VI. Trends and Summary for This Issue
+    <ul>
+      <li>Trend: quiet on the merge side, dense on the patch side; RT-Smart’s boundaries are being systematically cleared</li>
+      <li>Limitations and deduplication notes</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="i-kernel-and-version-dynamics">I. Kernel and Version Dynamics</h2>
+
+<h3 id="11-clang-format-pinned-to-2218-73-kernel-source-files-under-src-reformatted-in-one-pass-10-30">1.1 clang-format pinned to 22.1.8, 73 kernel source files under src/ reformatted in one pass (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 18:20 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11936">Proposal #11936</a></p>
+
+<p>75 files, 3852 lines added, 3023 lines deleted, authored by CYFS3, linked to the earlier #11653 and the already-merged #11859. The problem is not the formatting itself: the format-check CI installs clang-format via pip, while the manual formatting workflow installs it via apt, and neither pins a version, so the same code can produce different results at different times, making the format check non-reproducible.</p>
+
+<p>The change is split into three independent commits. First, a new tools/ci/requirements-format.txt pins the version to 22.1.8; both workflows now install from that file, and the manual workflow adds actions/setup-python to provide a Python environment. Second, .clang-format enables AllowShortLoopsOnASingleLine and disables BraceWrapping.BeforeWhile, keeping empty loops on a single line and writing do-while uniformly as <code class="highlighter-rouge">} while (...)</code>. Third, the same version recursively formats 73 C and header files under src/, including the klibc, utest, perf, and smp subdirectories; 69 produce changes and 4 were already compliant. The Chinese and English coding standards gain three new sections covering installation, version confirmation, and editor configuration.</p>
+
+<p>Kconfig, SConscript, and other directories are out of scope, indicating this is a directory-by-directory formatting convergence rather than a repo-wide reformat.</p>
+
+<h3 id="12-dlmodule-closes-out-5705-reported-in-2022-10-30">1.2 dlmodule closes out #5705, reported in 2022 (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 10:54 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11915">Proposal #11915</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/5705">Defect #5705</a></p>
+
+<p>2 files, 215 lines added, 45 lines deleted, with changes in dlelf.c and dlelf.h. This fixes defect #5705, reported in March 2022 and open for over four years: accessing uninitialized global variables in dynamic modules caused address overlap or failed relocation. After reproducing it on the latest master, the author broke the root cause into four parts.</p>
+
+<p>First, after a BSS segment (SHT_NOBITS) is loaded, the allocation pointer is not advanced, so multiple NOBITS segments overlap in the same memory. Second, the original implementation shared base addresses across the rodata, bss, and data categories by segment name, rather than computing relocation addresses from the actual load address of the segment each symbol belongs to, so multi-segment scenarios point to the wrong location. Third, relocation of SHN_COMMON symbols (tentatively defined uninitialized globals) was silently skipped—the code read shdr[0xfff2], got a garbage segment name, and failed to match. Fourth, this path never built module-&gt;symtab, so dlsym() always failed for ET_REL modules.</p>
+
+<p>The fix addresses all four: advance the allocation pointer after a BSS segment is loaded; compute rodata, bss, and data segment symbols uniformly as “segment load address plus in-segment offset”; allocate a separate common block for SHN_COMMON, with sizing and relocation sharing the same alignment algorithm, and move that branch ahead of segment-name matching to avoid out-of-bounds reads; and collect GLOBAL FUNC symbols from .symtab to build module-&gt;symtab, aligning with how the ET_DYN path builds it from .dynsym.</p>
+
+<p>Verification was done on qemu-vexpress-a9 with RT_USING_MODULE enabled, running three test modules covering both the standard ET_DYN flow and the import of kernel symbols via GOT. The impact is on BSPs using the ET_REL load path, with Cortex-M projects that enable dynamic modules affected first.</p>
+
+<h3 id="13-version-management-ci-and-release-process-enter-planning-10-30">1.3 Version management CI and release process enter planning (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 16:04 (report) / 15:29 (documentation proposal)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11956">Defect #11956</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11955">Proposal #11955</a></p>
+
+<p>#11956 was filed by kurisaW with the enhancement label; the body states “planned, not implemented,” and the milestone awaits scheduling after the B01 inventory. The core is to turn the version strategy into runnable CI, reporting, and release tasks: Z versions generate a report and release proposal monthly, with humans deciding whether to release; Y versions are reviewed and released every 3 to 6 months alongside hardware validation; externally, developers are encouraged to use the X and Y baselines first. The text stresses reusing existing GitHub Actions, QEMU BSPs, and the test framework rather than building a separate system.</p>
+
+<p>#11955, submitted at 15:29 the same day, is the companion documentation, writing the mainline version numbering rules and release process into the docs directory; it is still under review. Neither has been merged yet, but the direction is clear: turn a step long handled manually, where baselines drift easily, into an inspectable process.</p>
+
+<hr />
+
+<h2 id="ii-security-follow-up-and-merge-queue">II. Security Follow-up and Merge Queue</h2>
+
+<h3 id="21-rt-smart-mailbox-does-not-validate-kernel-object-pointers-forged-objects-can-read-and-write-kernel-memory-10-31">2.1 RT-Smart mailbox does not validate kernel object pointers; forged objects can read and write kernel memory (10-31)</h3>
+
+<p><strong>Date</strong>: 2026-10-31 14:26 (report time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11960">Defect #11960</a></p>
+
+<p>Reported by XueDugu, checked against master cbc19778 of that day. The problem is at the mailbox system call entry: it forwards the kernel object pointer passed in by the user directly to the kernel mailbox API, without validating whether the object belongs to the calling LWP, whether it is a mailbox, or whether it resides in kernel memory. A non-privileged process can therefore construct a “forged object” that the kernel reads and writes according to its own rules, which is equivalent to an arbitrary kernel read/write primitive.</p>
+
+<p>The report lays out the timeline completely: the defect was introduced by commit ecf2d8215961 (2022-12-03, RT-Smart system call boundary adjustment), the first affected version is v5.0.0, and v5.3.0 and current master (5.4.0-dev) are still affected. Verification was done at two levels—a QEMU qemu-virt64-aarch64 full-system run (virt, GICv2, single core, 128 MiB, with RT_USING_SMART and RT_USING_MAILBOX enabled) demonstrates the user-to-kernel out-of-bounds path; a Raspberry Pi Pico 2 W (RP2350) validates the kernel mailbox API primitive itself at the board level, the latter running plain RT-Thread in a single address space, to show that the problem is not limited to Smart’s isolation layer.</p>
+
+<p>As of publication, this defect has no assignee and no corresponding fix proposal; the only comment is the CI bot’s /claim notice.</p>
+
+<h3 id="22-pipes-fionread-writes-directly-to-a-user-supplied-pointerthird-consecutive-defect-of-the-same-type-10-30">2.2 pipe’s FIONREAD writes directly to a user-supplied pointer—third consecutive defect of the same type (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 19:13 (report time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11958">Defect #11958</a></p>
+
+<p>The same reporter’s second report. In the FIONREAD and FIONWRITE branches, pipe’s ioctl directly does <code class="highlighter-rouge">*((int *)args) = ...</code>, writing the ring buffer’s data length or remaining space to the address pointed to by args; RT-Smart’s sys_ioctl() forwards the raw user argument all the way through without copyout, and the pipe layer does not check whether that address is a user address either. As a result, an ordinary process can specify an arbitrary kernel address and have the kernel write four bytes there, with the written value constrained by the pipe’s current state.</p>
+
+<p>Affected range is v5.0.0 through v5.3.0 and master (5.4.0-dev); verification was done on QEMU vexpress-a9, Cortex-A9, 32-bit RT-Smart, with RT_USING_POSIX_PIPE enabled and a 512-byte pipe buffer.</p>
+
+<p>This is the third consecutive defect of the same type: first the terminal subsystem’s ioctl dropped FreeBSD’s copyin precondition (defect #11937), then the block device wrote a 24-byte partition table to a caller-specified kernel pointer (#11952), and now pipe (#11958). All three share the same cause—the fops layer retains the old assumption that “the argument is already a kernel address,” while the user-space entry point never added a conversion layer. The mailbox defect in 2.1 belongs to the same family left by the same introducing commit, except that the out-of-bounds direction changes from “writing into it” to “treating a user pointer as a kernel object.”</p>
+
+<h3 id="23-count-multiplication-wraparound-in-poll-and-epoll-10-30">2.3 Count multiplication wraparound in poll and epoll (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 11:59 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11954">Proposal #11954</a></p>
+
+<p>1 file, 28 lines added, fixing the first half of #11925. sys_poll() uses the user-supplied count to compute the kernel buffer size; on 32-bit the multiplication wraps, but the original unwrapped count is still used for iteration afterward: with nfds = 0x20000001 and an 8-byte pollfd structure, the product 0x1_00000008 is truncated to 8; the access check and kmem_get both pass on 8 bytes, yet poll() iterates 536,870,913 entries, and reading pollfd-&gt;fd and writing revents in do_pollfd() all fall outside the allocated block. 64-bit builds are unaffected: the product is promoted to 64 bits and an oversized allocation simply returns ENOMEM.</p>
+
+<p>sys_epoll_pwait() has the same shape, and its count is an int, so negative values must be rejected as well. The fix checks before using these counts to compute any size: if nfds is greater than SIZE_MAX / sizeof(*fds), return -EINVAL; on the epoll side, add a check for count less than 0. The style matches the msg_iovlen validation in sys_sendmsg and sys_recvmsg.</p>
+
+<p>Also in flight in the same batch are #11899 (sys_sigaction validates the signal number) and #11895 (signal delivery order and ELF segment protection); their common thread is validating user-supplied numbers, lengths, and pointers before entering kernel logic.</p>
+
+<h3 id="24-risc-v-aia-aplic-level-interrupt-eoi-unconditionally-writes-setipnum-11-01">2.4 RISC-V AIA: APLIC level-interrupt EOI unconditionally writes setipnum (11-01)</h3>
+
+<p><strong>Date</strong>: 2026-11-01 20:40 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11966">Proposal #11966</a></p>
+
+<p>8 files, 1367 lines added, 10 lines deleted. The symptom: running bsp/qemu-virt64-riscv on QEMU 8.2.2 with RV64, four-core SMP, and AIA (APLIC and IMSIC) configured, a counting program with rt_thread_mdelay(1000) prints only “RISC-V test: 0” and then stalls; the delay thread never comes back.</p>
+
+<p>Root cause: the APLIC driver unconditionally writes setipnum_le when handling the EOI of a level interrupt. After the device has already deasserted the interrupt, older QEMU may still generate a new MSI because of this write, producing a continuous spurious interrupt that starves the system timer handler, so the delay thread cannot resume. The fix first reads the corresponding valid input state in in_clrip (rectified input, with interrupt polarity already taken into account) and writes setipnum_le only when the device still holds the interrupt asserted—preserving the level interrupt’s retrigger capability without firing an extra shot for an already-deasserted interrupt.</p>
+
+<p>The reproducer was changed as well: the BSP’s main.c goes from “print Hello RISC-V once” to a counting loop from 0 to 9, with a one-second delay after each print. Verification environment is QEMU 8.2.2, OpenSBI v1.3, riscv64-unknown-elf-gcc 13.2.0; all three configurations—AIA enabled, four cores, with networking, NVMe, virtio-console, and PCI serial disabled—produce complete output.</p>
+
+<hr />
+
+<h2 id="iii-official-and-community-activities">III. Official and Community Activities</h2>
+
+<h3 id="31-wuhan-stop-of-the-roadshow-training-lands-on-10-31-edgi-talk-dual-core-four-experiments-10-31">3.1 Wuhan stop of the roadshow training lands on 10-31, Edgi-Talk dual-core four experiments (10-31)</h3>
+
+<p><strong>Date</strong>: 2026-10-31 10:00 ~ 17:30 (event time)　<strong>Source</strong>: <a href="https://www.eet-china.com/mp/a535641.html">Official column: Wuhan hands-on session</a></p>
+
+<p>The Wuhan stop of the RT-Thread roadshow training was held in Room 801, Teaching Building 2, West Campus, China University of Geosciences Wuhan. The hardware was the Infineon PSoC Edge E84-based Edgi-Talk dual-core development board, and four experiments were walked through in sequence: GUI display, handwriting recognition, LLM web-side deployment, and XiaoZhi AI. All project code and configuration files were provided on site.</p>
+
+<p>The LLM segment used the llmchat software package plus Tongyi Qianwen (qwen-plus by default), then enabled llmchat’s webnet mode so that a browser could access the board’s IP and hold a conversation. The write-up documents the pitfalls in detail: the webnet thread stack must be raised to 8K, and mbedtls’s maximum fragment length must be changed to 6144, otherwise the TLS handshake fails; the lwIP thread stack must be 4096; and the html must be transferred via ymodem to the /flash/webnet directory.</p>
+
+<p>The XiaoZhi AI segment used the official Edgi_Talk_M55_XiaoZhi project. On first network configuration it defaults to AP mode: the phone connects to the hotspot broadcast by the board, then opens the default gateway page to select a Wi-Fi network. The wake word is “Xiao Rui, Xiao Rui”, after which commands such as “turn on the light” or “brighten the screen” are routed via MCP to three peripherals: LED, backlight, and volume. This board is one of the designated platforms for this year’s embedded competition, so the training effectively served as pre-competition practice.</p>
+
+<h3 id="32-november-4-livestream-keep-the-large-model-on-the-pc-recreate-the-blue-whale-desktop-pet-with-ruiqing-3576-10-30">3.2 November 4 livestream: keep the large model on the PC, recreate the Blue Whale desktop pet with Ruiqing 3576 (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 11:50 (published)　<strong>Source</strong>: <a href="https://www.eet-china.com/mp/a535640.html">Official column: Ruiqing 3576 desktop pet livestream</a></p>
+
+<p>On November 4 (Wednesday) at 20:00, the Ruiqing tech livestream channel will run a live demo on “recreating the DeepSeek Blue Whale desktop pet with Ruiqing 3576”. The author has already connected the PC-side DeepSeek to the 3576 development board, recreating the desktop pet character from DeepSeek Harness.</p>
+
+<p>The architectural choice is worth noting: the large model does not run on the board. The “brain” stays on the PC and the “body” is handed to the 3576. The livestream covers four parts: where compute goes and how the persona is defined; how to pair via the DSH mobile bridge entry when the board and the computer are not on the same subnet, using curl on site to obtain a short-lived Token in exchange for a communication Cookie before sending RPCs; how interfaces such as session.create and session.prompt send text out and read replies back; and subsequently using LVGL to draw three states—listening, thinking, speaking—integrating ASR and TTS, and letting the large model directly control peripherals.</p>
+
+<p>This line of work is a useful reference for teams building edge AI: it acknowledges the compute limits at the edge, placing interaction and presentation on the board while leaving inference upstream—the same trade-off as competition entries that “run small models on the NPU and send complex judgments to the cloud”.</p>
+
+<h3 id="33-official-news-feed-still-stuck-at-june-17-11-02">3.3 Official news feed still stuck at June 17 (11-02)</h3>
+
+<p><strong>Date</strong>: 2026-11-02 (verification)　<strong>Source</strong>: <a href="https://www.rt-thread.org/news/list">RT-Thread official news list</a></p>
+
+<p>The latest entry returned by the official news feed is still the 2026-06-17 item “Ruiside Technology invited to attend the 2026 Abu Dhabi Investment Forum”; there were no new additions this issue. The homepage of the official news list also had no new posts during the same period.</p>
+
+<p>The actual publishing outlet has shifted to media columns: the RT-Thread official column on EET China updated two pieces within the window (the 10-30 Wuhan session and the 11-04 livestream preview), while a November 1 Double 11 promotion piece was not included. Community project posts and discussions remain on the forum, but the site now fronts a WAF challenge page, so the list could not be read directly this issue; competition entry information was instead cross-verified from GitHub repository READMEs and media columns.</p>
+
+<hr />
+
+<h2 id="iv-ecosystem-and-vendor-adaptation">IV. Ecosystem and Vendor Adaptation</h2>
+
+<h3 id="41-nxp-rt1180-industrial-ethernet-linker-script-enters-the-review-queue-10-30">4.1 NXP RT1180 industrial Ethernet linker script enters the review queue (10-30)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 19:57 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11959">Proposal #11959</a></p>
+
+<p>A BSP proposal for the NXP i.MX RT1180, adding the linker script required for industrial Ethernet scenarios. The RT1180 carries multiple gigabit Ethernet ports and a TSN switch; such projects have stricter requirements on memory partitioning and section layout than general-purpose BSPs, and the linker script often has to land first before drivers and other peripherals can be connected. The proposal is still in the queue with no merge date.</p>
+
+<p>Three other hardware-side and low-level small fixes are also queued in the same window: #11961 initializes static TLS for C++ threads; #11965 prevents gcc from recognizing the byte loop in klibc’s kstring.c as memset and memcpy calls—self-implemented string functions being rewritten by the compiler into library function calls is a rewrite that needs separate justification in a kernel bootstrap context; #11963 and #11964 are two utest additions, making the mailbox test case repeatable and covering signal delivery to a thread blocked in mdelay, respectively.</p>
+
+<h3 id="42-two-of-the-driver-defects-reported-last-issue-now-have-patches-10-30--10-31">4.2 Two of the driver defects reported last issue now have patches (10-30 ~ 10-31)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 18:16 / 10-31 21:11 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11957">Proposal #11957</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11962">Proposal #11962</a></p>
+
+<p>Two of the four driver-side defects reported in the previous issue have now received patches. #11957 addresses the divide-by-zero in DM365 SPI: rejecting max_hz of 0 during setup so that the prescaler calculation does not treat it as a divisor. #11962 addresses the Bluetrum AB32 ADC: validating the channel number before reading, rather than silently falling back to 0 after a mapping failure and then indexing the data register array with the raw channel number.</p>
+
+<p>Neither has been merged yet, and the other two (Bouffalo ADC out-of-bounds read #11949, HPM ADC channel state indexing #11951) still have no corresponding proposal this issue. The common thread among these defects is unchanged: the rt_adc_read() and rt_spi_configure() layer performs no parameter validation and pushes the responsibility down to each driver, and most drivers do not do it.</p>
+
+<hr />
+
+<h2 id="v-industry-applications">V. Industry Applications</h2>
+
+<h3 id="51-post-competition-open-sourcing-four-edge-ai-vision-projects-on-two-boards-10-30--11-01">5.1 Post-competition open-sourcing: four edge AI vision projects on two boards (10-30 ~ 11-01)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 ~ 2026-11-01 (repository creation time)　<strong>Source</strong>: <a href="https://github.com/hyh12138938/titan-mini-pcb-inspector">Repo: Titan Mini PCB Inspector</a></p>
+
+<p>Fifteen new RT-Thread-related repositories appeared on GitHub within the window, 7 of which describe themselves as entries to the 2026 RT-Thread Embedded Competition. Their open-sourcing clusters between 10-30 and 11-01, matching the competition requirement to post about the work on the forum and open-source the code.</p>
+
+<p>Two run on the Renesas Titan Board Mini (RA8P1, Cortex-M85 plus Ethos-U55). The first is Titan Mini PCB Inspector: camera-based board inspection, 800×480 LCD display, serial HMI interaction, with Ethos-U55 doing local inference and a cloud LLM writing suggestions; when offline it falls back to table-driven expert rules rather than failing silently. The second is Lingxi Zhimou: an INT8-quantized pose model detects up to 10 people per frame with 17 keypoints each, then rule-based logic classifies four behaviors—hand raised, head down on desk, standing, sitting upright—and outputs a weighted focus score from 0 to 100. Events are timestamped and written to a CSV on SD card; raw footage never leaves the classroom.</p>
+
+<p>Two more, both named SENTINEL, run on the Fullhan MC632X (Cortex-A7). One connects to an M5Stack AtomS3R XiaoZhi for voice announcements, with dual 800×480 MJPEG web preview, human detection and tripwire entry/exit counting, switching at night to perimeter arming and video evidence capture. The other emphasizes standalone operation without a PC—one power cable and one Ethernet cable—automatically completing network provisioning, the media pipeline, and web service startup on power-up.</p>
+
+<p>All four make the same trade-off: push models down to the on-device NPU or MCU, hand complex judgment to the cloud or a rule engine, and keep raw footage off the device. This is the same engineering judgment as “brain on the PC, body on the board” from the 3.2 livestream.</p>
+
+<h3 id="52-from-competition-board-to-production-line-dual-cortex-m7-20-khz-sensorless-foc-and-encoder-closed-loop-positioning-10-31">5.2 From competition board to production line: dual Cortex-M7 20 kHz sensorless FOC and encoder-closed-loop positioning (10-31)</h3>
+
+<p><strong>Date</strong>: 2026-10-30 ~ 2026-11-01 (repository creation time)　<strong>Source</strong>: <a href="https://github.com/illustriousness/ns800rt7p65-focdemo">Repo: NS800RT7P65D FOC and CANopen</a></p>
+
+<p>The NOVOSENSE NS800RT7P65D is a dual Cortex-M7 motor control chip, and this project splits it into two logical CPUs: one runs 20 kHz ADC sampling and PWM, performing sensorless FOC, sliding-mode observer and PLL estimation, with hardware shutdown; the other runs UART and FinSH, CANopenNode v4.1 with CiA 402 bridging, and CAN transmit/receive. Cross-core communication uses only an asynchronous command mailbox and a single six-field, 24-byte consistency snapshot—no haphazard shared-memory reads. The underlying layer is RT-Thread 5.3.1 in SMP configuration.</p>
+
+<p>EdgeDoctor-RT on the Infineon PSoC Edge E84 takes a different path: it processes one vibration data block every 20 ms, extracts 64-dimensional band features over a 1-second sliding window, and feeds them to a 64-32-5 MLP that classifies five states—normal, bearing inner-race fault, bearing outer-race fault, misalignment, imbalance—along with confidence and recommended action. The baseline is the official Edgi_Talk_M55_XiaoZhi v1.4.0, with only the application layer layered on; boot, linking, HAL and Wi-Fi resources are untouched.</p>
+
+<p>Two motion-control entries better illustrate how far competition boards have descended: one on the NXP FRDM-MCXA346 does closed-loop stepper positioning with encoder feedback and a Python/Tkinter host application, running 10-degree and 90-degree positioning, a 45-degree relative reversal, and return to software zero; the other is a detection cart with ultrasonic obstacle avoidance and smoke detection, with visual recognition on the PC side.</p>
+
+<p>The platform distribution is worth noting: two each on Titan Board Mini and MC632X, one on PSoC Edge E84, one on NS800RT7P65D, and two on FRDM-MCXA346—covering five of the boards on the competition’s board list.</p>
+
+<hr />
+
+<h2 id="vi-trends-and-summary-for-this-issue">VI. Trends and Summary for This Issue</h2>
+
+<h3 id="61-trend-quiet-on-merges-dense-on-patchesrt-smarts-boundaries-are-being-systematically-audited">6.1 Trend: quiet on merges, dense on patches—RT-Smart’s boundaries are being systematically audited</h3>
+
+<p>In this issue’s 72-hour window the main repository saw only 2 merges (the dlmodule fix at 10-30 10:54 and the clang-format reflow at 18:20), but 11 new proposals and 3 new defects were opened, all between 10-30 and 11-01. A weekend window with “few merges, many submissions” is normal; what matters is not the count but where they land.</p>
+
+<p>The first thread is engineering infrastructure. Pinning the clang-format version addresses the same code yielding different formatting conclusions on different machines; version-management CI and the release process address baseline drift and the unclear release boundary between Z and Y. Neither changes a line of kernel logic, yet both determine whether all subsequent patches can be reviewed reliably—the previous issue’s split of that 11,000-line single lwp file into 20 files followed the same path.</p>
+
+<p>The second thread is RT-Smart’s user-space boundary. Terminal ioctl, block device ioctl, pipe ioctl, and mailbox object pointers—four issues with the same shape: the fops and syscall layers still assume “the argument is already a kernel address, the object is already a kernel object.” The reporter traced the introducing commit to ecf2d8215961 on 2022-12-03, showing this is not a regression from new code but a boundary that has never been systematically validated since it was established. In-flight patches cover poll and epoll count wraparound, sigaction signal numbers, ELF segment protection and static TLS—the direction is right, but the mailbox and pipe patches remain unclaimed.</p>
+
+<p>The third thread is how the ecosystem expresses itself. The official news feed has been stalled at June 17 for a sixth month, with external announcements now carried by media columns; community activity has clearly shifted to “works”—7 competition entries open-sourced to GitHub in one weekend, five in edge AI vision and diagnostics, two in motors and motion control. For anyone tracking RT-Thread adoption, these repositories say more about what board vendors and developers are doing with it than official press releases.</p>
+
+<h3 id="62-limitations-and-deduplication-notes">6.2 Limitations and deduplication notes</h3>
+
+<p>The forum club.rt-thread.org served a WAF challenge page in this issue’s window, so the works-post list and article bodies could not be read directly. Competition entry information was instead cross-verified against GitHub repository self-descriptions (README, directory structure, creation time) and the official EET China column, without post-by-post comparison against the forum originals.</p>
+
+<p>All 5 HN Algolia hits in the window were word-sense false matches on “thread” (Pulling on a Thread, HN Replies, the French download tax, etc.) and were discarded wholesale; Google News returned zero hits on the English side, and 2 of 3 Chinese-side hits were included (Wuhan training, the 11-04 livestream), while the 11-01 Double 11 promotional piece was not. Items #11897 (K230D), #11892 (RISC-V Smart MMU), #11944 (RTL8125) and #11943 (RK3588 display audio), placed in the pending-review queue in the previous issue, remain queued with no merges this issue, so they are not repeated as entries.</p>
+
+<hr />
+
+<h2 id="appendix-source-verification-table-and-source-list">Appendix: Source Verification Table and Source List</h2>
+
+<h3 id="source-verification-table">Source Verification Table</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Verification Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Official news feed (rt_org)</td>
+      <td>No new items in 72 hours; latest entry remains at 2026-06-17</td>
+    </tr>
+    <tr>
+      <td>Community article feed</td>
+      <td>Site fronted by a WAF challenge page; list and body text could not be read directly this period</td>
+    </tr>
+    <tr>
+      <td>Main repo commits</td>
+      <td>2 within the window (10-30 10:54, 18:20)</td>
+    </tr>
+    <tr>
+      <td>Main repo PRs</td>
+      <td>2 merged (#11915, #11936); 11 newly opened, all under review</td>
+    </tr>
+    <tr>
+      <td>Main repo Issues</td>
+      <td>3 newly opened (#11956, #11958, #11960)</td>
+    </tr>
+    <tr>
+      <td>Main repo releases and tags</td>
+      <td>No new items; latest remains v5.3.0 (2026-09-10)</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org (35 repos)</td>
+      <td>Only the main repo had pushes within the window; packages 10-23, pkgs-test 10-23, sdk 10-25, vscode-rt-smart 10-26 all fall outside the window</td>
+    </tr>
+    <tr>
+      <td>GitHub repository search (rt-thread)</td>
+      <td>15 newly created, 7 of which self-describe as 2026 embedded competition entries</td>
+    </tr>
+    <tr>
+      <td>Google News Chinese</td>
+      <td>3 hits, 2 included, 1 promotional piece excluded</td>
+    </tr>
+    <tr>
+      <td>Google News English</td>
+      <td>Zero hits</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>5 false matches on the word “thread”; entire batch discarded</td>
+    </tr>
+    <tr>
+      <td>EET-China official column</td>
+      <td>2 articles within the window (10-30), both included</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="full-source-list">Full Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> Main repository commit log<br />
+<a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> PR #11936 (pin clang-format version and format kernel sources)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11936">https://github.com/RT-Thread/rt-thread/pull/11936</a></li>
+  <li><strong>[3]</strong> PR #11915 (fix uninitialized global variables in dlmodule)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11915">https://github.com/RT-Thread/rt-thread/pull/11915</a></li>
+  <li><strong>[4]</strong> Issue #5705 (uninitialized global variables in dynamic modules, 2022-03)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/5705">https://github.com/RT-Thread/rt-thread/issues/5705</a></li>
+  <li><strong>[5]</strong> Issue #11956 (version management CI and release process)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11956">https://github.com/RT-Thread/rt-thread/issues/11956</a></li>
+  <li><strong>[6]</strong> PR #11955 (mainline version and release process documentation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11955">https://github.com/RT-Thread/rt-thread/pull/11955</a></li>
+  <li><strong>[7]</strong> Issue #11960 (RT-Smart mailbox object pointer validation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11960">https://github.com/RT-Thread/rt-thread/issues/11960</a></li>
+  <li><strong>[8]</strong> Issue #11958 (pipe ioctl user pointers)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11958">https://github.com/RT-Thread/rt-thread/issues/11958</a></li>
+  <li><strong>[9]</strong> PR #11954 (poll and epoll counter wraparound)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11954">https://github.com/RT-Thread/rt-thread/pull/11954</a></li>
+  <li><strong>[10]</strong> PR #11966 (APLIC MSI level interrupt retrigger)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11966">https://github.com/RT-Thread/rt-thread/pull/11966</a></li>
+  <li><strong>[11]</strong> PR #11959 (NXP RT1180 industrial Ethernet linker script)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11959">https://github.com/RT-Thread/rt-thread/pull/11959</a></li>
+  <li><strong>[12]</strong> PR #11957 (DM365 SPI zero-frequency validation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11957">https://github.com/RT-Thread/rt-thread/pull/11957</a></li>
+  <li><strong>[13]</strong> PR #11962 (Bluetrum AB32 ADC channel validation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11962">https://github.com/RT-Thread/rt-thread/pull/11962</a></li>
+  <li><strong>[14]</strong> PR #11899 (sys_sigaction signal number validation)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11899">https://github.com/RT-Thread/rt-thread/pull/11899</a></li>
+  <li><strong>[15]</strong> PR #11895 (signal delivery order and ELF segment protection)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11895">https://github.com/RT-Thread/rt-thread/pull/11895</a></li>
+  <li><strong>[16]</strong> Repo Titan Mini PCB Inspector (2026 embedded competition)<br />
+<a href="https://github.com/hyh12138938/titan-mini-pcb-inspector">https://github.com/hyh12138938/titan-mini-pcb-inspector</a></li>
+  <li><strong>[17]</strong> Repo LingXi Vision (2026 embedded competition)<br />
+<a href="https://github.com/ningshao0705/LingXi-Vision">https://github.com/ningshao0705/LingXi-Vision</a></li>
+  <li><strong>[18]</strong> Repo SENTINEL dual-camera edge AI security (MC632X and XiaoZhi)<br />
+<a href="https://github.com/yh-xh/sentinel-mc632x">https://github.com/yh-xh/sentinel-mc632x</a></li>
+  <li><strong>[19]</strong> Repo SENTINEL stereo AI vision security terminal (MC632X)<br />
+<a href="https://github.com/PAOPAOovo2377/sentinel-rtthread-mc632x">https://github.com/PAOPAOovo2377/sentinel-rtthread-mc632x</a></li>
+  <li><strong>[20]</strong> Repo EdgeDoctor-RT (PSoC Edge E84 predictive maintenance)<br />
+<a href="https://github.com/devinhuang2001/EdgeDoctor-RT">https://github.com/devinhuang2001/EdgeDoctor-RT</a></li>
+  <li><strong>[21]</strong> Repo NS800RT7P65D FOC and CANopen<br />
+<a href="https://github.com/illustriousness/ns800rt7p65-focdemo">https://github.com/illustriousness/ns800rt7p65-focdemo</a></li>
+  <li><strong>[22]</strong> Repo FRDM-MCXA346 stepper closed-loop positioning<br />
+<a href="https://github.com/Jssss982/rtthread-mcxa346-stepper-control">https://github.com/Jssss982/rtthread-mcxa346-stepper-control</a></li>
+  <li><strong>[23]</strong> Repo FRDM-MCXA346-based smart obstacle-avoidance car<br />
+<a href="https://github.com/leoleo-14/industrial-detector-car">https://github.com/leoleo-14/industrial-detector-car</a></li>
+  <li><strong>[24]</strong> EET-China: Wuhan hands-on session (2026-10-30)<br />
+<a href="https://www.eet-china.com/mp/a535641.html">https://www.eet-china.com/mp/a535641.html</a></li>
+  <li><strong>[25]</strong> EET-China: Ruiqing 3576 desktop pet livestream (2026-10-30)<br />
+<a href="https://www.eet-china.com/mp/a535640.html">https://www.eet-china.com/mp/a535640.html</a></li>
+  <li><strong>[26]</strong> RT-Thread official news list<br />
+<a href="https://www.rt-thread.org/news/list">https://www.rt-thread.org/news/list</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

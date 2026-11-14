@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ko/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/ko/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/ko/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ko/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ko/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ko/">홈</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">서비스 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/service/simulator.html">시뮬레이터</a></li>
+              <li><a class="dropdown-item" href="/ko/service/os.html">운영체제</a></li>
+              <li><a class="dropdown-item" href="/ko/service/toolchain.html">툴체인</a></li>
+              <li><a class="dropdown-item" href="/ko/service/chip.html">임베디드 칩</a></li>
+
+              <li><a class="dropdown-item" href="/ko/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ko/service/aisys.html">AI 시스템</a></li>
+              <li><a class="dropdown-item" href="/ko/service/consultation.html">컨설팅</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">솔루션 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">커뮤니티 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ko/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ko/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ko/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ko/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ko/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ko/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/post.html" style="white-space: nowrap;">뉴스 및 이벤트</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/about.html" style="white-space: nowrap;">회사 소개</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ko/career.html">채용 정보</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              한국어 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1103.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/risc-v/daily/2026/1103.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1103.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1103.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1103.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 데일리 리포트 (2026-11-03) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ko/">홈</a></li>
+                                <li class="breadcrumb-item"><a href="/ko/post.html#news-list" class="news-list-link">뉴스 및 이벤트</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 데일리 리포트 (2026-11-03)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 데일리 리포트 (2026-11-03)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-03</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>모니터링 기간</strong>: 2026-11-02 05:00 ~ 2026-11-03 05:00 (베이징 시간, 24시간).</p>
+
+<p><strong>출처</strong>: Google News 집계(중영문 12개 그룹 보충 조회, 프록시 경유), Hacker News, Phoronix, CNX Software, LinuxGizmos, LWN, arXiv, riscv.org 공식 블로그, openRuyi 공식 웹사이트 뉴스 페이지 및 메인 저장소, RISC-V 국제 재단 회원 기업 공식 웹사이트 점검(391개사), riscv100.top 순위 점검, 그리고 GitHub 상의 XiangShan／NEMU／difftest／XSCache, CORE-V CVW／cvfpu／CVA6, Damo Academy XuanTie, ESWIN, SOPHGO, Nuclei, Espressif, SpacemiT와 spacemit-robotics, Sipeed, revyos, openRuyi-Project, Radxa Linkr 등 조직 및 주요 저장소의 커밋과 릴리스 검색.</p>
+
+<hr />
+
+<h2 id="이번-호-인덱스">이번 호 인덱스</h2>
+
+<ul>
+  <li>오늘의 핵심: Andes, 고성능 RISC-V CPU Cuzco 개발 속도 늦춰, AI 사업이 이미 매출 절반 차지(11-02)</li>
+  <li>RISC-V 100 순위 동향
+    <ul>
+      <li>07-30 기록 보충 등록: XSCC 1.1 on SpacemiT K3 X100, SPEC CPU2026 Rate int 0.9, fp 1.07(11-03 점검)</li>
+      <li>What’s New에 「하드웨어 비교」 페이지 신설, Upcoming 세 항목 여전히 Preparing(11-03 점검)</li>
+    </ul>
+  </li>
+  <li>
+    <ol>
+      <li>오픈소스 커뮤니티와 소프트웨어 생태계
+        <ul>
+          <li>XiangShan, 비순차 CSRR 실행을 백엔드 디코딩에 복원(11-02)</li>
+          <li>XiangShan TAGE의 bankIdx를 히스토리 비트로 변경, 4개 bank의 2048개 위치 사용 가능해져(11-02)</li>
+          <li>XiangShan 사전 계산 BPU의 s2／s3 override 조건, 차순 PC 경로 마지막 단계 로직 압축(11-02)</li>
+          <li>XiangShan, XSCache 서브모듈을 ‘late hints’ 수정 버전으로 지정(11-02)</li>
+          <li>difftest, squash replay에서 비동기 AME 검증기 상태 유지(11-02)</li>
+          <li>NEMU, 매트릭스 접근이 공유 TLB 최적화 경로를 사용하도록 하고 CI는 성능 코멘트 재사용으로 변경(11-02)</li>
+          <li>CORE-V CVW 세 건: sfence.vma 후 DTLB 재로드, CLINT 미완성 코드 정리, Verilator와 VCS 기능 커버리지 수집(11-02 ~ 11-03)</li>
+          <li>CORE-V cvfpu, 명명된 clear 신호로 FFLARNC 수정(11-02)</li>
+          <li>openRuyi, clang-wrap의 ninja 링크 명령 수정, mtools에 CVE-2026-118384 보충(11-02)</li>
+          <li>KU Leuven, RISC-V 코어에서 최초로 DMP 오픈소스 구현, SecDMP 방어 제안(11-03)</li>
+          <li>riscv100.top, 「하드웨어 비교」 페이지 출시(11-03)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>제품과 생태계 동향
+        <ul>
+          <li>유럽, ERICI 산업 컴퓨팅 이니셔티브 발족, RVA23을 「산업용 컴퓨터」로 만들 계획(11-02)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>국내 팀 심층 분석
+        <ul>
+          <li>Nuclei, T0 Chiplet 듀얼 SDK 저장소 신설, 도구 가이드 2026.10 릴리스 후속(11-02)</li>
+          <li>SpacemiT docs-ros, Ubuntu 26.04의 ROS 2 설치 안내 보충(11-02)</li>
+          <li>SOPHGO SG2044 EDK2, PCIe ECRC 검증 기본 비활성화(11-02)</li>
+          <li>Damo Academy XuanTie, ESWIN, 모니터링 기간 내 조직 차원 신규 개발 없음(11-03)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>임바디드 인텔리전스와 로봇 특별 장
+        <ul>
+          <li>SpacemiT 세 저장소 같은 날 병합: G1 하드웨어 배포와 ONNX 운동 모드 출시(11-02)</li>
+          <li>humanoid_common, 온라인 정책 전환과 비동기 SONIC 계획 지원(11-02)</li>
+          <li>control_whole_body, 삼각 테이블로 커플링 매핑 구현, 기동 피드백 복구 보충(11-02)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>요약과 트렌드 관찰</li>
+    </ol>
+  </li>
+  <li>부록: 전체 출처 목록과 출처 검증표</li>
+</ul>
+
+<hr />
+
+<h2 id="오늘의-핵심-andes-고성능-risc-v-cpu-cuzco-개발-속도-늦춰-ai-사업이-이미-매출-절반-차지11-02">오늘의 핵심: Andes, 고성능 RISC-V CPU Cuzco 개발 속도 늦춰, AI 사업이 이미 매출 절반 차지(11-02)</h2>
+
+<p>EE Times가 11월 2일 타이베이에서 보도한 바에 따르면, Andes의 최고기술책임자(CTO) Charlie Su는 회사가 고성능 RISC-V CPU IP 「Cuzco」의 개발 속도를 늦추고 엔지니어링 자원을 더 빠르게 성장하는 AI 사업으로 이동시켰다고 확인했다. Cuzco는 원래 Andes가 데이터센터급 고성능 코어를 위해 별도로 분사한 Condor 회사의 프로젝트로, 2025년 Hot Chips에서 공개되었으며 올해 초 내부로 회수되었다. Su의 설명에 따르면 생태계가 먼저 그 단계에 도달해야 하드웨어에 기회가 생기는데, AI 라인의 성장이 너무 빨라 즉시 수익을 창출할 수 있는 곳에 자원을 우선 집중할 수밖에 없었다.</p>
+
+<p>수치 측면에서 Andes의 AI 사업은 현재 매출의 절반을 차지하며, 작년 30% 성장했고 올해는 50% 성장이 예상된다. 자체 개발 딥러닝 가속기는 규모가 크지 않아 약 4 TOPS(1 GHz)이며 자체 컴파일러를 갖추고 있다. AI 매출의 주체는 AI 칩 회사들이 Andes의 CPU 코어를 제어, 오케스트레이션, 데이터 이동에 사용하는 것으로, 고객으로는 Meta, d-Matrix, Fractile, Axelera가 언급되었다. 이러한 라이선스는 대부분 커스텀 코어이며 납기 주기가 매우 tight하여 내부 자원이 빠져나간 이유이기도 하다.</p>
+
+<p>Cuzco는 취소되지 않았다. Su는 여전히 제품화될 것이며 이름이 바뀔 수는 있지만 일정은 길어질 것이라고 밝혔다. 회사는 「천천히 만들면서 가속할 만한 신호를 기다릴 것」이다. 그는 IP 사업의 논리를 비교적 직설적으로 설명했다. 오늘 가장 많은 매출을 기여하는 코어는 십여 년 전에 설계된 것이며, 고객은 같은 코어 세트에서 십 년 이상 반복 개선할 수 있으므로 「제대로 만들고 재사용 가능하게 하는 것」이 첫 출시를 앞서는 것보다 중요하다. 최근 우선순위는 스토리지 시장의 메인 컨트롤러 코어(이미 10개 고객이 소형 컨트롤러 코어로 양산 중)와 자동차·로봇이다. 또 다른 배경은 Arm이 자체 개발한 고급 CPU 실리콘을 출시한 뒤 비즈니스 모델이 바뀌었다는 점인데, Su는 이것이 오히려 고객 신뢰를 훼손해 Andes 같은 IP 공급자에게 유리하다고 본다.</p>
+
+<p>기록해 둘 만한 판단은 이것이다. 이 소식은 「RISC-V가 데이터센터 고급 시장을 향해 돌진하고 있다」는 서사와 방향이 반대이지만 모순은 아니다. 고급 코어의 연구개발은 멈추지 않았고, 다만 상업적 리듬이 로드맵이 아니라 시장 모멘텀에 의해 결정될 뿐이다. 실제로 비용을 지불하는 곳은 AI 엣지와 제어 영역이다. 국내에서 RISC-V 고급 코어를 만드는 팀에게 이는 「누가 먼저 비용을 지불하는가」에 관한 현실적 참조점이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://www.eetimes.com/andes-waits-for-market-momentum-for-cuzco-cpu/">EE Times: Andes Waits For Market Momentum For Cuzco CPU</a></p>
+
+<hr />
+
+<h2 id="risc-v-100-리스트-동향">RISC-V 100 리스트 동향</h2>
+
+<p>이번 모니터링 기간은 지난번과 하루 차이에 불과하지만, 스크립트가 유의미한 변화로 판정하여 기준에 따라 본문 앞부분에 배치한다.</p>
+
+<p><strong>리스트 신규</strong>(크로스 아키텍처 · SPEC CPU2026 및 RISC-V 채널 · SPEC CPU2026 각 1건): 07-30｜XiangShan 컴파일러 팀(XSCC)／Jindie Shikong｜XSCC 1.1 on Jindie K3 X100 2.4GHz｜int 0.9, fp 1.07(rate/ref, Completed); 해당 플랫폼의 이전 기록(05-31, LLVM 22.1.0) 대비 int +2.3%, fp +9.2%. 이 기록의 날짜는 07-30으로 이번 모니터링일보다 훨씬 이르며, 소급 등재된 것이므로 당일의 새로운 성적으로 읽어서는 안 되고 이를 근거로 아키텍처 개선을 해석해서도 안 된다. 이는 어제 소급 등재된 10-17 CPU2006 speed 기록(XSCC 2.0 on XiangShan KMHv3 RTL 3GHz, int 68.41, fp 76.95)과 서로 다른 리스트 영역에 속하며 1위 교체를 구성하지 않는다.</p>
+
+<p><strong>What’s New 신규 2건</strong>: SpacemiT K3 X100 XSCC 1.1 SPEC CPU2026 Rate(위의 리스트 기록에 해당하며, 통합 서술하여 중복 집계하지 않음), Hardware Comparison Now Available(사이트 기능 공지, 1장 참조).</p>
+
+<p><strong>Upcoming 3개 항목은 여전히 Preparing</strong>: AWS Graviton5 NeoverseV3(SPEC2006／2017／2026), SpaceMiT K3 X100(Vectorization／IME), GCC 16 SPEC CPU 테스트. 위원회 구성원 변동 없음.</p>
+
+<p><strong>날짜</strong>: 2026-11-03　<strong>출처</strong>: <a href="https://riscv100.top/cross-arch/spec26/">riscv100.top 크로스 아키텍처 SPEC CPU2026</a>, <a href="https://riscv100.top/riscv/spec26/">riscv100.top RISC-V 채널 SPEC CPU2026</a>, <a href="https://riscv100.top/">riscv100.top 홈페이지</a></p>
+
+<hr />
+
+<h2 id="1-오픈소스-커뮤니티와-소프트웨어-생태계">1. 오픈소스 커뮤니티와 소프트웨어 생태계</h2>
+
+<h3 id="xiangshan-비순차-csrr-실행을-백엔드-디코딩에-복원11-02">XiangShan, 비순차 CSRR 실행을 백엔드 디코딩에 복원(11-02)</h3>
+
+<p>6779번 PR은 CSRR 계열 명령어의 비순차 실행을 복원했다. 배경은 XiangShan 백엔드에 디코딩 유닛이 새로 추가되면서 기존 CSRR 비순차 실행 구현이 사라졌고, 그 결과 병렬 발행이 가능했던 CSR 읽기/쓰기가 다시 직렬로 돌아가 CSR에 의존하는 모든 경로를 느리게 만들었다는 점이다. 이번 변경의 직접적 목적은 이를 새로운 디코딩 체인에 다시 연결하는 것이다.</p>
+
+<p>작성자는 한 가지 누락도 지적했다. 의사 디코딩 채널에서 CSRRVL과 CSRRVLENB 두 명령어는 CSRR 형태일 때만 특별 처리를 하는데, CSRRSI／CSRRC／CSRRCI처럼 역시 벡터 길이 레지스터를 읽고 쓰는 형태들은 포함되지 않았다. 이렇게 「한 가지 인코딩 형태만 처리한」 공백은 벡터 코드에서 나타나기 쉽다. 컴파일러가 종종 <code class="highlighter-rouge">vsetvl</code> 시퀀스를 CSRR이 아니라 일련의 CSRRSI로 직렬화하기 때문이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/XiangShan/pull/6779">XiangShan #6779</a></p>
+
+<h3 id="xiangshan-tage의-bankidx가-히스토리-비트를-사용하도록-변경-4개-bank의-2048개-위치가-사용-가능해짐11-02">XiangShan TAGE의 bankIdx가 히스토리 비트를 사용하도록 변경, 4개 bank의 2048개 위치가 사용 가능해짐(11-02)</h3>
+
+<p>6771번 PR은 TAGE 분기 예측기의 인덱싱 방식을 변경했다. 기존에는 bank가 PC에 의해서만 결정되어 동일한 히스토리가 하나의 bank에 있는 512개 항목에만 고정적으로 떨어지고, 나머지 세 bank의 용량은 이 히스토리에 대해 완전히 낭비되었다. 변경 후에는 히스토리가 bank와 set 선택에 동시에 참여하여 이론적으로 4개 bank 합계 2048개 위치를 모두 사용할 수 있다.</p>
+
+<p>실측 결론은 비교적 절제되어 있다: astar, xalancbmk, gobmk 세 항목은 명확한 이득이 있고, libquantum은 후퇴가 나타났는데, 원인은 새로운 구조가 bank 충돌에 더 쉽게 부딪히기 때문이며, 작성자는 후속 처리를 남겨두었다. 이 변경의 가치는 자주 간과되는 용량 계산을 지적한다는 데 있다 — 예측기 테이블이 아무리 커도 인덱스가 한 차원만 사용되면 실제 사용 가능한 용량은 구조에 의해 조각난다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/XiangShan/pull/6771">XiangShan #6771</a></p>
+
+<h3 id="xiangshan-사전-계산-bpu의-s2s3-override-조건-차순-pc-경로-최종-단계-로직-압축-11-02">XiangShan 사전 계산 BPU의 s2/s3 override 조건, 차순 PC 경로 최종 단계 로직 압축 (11-02)</h3>
+
+<p>6753번은 순수 타이밍 최적화다. 방식은 각 분기 후보의 s2/s3 override 조건을 미리 계산해 두고, 「첫 번째 taken 분기」의 원-핫 마스크로 결과를 선택하는 것이다. 동시에 s2의 taken 결과를 TAGE의 두 가지 가능한 결과별로 각각 미리 계산해 두어, 늦게 도착하는 TAGE 예측은 마지막 단계 선택만 담당하게 한다.</p>
+
+<p>효과는 next-PC라는 가장 타이트한 경로에서 늦은 신호 이후의 로직 깊이를 줄이는 것이며, 예측 동작은 변하지 않는다. 이런 변경은 성능 수치에는 나타나지 않지만 主频 상한을 결정하며, XiangShan이 최근 단계에서 「먼저 고주파 타이밍 병목을 제거한다」는 노선의 연장이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/XiangShan/pull/6753">XiangShan #6753</a></p>
+
+<h3 id="xiangshan-xscache-서브모듈을-late-hints-수정-버전으로-지정-11-02">XiangShan, XSCache 서브모듈을 「late hints」 수정 버전으로 지정 (11-02)</h3>
+
+<p>6803번은 서브모듈 포인터 한 줄만 변경하여 XSCache를 e9488ae에서 a041f07로 올렸으며, 커밋 설명은 「late hints 문제를 수정하기 위해 중재기를 교체」다. 이런 포인터만 바꾸는 커밋은 데일리 리포트에서 놓치기 쉽지만, 흔히 저장소 간 수정이 이미 병합되었음을 의미한다 — 캐시 측의 late hints는 프리페치 효과에 직접 영향을 미치며, 이번 기 XiangShan 프런트엔드 프리페치 큐 재구성과 같은 노선의 작업이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/XiangShan/pull/6803">XiangShan #6803</a></p>
+
+<h3 id="difftest-squash-replay에서-비동기-ame-검증기-상태-유지-11-02">difftest, squash replay에서 비동기 AME 검증기 상태 유지 (11-02)</h3>
+
+<p>987번은 행렬 확장 검증이 재생 시 상태를 잃는 문제를 수정한다. 변경은 squash로 인한 replay 전후에 세 가지를 스냅샷하고 복원한다: 행렬 소프트웨어 ROB, 대기 중인 msync 이벤트, 그리고 참조 측의 AME 상태. 동시에 AME 커밋 번호를 비동기 MMA 검증에 관통시켜 「이 패키지 내의 오류」와 「더 이전에 남겨진 실패」를 구분하고, 재생 경계에서 대기 검사 항목을 비운다.</p>
+
+<p>또 하나 기록할 만한 엔지니어링 세부사항이 있다: 재생 시 큐에 쌓인 검사와 보존된 오류를 리셋하지만 백엔드는 교체하지 않아, CUDA 서비스와 결과 풀이 살아 있게 하여 부모 프로세스에서 이미 기동된 LightSSS 자식 프로세스가 다시 연결할 수 있게 한다. 이는 행렬 검증을 「일회성 배치 처리」에서 「중단 가능하고 재개 가능한」 것으로 만드는 필요 조건이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/difftest/pull/987">difftest #987</a></p>
+
+<h3 id="nemu-행렬-접근을-공유-tlb-최적화-경로로-라우팅-ci는-성능-코멘트-재사용으로-변경-11-02">NEMU, 행렬 접근을 공유 TLB 최적화 경로로 라우팅, CI는 성능 코멘트 재사용으로 변경 (11-02)</h3>
+
+<p>1275번은 <code class="highlighter-rouge">PERF_OPT_SHARE</code>의 공유 캐시 자격 판정과 PBMT 검사를 행렬 접근까지 확장하면서, 기존의 SLOW 및 2단계 번역 폴백 경로를 유지한다. 행렬 히트는 공용 물리 접근 처리 함수로 라우팅되어 권한 검사, AMU 이벤트, 지연 데이터 이동을 보존한다. 즉, 행렬 메모리 접근은 더 이상 우회로가 아니라 일반 메모리 접근과 동일한 TLB 회계 체계에 접속되었다.</p>
+
+<p>1276번은 CI 개선이다: 성능 결과 코멘트를 동일한 코멘트를 갱신하도록(숨김 마커로 위치 지정) 변경하고, PR 브랜치별로 직렬화하여 동시에 완료된 CI가 코멘트를 중복으로 올리는 것을 방지한다. 매일 성능 회귀를 읽어야 하는 개발자에게 이는 새 기능 하나보다 더 실용적이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/NEMU/pull/1275">NEMU #1275</a>, <a href="https://github.com/OpenXiangShan/NEMU/pull/1276">NEMU #1276</a></p>
+
+<h3 id="core-v-cvw-세-건-sfencevma-후-dtlb-재적재-clint-미완성-코드-정리-verilator와-vcs-기능-커버리지-수집-11-02--11-03">CORE-V CVW 세 건: sfence.vma 후 DTLB 재적재, CLINT 미완성 코드 정리, Verilator와 VCS 기능 커버리지 수집 (11-02 ~ 11-03)</h3>
+
+<p>세 건의 병합은 검증과 구현 양측을 아우른다. 2019번은 holdaccess 테스트를 변경한다: 매 <code class="highlighter-rouge">sfence.vma</code> 이후 데이터 페이지를 DTLB에 다시 적재하여, 테스트가 「무효화 후 재적재」라는 실제 경로를 커버할 수 있게 한다 — 오래된 테이블 항목에 의존해 우연히 맞는 것이 아니라. 2034번은 CLINT의 미완성 timereg 코드, 사용되지 않는 TIMECLK, 그리고 다수의 낡은 TODO/Hack 주석을 정리한다. 24개 파일 +39/−155로 부채 감소에 해당한다. 2009번은 wsim이 Verilator와 VCS 두 시뮬레이터에서 모두 기능 커버리지를 수집할 수 있게 한다 — 이 항목은 오픈소스 코어에 있어 보이는 것보다 큰 의미가 있다. 기능 커버리지가 시뮬레이터 간에 재현될 수 있어야 커버리지 수치가 비교 가치를 갖는다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02 ~ 2026-11-03　<strong>출처</strong>: <a href="https://github.com/openhwfoundation/cvw/pull/2019">CVW #2019</a>, <a href="https://github.com/openhwfoundation/cvw/pull/2034">CVW #2034</a>, <a href="https://github.com/openhwfoundation/cvw/pull/2009">CVW #2009</a></p>
+
+<h3 id="core-v-cvfpu-명명된-clear-신호로-fflarnc-수정-11-02">CORE-V cvfpu, 명명된 clear 신호로 FFLARNC 수정 (11-02)</h3>
+
+<p>187번은 BSC 측에서 온 것으로, 64비트 다중 모드 나눗셈·제곱근 유닛의 FFLARNC(부동소수점 플래그 클리어) 배선을 수정했다. 기존에는 위치에 의한 암묵적 대응에 의존했으나, 이를 명명된 clear 신호로 바꿔 파라미터화된 인스턴스에서의 오연결을 방지한다. 이런 종류의 수정은 성능 변화를 가져오지 않지만 부동소수점 예외 플래그의 정확성에 직접 영향을 미치며, 검증에서 놓치기 쉽고 실리콘에서 찾기 어려운 유형의 문제에 속한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/openhwfoundation/cvfpu/pull/187">cvfpu #187</a></p>
+
+<h3 id="openruyi-clang-wrap의-ninja-링크-명령-수정-mtools에-cve-2026-118384-패치-11-02">openRuyi, clang-wrap의 ninja 링크 명령 수정, mtools에 CVE-2026-118384 패치 (11-02)</h3>
+
+<p>openRuyi 메인 저장소 모니터링 기간 내 7건의 커밋. 가장 실질적인 커밋은 clang-wrap을 20261102로 올린 것으로, libical 빌드 시 로컬 링크 명령이 ninja-build를 지원하지 않는 결함을 복구했다. 이런 패키지가 RISC-V에서 빌드 실패하는 경우 흔히 “업스트림 미지원”으로 오판되지만, 실제로는 래퍼 계층의 명령 조립 문제다. 그 외에 mtools를 4.0.50으로 올려 CVE-2026-118384를 수정했고, 여섯 개의 Go 생태계 spec(Volcengine ve-tos SDK, Tencent Cloud cos-go-sdk와 tencentcloud-sdk-go, go-httpheader 등)을 한 번에 추가했는데, 이는 클라우드 네이티브 및 스토리지 스택을 의존성 계층별로 보충해 나가고 있음을 보여준다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/openRuyi-Project/openRuyi/commits/main">openRuyi 커밋 기록</a>, <a href="https://github.com/openRuyi-Project/openRuyi/commit/89c17b3bd9903017ff30538236aad9068953b5cf">clang-wrap 20261102</a>, <a href="https://github.com/openRuyi-Project/openRuyi/commit/7e8e31d0004dc0f550692cfa23e8f3deafe86fa6">mtools 4.0.50</a></p>
+
+<h3 id="ku-leuven-risc-v-코어에서-dmp-최초-오픈소스-구현-및-secdmp-방어-기법-제안-11-03">KU Leuven, RISC-V 코어에서 DMP 최초 오픈소스 구현 및 SecDMP 방어 기법 제안 (11-03)</h3>
+
+<p>KU Leuven DistriNet과 EURECOM의 논문(NDSS 2027 채택, 확장판 32페이지)은 데이터 메모리 의존 프리페처(DMP)의 사이드 채널을 다룬다. DMP는 이미 주류 데스크톱 및 서버 CPU에 들어갔으며, 메모리 내용 중 포인터처럼 보이는 값을 기준으로 프리페치한다. 성능 이점은 있지만 비밀을 마이크로아키텍처 상태에 인코딩하며, Spectre에 대해 강화된 상수 시간 코드조차 막지 못한다.</p>
+
+<p>논문은 먼저 DMP 누출의 분류와 새로운 공격을 제시한 뒤, RISC-V 프로세서에서 최초의 오픈소스 DMP를 구현하여 기존의 유일한 “DMP 성능을 유지하려는” 방어 기법이 전체 누출 범주를 막지 못함을 실측으로 증명한다. 이어서 SecDMP를 제안하는데, 이는 메모리에서 비밀을 표시하도록 요구하여 DMP가 이러한 비밀을 결코 마이크로아키텍처에 인코딩하지 않도록 보장하며, 누출이 “DMP가 없는 베이스라인”을 초과하지 않음을 형식적으로 증명하고 공개 데이터의 성능은 희생하지 않는다. 하드웨어 비용은 RISC-V 연구 코어에서 면적 0.5% 이하다. 오픈소스 코어 커뮤니티에 대한 가치는 DMP 같은 최적화가 대기업 전용에서 구성 가능한 코어로 확산되고 있으며, 보안 설계가 테이프아웃 이후에 보완되는 것이 아니라 RTL 단계에서 미리 들어가야 한다는 점이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-03　<strong>출처</strong>: <a href="https://arxiv.org/abs/2610.37454">arXiv:2610.37454 SecDMP(확장판)</a>, <a href="https://arxiv.org/html/2610.37454v1">논문 HTML 버전</a></p>
+
+<h3 id="riscv100top-하드웨어-비교-페이지-오픈-11-03">riscv100.top, “하드웨어 비교” 페이지 오픈 (11-03)</h3>
+
+<p>랭킹 사이트 What’s New에 “Hardware Comparison Now Available”이 등장하여, 사이트에 하드웨어 간 비교 뷰가 추가되었다. 이는 새로운 측정 결과가 아니라 생태계 및 커뮤니티 홍보에 해당한다. 현재 Upcoming에는 AWS Graviton5 NeoverseV3(SPEC2006/2017/2026), SpaceMiT K3 X100의 벡터화 및 IME 테스트, GCC 16의 SPEC CPU 테스트 세 가지 “Preparing” 항목이 여전히 대기 중이며, 비교 페이지가 얼마나 많은 데이터를 채울 수 있는지는 이 세 항목이 언제 결과를 내놓느냐에 달려 있다.</p>
+
+<p><strong>날짜</strong>: 2026-11-03　<strong>출처</strong>: <a href="https://riscv100.top/">riscv100.top 홈페이지</a></p>
+
+<hr />
+
+<h2 id="2-제품-및-생태계-동향">2. 제품 및 생태계 동향</h2>
+
+<h3 id="유럽-erici-산업용-컴퓨팅-이니셔티브-발족-rva23을-산업용-컴퓨터로-만들겠다는-목표-11-02">유럽, ERICI 산업용 컴퓨팅 이니셔티브 발족… RVA23을 「산업용 컴퓨터」로 만들겠다는 목표 (11-02)</h3>
+
+<p>ERICI(European RISC-V Industrial Computing Initiative)라는 이니셔티브가 Hacker News에 등장했으며, 발기인은 독일의 Yuri Zaporozhets로 비상업적 산업 협력 성격을 띤다. 문제 제기는 명확하다. RVA23 실리콘은 이미 나왔지만 「산업용 컴퓨터」는 없다—보드 업체는 소프트웨어를 기다리고, 소프트웨어는 보드를 기다리고, 고객은 둘 다를 기다리는 이 순환을 실제 하드웨어에서 돌아가는 오픈 참조 스택으로 끊어야 한다는 것이다.</p>
+
+<p>참조 스택은 계층별로 나뉜다. 펌웨어가 초기화와 POST를 수행한 뒤 UEFI 부트로더에 넘기고, gRouvr이 커널처럼 로드되어 CPIO로 각 파티션의 커널과 initramfs를 패키징한 다음 CPU, 메모리, 디바이스와 각자의 디바이스 트리를 실시간 파티션과 Linux 파티션에 나눠 주며, 둘은 같은 SoC에서 병렬로 격리 실행된다. 라이선스는 명확하다. HFI BIOS는 GPL-2.0(U-Boot 기반), mr-bml은 GPL-3.0, gRouvr과 QSOE는 Apache 2.0을 따른다. 파티션 스택은 이미 SpacemiT K3의 PicoITX 보드에서 시연되었으며, QSOE가 gRouvr 게스트로 로그인까지 통과했다.</p>
+
+<p>또한 격차도 솔직하게 나열한다. 기성 RVA23 기기(Firefly AIBOX-K3, Milk-V Jupiter2)는 광전압 입력, −40~85℃, 필드버스와 실시간 I/O, 레일 장착, 산업용 EMC와 안전 인증, 10~15년 장기 공급 항목에서 대부분 「미표기」 상태이며, 파티션 소프트웨어 스택도 아직 제품에 적용되지 않았다. 「먼저 계층 간 인터페이스를 정의하고, 계층별로 검증하며 함께 부팅한다」는 이 접근은 국내에서 RISC-V 산업용과 차량용 규격을 다루는 사고방식과 비교해 볼 수 있다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://erici.eu">ERICI 공식 웹사이트</a>, <a href="https://news.ycombinator.com/item?id=50334523">Hacker News 토론</a></p>
+
+<hr />
+
+<h2 id="3-국내-팀-심층-분석">3. 국내 팀 심층 분석</h2>
+
+<h3 id="nuclei-t0-chiplet-이중-sdk-저장소-신설-툴-가이드도-202610-릴리스-따라잡아-11-02">Nuclei, T0 Chiplet 이중 SDK 저장소 신설… 툴 가이드도 2026.10 릴리스 따라잡아 (11-02)</h3>
+
+<p>Nuclei는 11월 2일 오후 두 개의 저장소를 새로 만들었다. <code class="highlighter-rouge">nuclei-t0-sdk</code>(설명은 Nuclei Ecosystem T0 Chiplet Baremetal/RTOS SDK)와 <code class="highlighter-rouge">nuclei-t0-linuxsdk</code>(T0 Chiplet Linux SDK)이며, 둘 다 현재 빈 저장소에 커밋 제로다. 빈 저장소 자체는 정보량이 제한적이지만, 「베어메탈/RTOS」와 「Linux」 두 SDK가 동시에 개설되었고 모두 T0 Chiplet으로 명명되었다는 점은 다음 단계 제품 라인이 chiplet 형태의 T0를 독립 플랫폼으로 삼아 소프트웨어 스택을 구축할 것임을 보여준다. 기존 코어의 SDK에 얹는 방식이 아니다.</p>
+
+<p>같은 날 <code class="highlighter-rouge">nuclei-tool-guide</code>에는 세 건의 문서 커밋이 있었고, 모두 2026.10 버전을 가리킨다. libncrt 문서 업데이트와 툴체인 changelog 추가, xlmodel 문서 업데이트, 그리고 clang의 <code class="highlighter-rouge">-pg</code> 하에서의 <code class="highlighter-rouge">_mcount</code> 문제에 대한 changelog 항목이다. 툴체인을 분기별로 릴리스하고 문서를 동기화하는 것은 Nuclei가 최근 2년간 유지해 온 안정적인 리듬이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/Nuclei-Software/nuclei-t0-sdk">nuclei-t0-sdk</a>, <a href="https://github.com/Nuclei-Software/nuclei-t0-linuxsdk">nuclei-t0-linuxsdk</a>, <a href="https://github.com/Nuclei-Software/nuclei-tool-guide/commits/master">nuclei-tool-guide 커밋</a></p>
+
+<h3 id="spacemit-docs-ros에-ubuntu-2604의-ros-2-설치-안내-보충-11-02">SpacemiT, docs-ros에 Ubuntu 26.04의 ROS 2 설치 안내 보충 (11-02)</h3>
+
+<p>224번은 K3의 ROS 2 설치 문서에 Ubuntu 26.04 섹션을 추가했다. Bianbu 서명 키와 ROS 2 소프트웨어 소스 설정, APT 패키지 고정(pinning)과 인덱스 갱신 명령, 그리고 Bianbu에서의 네트워크와 시간 동기화 사전 요구 사항이다. 이런 문서는 사소해 보이지만 실제로는 로봇 개발자가 착수할 때의 첫 번째 관문이다—소스를 잘못 설정하거나 시간이 동기화되지 않으면 ROS 2의 노드 탐색이 바로 실패한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/spacemit-com/docs-ros/pull/224">docs-ros #224</a></p>
+
+<h3 id="sophgo-sg2044-edk2에서-pcie-ecrc-검증-기본-비활성화-11-02">Sophgo, SG2044 EDK2에서 PCIe ECRC 검증 기본 비활성화 (11-02)</h3>
+
+<p>Sophgo는 SG2044 플랫폼 EDK2의 PcieInitPei 모듈을 기본적으로 ECRC를 생성하지도 검증하지도 않도록 변경했으며, 변경량은 20줄이다. ECRC는 PCIe 트랜잭션 계층의 종단 간 CRC로 이론적으로는 켜야 하지만, 실제 보드와 라이저 카드 조합에서 엔드포인트가 구현하지 않거나 일관되지 않게 구현하면 열거 실패와 링크 이상이 발생하므로 많은 플랫폼이 기본적으로 끈다. 이 변경은 「호환성을 우선한다」는 엔지니어링 트레이드오프에 속하며, SG2044의 완제품 생태계가 아직 적응 기간에 있음을 방증한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/sophgo/edk2-platforms/commit/8c3c1515ad1391512560de06305cae8736782c4d">edk2-platforms 커밋</a></p>
+
+<h3 id="다모아카데미-xuantie-eswin-모니터링-기간-내-조직-차원-신규-개발-없음-11-03">다모아카데미 XuanTie, ESWIN 모니터링 기간 내 조직 차원 신규 개발 없음 (11-03)</h3>
+
+<p>다모아카데미 XuanTie(XUANTIE-RV, 73개 저장소)와 ESWIN 컴퓨팅(eswincomputing, 17개 저장소)은 모니터링 기간 내 푸시가 없었으며, 최근 커밋은 각각 10월 하순과 10-19 전후에 멈춰 있다. XuanTie 측의 최근 2주간 공개 활동은 제품과 로드맵(60억 개 출하, E908A 차량용 코어, C950A 계획)에 집중되어 있으며 오픈소스 저장소에는 대응하는 변화가 없다. 이처럼 「비즈니스 측은 활발하고 오픈소스 측은 조용한」 상태는 IP 기업에서 흔한 일이므로 과도하게 해석할 필요는 없다.</p>
+
+<p><strong>날짜</strong>: 2026-11-03　<strong>출처</strong>: <a href="https://github.com/XUANTIE-RV">XUANTIE-RV</a>, <a href="https://github.com/eswincomputing">eswincomputing</a></p>
+
+<hr />
+
+<h2 id="4-임바디드-인텔리전스와-로보틱스-특별-장">4. 임바디드 인텔리전스와 로보틱스 특별 장</h2>
+
+<h3 id="spacemit-세-저장소-당일-병합-g1의-하드웨어-배포와-onnx-운동-모드-출시-11-02">SpacemiT 세 저장소 당일 병합: G1의 하드웨어 배포와 ONNX 운동 모드 출시 (11-02)</h3>
+
+<p>11월 2일 14:30, spacemit-robotics의 세 저장소가 같은 분에 병합을 완료했으며 작성자는 모두 beililcj로, 명백히 한 세트의 연동 변경이다. 그중 <code class="highlighter-rouge">humanoid_unitree_g1</code>의 13번이 가장 무겁다: 54개 파일, +6087／−141. 설정 측에는 <code class="highlighter-rouge">g1_hardware.yaml</code>(467행)을 새로 추가하고 <code class="highlighter-rouge">g1.yaml</code>을 505행 변경으로 확장했으며, 문서에는 하드웨어 배포, 핸드헬드 컨트롤러, 스마트폰 원격 조작, 음성 안내 네 편을 보강했고, 스크립트 측에는 실시간성 설정, systemd 서비스 설치, 캘리브레이션 기록과 일련의 기동 스크립트(시뮬레이션에서 실기로, 드라이버, HMI, TUI)를 추가했으며, 테스트는 기동 재시도, 드라이버 락 충돌, 핸드헬드 컨트롤러 바인딩, 허리 댐핑, 사전 학습 진입점을 커버한다.</p>
+
+<p>기능상 가장 주목할 점은 ONNX 정책이 온라인 전환이 가능한 「운동 모드」로 조직되었다는 것이다: 기본 LocoMode 보행, 명시적 댄스 트리거, 그리고 SONIC 계획과 calm 참조 자세가 모두 동일한 모드 제어 체계를 통해 연결되며, 음성 안내와 스마트폰 측 제어도 이에 맞춰 정렬되었다. 이는 G1이 「하나의 정책을 실행할 수 있는」 단계에서 「여러 정책 사이를 전환하고 모드에 따라 동작을 재생할 수 있는」 단계로 나아갔음을 의미하며, 제품화에 반드시 필요한 한 걸음이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/spacemit-robotics/humanoid_unitree_g1/pull/13">humanoid_unitree_g1 #13</a></p>
+
+<h3 id="humanoid_common-온라인-정책-전환과-비동기-sonic-계획-지원-11-02">humanoid_common, 온라인 정책 전환과 비동기 SONIC 계획 지원 (11-02)</h3>
+
+<p><code class="highlighter-rouge">humanoid_common</code>의 26번은 위 변경 세트의 공통 계층이다: 38개 파일, +2269／−71. 핵심은 행동 상태 머신(HOME과 RL 두 상태), 정책 어댑터(history-actor, 관절 궤적, stance motion, SONIC 플래너)와 전송 실행기의 상태 보고를 연결하여 「온라인 정책 교체」가 프로세스 재시작이 아니라 상태 머신의 정상적인 전이가 되도록 만든 것이다.</p>
+
+<p>두 가지 설계 선택이 주목할 만하다: 첫째, 「모드 선택」과 「동작 재생」을 분리하여 모드 선택 시 동작이 함께 트리거되는 것을 방지했고, 둘째, 정기 동작의 관측이 0번 프레임부터 시작되어 더 이상 시작 프레임을 버리지 않는다. 그 외에도 핸드헬드 컨트롤러 설정, 웹 클라이언트, 전원 차단 처리에 대한 몇 가지 수정이 포함되었는데, 상태 만료 시 수동 전원 차단을 허용하는 것 등 이러한 경계 조건이야말로 실험실에서 현장으로 나아갈 때 가장 자주 문제가 되는 지점이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/spacemit-robotics/humanoid_common/pull/26">humanoid_common #26</a></p>
+
+<h3 id="control_whole_body-삼각-테이블로-결합-매핑-구현-및-기동-피드백-복구-보강-11-02">control_whole_body, 삼각 테이블로 결합 매핑 구현 및 기동 피드백 복구 보강 (11-02)</h3>
+
+<p><code class="highlighter-rouge">control_whole_body</code>의 9번은 삼각 테이블 모듈(<code class="highlighter-rouge">triangle_table.cpp／h</code>, 185행)을 새로 추가하여 캘리브레이션 그리드 위의 결합 매핑에 사용한다: 셀 면적에 따라 삼각 포함 허용 오차를 스케일링하여 정렬된 캘리브레이션 그리드에서 보간이 튀지 않도록 보장한다. 동시에 수동 댐핑 유지, 기동 시 피드백 대기, 정렬된 보간 세 가지 수정을 보강했으며, 테스트에는 코어, 테이블 설정, 테이블 매핑 세 그룹을 새로 추가했다.</p>
+
+<p>캘리브레이션 데이터를 단순 룩업 테이블이 아니라 「테이블 + 삼각 분할」로 조직하는 것은 관절 결합 비선형성이 강한 부위에서도 연속 보간이 가능하도록 하기 위해서이며, 기동 피드백 복구와 함께 전원 투입 순간 지령과 실측 위치의 불일치로 인한 안전 문제를 해결한다. 이 계층은 눈에 띄지 않지만, 비이상적 캘리브레이션 환경에서 기체 전체가 안정적으로 서 있을 수 있는지를 결정한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-02　<strong>출처</strong>: <a href="https://github.com/spacemit-robotics/control_whole_body/pull/9">control_whole_body #9</a></p>
+
+<hr />
+
+<h2 id="5-요약과-트렌드-관찰">5. 요약과 트렌드 관찰</h2>
+
+<p>오늘의 정보량은 세 곳에 집중되어 있으며, 서로 다른 층위를 가리킨다.</p>
+
+<p>첫째, 비즈니스 리듬이 로드맵을 압도한다. Andes가 고급 코어 Cuzco를 늦추고 자원을 이미 매출의 절반을 차지한 AI 사업으로 집중한 것은 이번 RISC-V 산업에서 드문 「자발적 감속」 사례다. 이는 고급 코어를 만드는 팀에게 다음과 같은 점을 상기시킨다: 생태계와 고객 예산이 뒷받침되지 않으면 성능 지표가 아무리 좋아도 주문으로 이어지지 않으며, IP 사업의 복리는 첫 출시가 아니라 재사용에서 나온다는 것이다.</p>
+
+<p>둘째, 오픈소스 코어의 진전은 여전히 “작고 촘촘한” 방식으로 나타나고 있다. XiangShan은 하루에 네 건(CSRR 비순차 실행, TAGE 인덱스 차원, BPU 타이밍, XSCache 포인터), CVW는 하루에 세 건(DTLB 재로드 테스트, CLINT 부채 감축, 이중 시뮬레이터 기능 커버리지), NEMU와 difftest는 각각 행렬 확장 관련 상태 일관성 문제를 한 건씩 수정했다. 개별 건은 모두 크지 않지만 방향은 일관된다. 바로 비순차 실행과 행렬 확장이라는 두 가지 새로운 경로의 상태 관리를 견고하게 만드는 것이다.</p>
+
+<p>셋째, 로봇 스택은 “배포” 단계를 보완하고 있다. SpacemiT의 세 저장소가 같은 날 병합되었는데, 핵심은 새로운 알고리즘이 아니라 하드웨어 배포, 온라인 정책 전환, 캘리브레이션 테이블 매핑, 부팅 복구에 있다. 이것들은 실험실 정책을 납품 가능한 제품으로 만드는 데 필요한 요소들이다. ERICI가 유럽에서 RVA23을 산업용 컴퓨터로 만들려는 노력과 함께 보면, RISC-V의 다음 성장 구간은 “작동할 수 있는가”에서 “현장에서 장기적으로 안정적으로 작동할 수 있는가”로 옮겨가는 것에 더 가깝다.</p>
+
+<p>순위 측면에서 이번 기간에는 추가 등록과 사이트 기능 업데이트만 있었으므로 성능 도약으로 읽어서는 안 된다. 회원 기업 공식 웹사이트 점검 대상 391개 중 93개의 홈페이지 내용이 변경되었으나, 모두 마케팅과 뉴스 영역의 일상적인 업데이트이며 실질적인 제품, 투자 유치, 아키텍처 동향은 없었다.</p>
+
+<hr />
+
+<h2 id="부록-전체-출처-목록">부록: 전체 출처 목록</h2>
+
+<ul>
+  <li><strong>[1]</strong> EE Times: Andes, Cuzco CPU의 시장 모멘텀을 기다리다 — <a href="https://www.eetimes.com/andes-waits-for-market-momentum-for-cuzco-cpu/">https://www.eetimes.com/andes-waits-for-market-momentum-for-cuzco-cpu/</a></li>
+  <li><strong>[2]</strong> riscv100.top 크로스 아키텍처 SPEC CPU2026 — <a href="https://riscv100.top/cross-arch/spec26/">https://riscv100.top/cross-arch/spec26/</a></li>
+  <li><strong>[3]</strong> riscv100.top RISC-V 채널 SPEC CPU2026 — <a href="https://riscv100.top/riscv/spec26/">https://riscv100.top/riscv/spec26/</a></li>
+  <li><strong>[4]</strong> riscv100.top 홈페이지 — <a href="https://riscv100.top/">https://riscv100.top/</a></li>
+  <li><strong>[5]</strong> XiangShan #6779 (비순차 CSRR) — <a href="https://github.com/OpenXiangShan/XiangShan/pull/6779">https://github.com/OpenXiangShan/XiangShan/pull/6779</a></li>
+  <li><strong>[6]</strong> XiangShan #6771 (TAGE bankIdx) — <a href="https://github.com/OpenXiangShan/XiangShan/pull/6771">https://github.com/OpenXiangShan/XiangShan/pull/6771</a></li>
+  <li><strong>[7]</strong> XiangShan #6753 (BPU 타이밍) — <a href="https://github.com/OpenXiangShan/XiangShan/pull/6753">https://github.com/OpenXiangShan/XiangShan/pull/6753</a></li>
+  <li><strong>[8]</strong> XiangShan #6803 (XSCache 서브모듈) — <a href="https://github.com/OpenXiangShan/XiangShan/pull/6803">https://github.com/OpenXiangShan/XiangShan/pull/6803</a></li>
+  <li><strong>[9]</strong> difftest #987 (비동기 AME 검증) — <a href="https://github.com/OpenXiangShan/difftest/pull/987">https://github.com/OpenXiangShan/difftest/pull/987</a></li>
+  <li><strong>[10]</strong> NEMU #1275 (행렬 접근이 공유 TLB를 경유) — <a href="https://github.com/OpenXiangShan/NEMU/pull/1275">https://github.com/OpenXiangShan/NEMU/pull/1275</a></li>
+  <li><strong>[11]</strong> NEMU #1276 (CI 성능 코멘트 재사용) — <a href="https://github.com/OpenXiangShan/NEMU/pull/1276">https://github.com/OpenXiangShan/NEMU/pull/1276</a></li>
+  <li><strong>[12]</strong> CVW #2019 (sfence.vma 후 DTLB 재로드) — <a href="https://github.com/openhwfoundation/cvw/pull/2019">https://github.com/openhwfoundation/cvw/pull/2019</a></li>
+  <li><strong>[13]</strong> CVW #2034 (CLINT 미완성 코드 정리) — <a href="https://github.com/openhwfoundation/cvw/pull/2034">https://github.com/openhwfoundation/cvw/pull/2034</a></li>
+  <li><strong>[14]</strong> CVW #2009 (Verilator와 VCS로 기능 커버리지 수집) — <a href="https://github.com/openhwfoundation/cvw/pull/2009">https://github.com/openhwfoundation/cvw/pull/2009</a></li>
+  <li><strong>[15]</strong> cvfpu #187 (FFLARNC clear 신호 명명) — <a href="https://github.com/openhwfoundation/cvfpu/pull/187">https://github.com/openhwfoundation/cvfpu/pull/187</a></li>
+  <li><strong>[16]</strong> openRuyi 메인 저장소 커밋 기록 — <a href="https://github.com/openRuyi-Project/openRuyi/commits/main">https://github.com/openRuyi-Project/openRuyi/commits/main</a></li>
+  <li><strong>[17]</strong> openRuyi clang-wrap 20261102 — <a href="https://github.com/openRuyi-Project/openRuyi/commit/89c17b3bd9903017ff30538236aad9068953b5cf">https://github.com/openRuyi-Project/openRuyi/commit/89c17b3bd9903017ff30538236aad9068953b5cf</a></li>
+  <li><strong>[18]</strong> openRuyi mtools 4.0.50 — <a href="https://github.com/openRuyi-Project/openRuyi/commit/7e8e31d0004dc0f550692cfa23e8f3deafe86fa6">https://github.com/openRuyi-Project/openRuyi/commit/7e8e31d0004dc0f550692cfa23e8f3deafe86fa6</a></li>
+  <li><strong>[19]</strong> arXiv:2610.37454 SecDMP — <a href="https://arxiv.org/abs/2610.37454">https://arxiv.org/abs/2610.37454</a></li>
+  <li><strong>[20]</strong> ERICI 공식 웹사이트 — <a href="https://erici.eu">https://erici.eu</a></li>
+  <li><strong>[21]</strong> Hacker News: European RISC-V Industrial Computing Initiative — <a href="https://news.ycombinator.com/item?id=50334523">https://news.ycombinator.com/item?id=50334523</a></li>
+  <li><strong>[22]</strong> Nuclei-Software/nuclei-t0-sdk — <a href="https://github.com/Nuclei-Software/nuclei-t0-sdk">https://github.com/Nuclei-Software/nuclei-t0-sdk</a></li>
+  <li><strong>[23]</strong> Nuclei-Software/nuclei-t0-linuxsdk — <a href="https://github.com/Nuclei-Software/nuclei-t0-linuxsdk">https://github.com/Nuclei-Software/nuclei-t0-linuxsdk</a></li>
+  <li><strong>[24]</strong> nuclei-tool-guide</li>
+</ul>
+
+<p>커밋 기록 — <a href="https://github.com/Nuclei-Software/nuclei-tool-guide/commits/master">https://github.com/Nuclei-Software/nuclei-tool-guide/commits/master</a></p>
+<ul>
+  <li><strong>[25]</strong> spacemit-com/docs-ros #224 — <a href="https://github.com/spacemit-com/docs-ros/pull/224">https://github.com/spacemit-com/docs-ros/pull/224</a></li>
+  <li><strong>[26]</strong> sophgo/edk2-platforms (SG2044 ECRC) — <a href="https://github.com/sophgo/edk2-platforms/commit/8c3c1515ad1391512560de06305cae8736782c4d">https://github.com/sophgo/edk2-platforms/commit/8c3c1515ad1391512560de06305cae8736782c4d</a></li>
+  <li><strong>[27]</strong> spacemit-robotics/humanoid_unitree_g1 #13 — <a href="https://github.com/spacemit-robotics/humanoid_unitree_g1/pull/13">https://github.com/spacemit-robotics/humanoid_unitree_g1/pull/13</a></li>
+  <li><strong>[28]</strong> spacemit-robotics/humanoid_common #26 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/26">https://github.com/spacemit-robotics/humanoid_common/pull/26</a></li>
+  <li><strong>[29]</strong> spacemit-robotics/control_whole_body #9 — <a href="https://github.com/spacemit-robotics/control_whole_body/pull/9">https://github.com/spacemit-robotics/control_whole_body/pull/9</a></li>
+  <li><strong>[30]</strong> Damo Academy XuanTie 조직 페이지 — <a href="https://github.com/XUANTIE-RV">https://github.com/XUANTIE-RV</a></li>
+  <li><strong>[31]</strong> ESWIN Computing 조직 페이지 — <a href="https://github.com/eswincomputing">https://github.com/eswincomputing</a></li>
+  <li><strong>[32]</strong> openRuyi 공식 웹사이트 뉴스 페이지 — <a href="https://openruyi.cn/zh-Hans/news/">https://openruyi.cn/zh-Hans/news/</a></li>
+  <li><strong>[33]</strong> RISC-V International Foundation 블로그 — <a href="https://riscv.org/blog/">https://riscv.org/blog/</a></li>
+</ul>
+
+<h3 id="출처-검증표">출처 검증표</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>출처</th>
+      <th>검증 결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News (일반 27개 그룹 + 추가 확인 12개 그룹, 프록시 경유)</td>
+      <td>모니터링 기간 내 실질 신규 3건: Andes Cuzco (EE Times), ERICI 이니셔티브 (HN 연동), SecDMP (KU Leuven); XuanTie 60억 개는 10-19 서밋 구소식의 2차 확산으로 10-20에 이미 수록되어 중복 제외</td>
+    </tr>
+    <tr>
+      <td>Hacker News</td>
+      <td>유효 1건: ERICI 유럽 RISC-V 산업 컴퓨팅 이니셔티브</td>
+    </tr>
+    <tr>
+      <td>Phoronix, CNX Software, LinuxGizmos, LWN</td>
+      <td>LinuxGizmos의 ESP32-P4 컴퓨팅 모듈은 6월에 이미 보도된 제품의 후속 재게시로 모니터링 기간 내 새로운 진전이 없어 미수록; 나머지 출처는 RISC-V 관련 특이 항목 없음</td>
+    </tr>
+    <tr>
+      <td>arXiv</td>
+      <td>1건: SecDMP (NDSS 2027, RISC-V 코어 상 최초의 오픈소스 DMP 구현)</td>
+    </tr>
+    <tr>
+      <td>riscv.org 공식 블로그</td>
+      <td>신규 글 없음</td>
+    </tr>
+    <tr>
+      <td>openRuyi 공식 웹사이트 뉴스 페이지</td>
+      <td>최신은 여전히 2026.09 버전(9-30); 10월 버전 미발행</td>
+    </tr>
+    <tr>
+      <td>openRuyi 메인 저장소</td>
+      <td>커밋 7건: clang-wrap 20261102, mtools 4.0.50 보안 수정, Go 생태계 spec 6건</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 점검</td>
+      <td>주목할 점: SPEC CPU2026에 07-30 기록 2건 추가 수록(크로스 아키텍처 및 RISC-V 채널), What’s New에 하드웨어 비교 페이지 신설, Upcoming 3개 항목 여전히 Preparing, 위원회 변동 없음</td>
+    </tr>
+    <tr>
+      <td>RISC-V 회원 기업 공식 웹사이트 점검</td>
+      <td>391개사 점검(68개사 수집 실패), 93개사 홈페이지 내용 변경, 모두 마케팅 및 뉴스 영역 업데이트로 실질적인 제품, 펀딩, 아키텍처 동향 없음</td>
+    </tr>
+    <tr>
+      <td>GitHub 주요 저장소</td>
+      <td>XiangShan 4건, difftest 1건, NEMU 2건, XSCache 0건(서브모듈 포인터는 XiangShan 측에서 업데이트), CVW 3건, cvfpu 1건, CVA6 0건, openRuyi 7건, SpacemiT 4건, spacemit-robotics 3건, Nuclei 3건, Sophgo 4건</td>
+    </tr>
+    <tr>
+      <td>Damo Academy XuanTie, ESWIN</td>
+      <td>모니터링 기간 내 조직 차원 푸시 없음</td>
+    </tr>
+    <tr>
+      <td>Espressif, Sipeed, revyos, Radxa Linkr</td>
+      <td>esp-idf 7건(RISC-V 측은 rvsleep의 PMP/PMA 헤더 파일 정리와 C5 HTTP 서버 수정); MaixPy 문서 수정 1건; revyos는 브랜치와 태그 푸시만 있음; Radxa Linkr 푸시 없음</td>
+    </tr>
+  </tbody>
+</table>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ko/post.html#news-list" class="btn btn-main news-list-link">뒤로</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>문의하기</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>이메일:</strong> contact@kubuds.cn<br>
+            <strong>주소:</strong> 중국 상하이시 바오산구 가오이로 88호 1동 1층 108실<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>링크</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

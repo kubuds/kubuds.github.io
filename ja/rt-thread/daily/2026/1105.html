@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ja/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ja/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ja/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ja/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ja/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ja/">ホーム</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">サービス <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/service/simulator.html">シミュレータ</a></li>
+              <li><a class="dropdown-item" href="/ja/service/os.html">オペレーティングシステム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/toolchain.html">ツールチェーン</a></li>
+              <li><a class="dropdown-item" href="/ja/service/chip.html">組み込みチップ</a></li>
+
+              <li><a class="dropdown-item" href="/ja/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ja/service/aisys.html">AI システム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/consultation.html">コンサルティング</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">ソリューション <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">コミュニティ <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ja/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ja/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ja/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ja/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ja/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ja/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/post.html" style="white-space: nowrap;">ニュースとイベント</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/about.html" style="white-space: nowrap;">会社概要</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ja/career.html">採用情報</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              日本語 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1105.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1105.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1105.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1105.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1105.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread デイリーレポート (2026-11-05) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ja/">ホーム</a></li>
+                                <li class="breadcrumb-item"><a href="/ja/post.html#news-list" class="news-list-link">ニュースとイベント</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread デイリーレポート (2026-11-05)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread デイリーレポート (2026-11-05)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-05</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>調査期間</strong>：2026-11-04 08:00 ～ 2026-11-05 08:00（北京時間、24 時間）</p>
+
+<p><strong>情報源</strong>：RT-Thread 公式ニュースインターフェースと公式サイトのニュース一覧、GitHub メインリポジトリの commits / PR / Issue / releases / tags、RT-Thread org リポジトリのプッシュ一覧、GitHub リポジトリ検索（topic:rt-thread と rt-thread キーワード）、Google News の中国語・英語 5 グループのクエリ（プロキシ経由）、HN Algolia、電子工程専輯 RT-Thread 公式コラム、楽鑫（Espressif）公式リリース稿、club.rt-thread.org フォーラム（今号もサイトの WAF 制限を受けています）</p>
+
+<hr />
+
+<h2 id="今号のインデックス">今号のインデックス</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>カーネルとバージョン動向
+        <ul>
+          <li>バージョン番号とリリースプロセスが初めて文書化：Z バージョンは毎月、Y バージョンは 3～6 か月（11-04）</li>
+          <li>シリアルポートの TIOCGWINSZ をデバイスに直接問い合わせる方式に変更：tshell 経由の文字読み取りを廃止（11-04）</li>
+          <li>GPT パーティションの先頭と末尾が逆転していた問題にチェックを追加：アンダーフローした巨大パーティションは登録されなくなる（11-04）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>セキュリティフォローとマージ待ちキュー
+        <ul>
+          <li>MSI-X テーブルの BIR とオフセットが未検証で、悪意ある PCIe デバイスがプローブ段階で任意の物理アドレスに書き込み可能（11-05）</li>
+          <li>報告から 6 時間で修正提案：5 項目のチェックを一度に補完（11-05）</li>
+          <li>キュー：ブロックデバイスパーティションのパッチにまた更新、4 件が引き続き保留中（11-05）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>公式・コミュニティイベント
+        <ul>
+          <li>睿擎 RK3576 デスクトップペット：ボードが聞くことと話すことを担い、PC が考えることを担う（11-04）</li>
+          <li>公式ニュースインターフェースは依然 6 月で停止、メディアコラムが唯一の安定した出口（11-05）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>エコシステムとベンダー適配
+        <ul>
+          <li>ESP32-S31 上で RT-Thread を ESP-IDF に組み込み：36 項目のセルフチェックがすべて合格（11-04）</li>
+          <li>coact：1 つのヘッダファイルで RT-Thread、FreeRTOS、Linux を同時にサポート（11-04）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>今号のトレンドとまとめ
+        <ul>
+          <li>トレンド：攻撃面がシステムコールの引数からデバイスファームウェアへ移動</li>
+          <li>限界と重複排除の説明</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="1-カーネルとバージョン動向">1. カーネルとバージョン動向</h2>
+
+<h3 id="11-バージョン番号とリリースプロセスが初めて文書化z-バージョンは毎月y-バージョンは-36-か月11-04">1.1 バージョン番号とリリースプロセスが初めて文書化：Z バージョンは毎月、Y バージョンは 3～6 か月（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 10:44（マージ時刻）　<strong>出典</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11955">提案 #11955</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11956">議題 #11956</a></p>
+
+<p>751 行追加、14 ファイル、すべてドキュメント：中国語・英語の 2 部構成の「バージョン番号制定と実施細則」および「バージョンリリースプロセス」、6 枚のフローチャート付きで、Doxygen インデックスに登録され、ドキュメントセンターとともに公開される。作者は kurisaW、10 月 30 日に提出され、今期間の冒頭でマージされた。ドキュメント自体にはバージョン 1.0、日付 2026-10-27 と記載されている。</p>
+
+<p>ルールの核心はバージョンのリズムを数字で書き表すことにある：Z リビジョンは原則毎月 1 つ、Y マイナーバージョンは機能の蓄積とメンテナンスリソースに応じて 3～6 か月ごとに 1 つ、X メジャーバージョンは固定周期ではリリースしない。バージョン番号は vX.Y.Z を採用し、ソースコード内の RT_VERSION_MAJOR/MINOR/PATCH、Git Tag、Release、成果物名と一致しなければならない；日常のコミットではバージョン番号を上げず、開発スナップショットはターゲットバージョンに完全な SHA を付けて識別するのみとする。</p>
+
+<p>段位の判定基準はこれまでになく細かく示されている。X のトリガー条件は、カーネルの交換、デバイスモデルやドライバフレームワークの交換、複数のコアサブシステムの協調アップグレード、および既存プロジェクトの移行を必要とする API、ABI、Kconfig、起動フローの変更である。Y に求められるのは「カーネルまたはコンポーネント API の新規追加、独立した納品能力を形成する BSP 群の新規追加、複数の小機能が集まって完全に検証可能な集合になること」であり、明確に一言書かれている：単一の散発的な機能、部分的なパラメータ拡張、単一実装の最適化は自動的に Y をトリガーしない。Z は欠陥、セキュリティ、性能、単一 BSP 適配、ドキュメントのみを扱い、新しい公共 API、コンポーネント、ドライバフレームワークを導入してはならない——単一 BSP が新しいドライバフレームワークを持ち込む場合は、Y または X に上げなければならない。同一バージョンで複数種の変更が混在する場合は、X は Y より高く、Y は Z より高いという原則に従い最高位を取る。コミット数、PR 数、コード行数は見ない。</p>
+
+<p>実施細則の中で下流にとって最も有用なのは以下の几条：Y の周期は一度決めたらバージョン目標に書き込まなければならず、期間内に検証しきれない機能は順延する；Z リリース前の約 1 か月は修正収束に入り、Y リリース前の約 1 か月は機能収束に入り X.Y を凍結する；正式リリース後に問題が見つかった場合は X.Y.Z+1 をリリースするのみで、元の Tag、元の Release 内容、元の成果物を変更してはならない；デフォルト動作やリソース占有を変更する Y、Z バージョンは Release に明記しなければならない。付随する「バージョンリリースプロセス」は 1 回のリリースを 6 つの段階に分解する——バージョン準備、次バージョンの初期目標策定、開発準備、開発、プレリリース、リリース。プレリリース部分には機能収束、BUG リグレッション、アーキテクチャと BSP でグループ分けしたテストケーステンプレートが含まれる。</p>
+
+<p>注目すべきは、ドキュメントの例が統一して v6.0.0、v6.1.0、v6.1.1 と書かれており、次のメインラインは 6 系列で計画されていることだ。これまで 5.2 と 5.3 の間隔、Z バージョンのリズムは実践の中でしか現れていなかったが、今回初めてリズム、判定基準、リリース後に Tag を変更できないという几条をリポジトリ内の正式ドキュメントとして書き表した。アップグレードコストを判断する下流のディストリビューションや商用バージョンにとって直接利用可能な根拠となる。</p>
+
+<h3 id="12-シリアルポートの-tiocgwinsz-をデバイスに直接問い合わせる方式に変更tshell-経由の文字読み取りを廃止11-04">1.2 シリアルポートの TIOCGWINSZ をデバイスに直接問い合わせる方式に変更：tshell 経由の文字読み取りを廃止（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 21:33（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11891">提案 #11891</a></p>
+
+<p>136 行追加、153 行削除、dev_serial.c、dev_serial_v2.c、serial_tty.c の三ファイルを変更、四つのコミット、メンテナ BernardXiong 自身による提案で、10 月 18 日に開始、本期マージ。</p>
+
+<p>旧実装には二つの不具合があった。一つは tshell スレッド内でしか使えないこと：finsh_getchar() で端末の CSI 応答パケットを読むため、tshell 以外のスレッドからの呼び出しではあっさり 80x24 を返していた。もう一つは入力を食うこと——応答パケットは shell の入力チャネルから入ってくるため、ユーザーが入力中の文字を飲み込む可能性がある。さらに termios は設定のたびに無条件で ops-&gt;configure を呼び、純粋なソフトウェアパラメータの変化でも UART の FIFO をリセットしていた。</p>
+
+<p>新しい書き方では問い合わせコマンドを直接シリアルデバイスに書き込み（CSI 18 t の四バイトを書き込み）、応答パケットを一バイトずつ読み、総待機 200 ミリ秒、’t’ を読んだら終了する；応答パケットは厳密に CSI 8;rows;cols t の形に一致しなければならず、行も列も 1 から 999 に制限され、いずれかの段階で不一致なら既定の 80x24 を保持し、もはや atoi で勝手に解析しない。v2 版ではさらに一歩進んで：問い合わせ期間中は RX タイムアウトを一時的に RT_WAITING_NO に変更し、端末が応答しない場合に読み取り操作が永久にブロックするのを避け、読み終わったら元に戻す。</p>
+
+<p>termios 側は先に比較してから設定する方式に変更：新構成が serial-&gt;config とバイト単位で同一なら ops-&gt;configure を呼ばない；tty 側ではシリアルを開く際にそれがコンソールかどうかを判断し、そうであれば先にウィンドウサイズを一度問い合わせてから bypass を装着し、これにより応答パケットは生の受信キューに残り、入力に変換されない。元々 ioctl 内にあった ENOSYS だけを行う switch も併せて削除した。</p>
+
+<p>検証条件は率直に書かれている：BSP は bsp/k230 と bsp/qemu-virt64-aarch64 を使用し、作者はローカルで実行しておらず、その理由は環境に RISC-V musleabi ツールチェーンがないためで、CI のコンパイルに委ねている。この種の「一つのアーキテクチャ上だけで考え抜き、CI に委ねる」コミットはシリアル層では珍しくないが、変更の方向性は正しい：端末サイズはデバイス属性であり、特定の shell スレッドの存在に依存すべきではない。</p>
+
+<h3 id="13-gpt-パーティションの先頭と末尾が逆転していたのに検証を追加アンダーフローした巨大パーティションは登録されなくなる11-04">1.3 GPT パーティションの先頭と末尾が逆転していたのに検証を追加：アンダーフローした巨大パーティションは登録されなくなる（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 21:30（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11978">提案 #11978</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11271">不具合 #11271</a></p>
+
+<p>11 行追加、5 行削除、ブロックデバイスのパーティション解析を行う efi.c 一ファイルのみを変更。これは期限切れの提案 #11275 のやり直しである。</p>
+
+<p>is_pte_valid() は元々 starting_lba と ending_lba の両方がディスク範囲内に収まることだけを要求し、ending_lba が starting_lba 以上であることを検査していなかった。CRC 検証が合法な GPT イメージを構築すれば、efi_partition() 内の size = ending_lba - starting_lba + 1 で符号なしアンダーフローが発生し、天文学的なパーティションサイズを得て、論理パーティションとしてシステムに登録できてしまう。改修は二段階：is_pte_valid() に end が start より小さい場合の判定を加えて直接拒否する；start と size の計算を合法性検査の後に移し、検証済みの start から size を導出し、根本からアンダーフロー式が評価されないようにする。</p>
+
+<p>一点訂正が必要：前号レポートでは提案ステータスに基づき #11978 を「クローズ済み」と書いたが、実際のマージタイムスタンプは 11-04 21:30（北京時間）であり、本期の調査期間内に該当するため、本期でマージとして追記する。同じ修正に対応する不具合 #11271 は 3 月 19 日に起票され、不具合からマージまで七ヶ月余りを要した。</p>
+
+<hr />
+
+<h2 id="2-セキュリティフォローとマージ待ちキュー">2. セキュリティフォローとマージ待ちキュー</h2>
+
+<h3 id="21-msi-x-テーブルの-bir-とオフセットを検証せず悪意ある-pcie-デバイスがプローブ段階で任意の物理アドレスに書き込む11-05">2.1 MSI-X テーブルの BIR とオフセットを検証せず、悪意ある PCIe デバイスがプローブ段階で任意の物理アドレスに書き込む（11-05）</h3>
+
+<p><strong>日付</strong>：2026-11-05 01:12（報告時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/11985">不具合 #11985</a></p>
+
+<p>報告者は依然として XueDugu、ベースライン master 5d1fb66d（v5.4.0-dev、2026-10-15）、影響範囲は v5.2.0 以降と明記され、2024-05-30 の 2168ed8e7（PCI/PCIe バスフレームワーク初回マージ）により導入された。</p>
+
+<p>問題は msix_table_remap() にある。デバイス側の読み取り専用レジスタである MSI-X Table Offset を読み、下位 3 ビットを BIR として、そのまま pdev-&gt;resource[] のインデックスに使っている。しかしこの配列は 6 項目しかないのに、BIR は 0x7 でマスクされるため、6 と 7 を取り得る。6 を取るとちょうど構造体内で隣接する pdev-&gt;rom にエイリアスする——option ROM を持たないデバイスでは、このメンバは {base:0, size:0, flags:0} である。PCI_BUS_REGION_F_MEM の値が 0 であるため、「BAR 未割り当て」の空判定条件（flags と F_NONE の論理積）はかえって通過し、その結果 table_base_phys = 0 にオフセットを加えた、完全にデバイスが決める絶対物理アドレスとなり、29 ビット幅で参照ボードの全メモリを覆うのに十分である。</p>
+
+<p>さらに二つの検証も欠けている。table_offset は最大 0xFFFFFFF8 まで取り得るが、BAR の size と一切比較されない。entries_nr は MSI-X Control レジスタのもう一度の読み取りに由来し、デバイスが二回の読み取りで異なる値を返せば、最後の各表項に 0x80000000 を書き込むループをマッピング領域の外まで走らせることができ、最大 2048 項、32 KB に達する。さらに重要なのは、rt_ioremap() 自体が物理アドレスの合法性チェックを行わないため、偽造されたマッピングは成功してしまうことである。</p>
+
+<p>再現チェーンは完全である。公式 qemu-virt64-aarch64 のデフォルト設定（RT_USING_PCI、RT_PCI_MSI、RT_PCI_ECAM、RT_NVME_PCI、RT_PIC_ARM_GIC_V2M をすべて有効）で、ローカルでパッチを当てた QEMU nvme モデルを使い、デバイス側の MSI-X Table Offset を 0x4023f06e、すなわち rt_interrupt_enter_hook のアドレス 0x4023f068 に BIR 6 を論理和した値に偽造する。起動時に pci_nvme_probe が順に msix_capability_init と msix_table_remap へと進み、カーネルはその後 MSI doorbell 値 0x08020040 をその物理アドレスへ書き込む。次に割り込みが発火したとき、異常ログの EPC は 0x08020040 となり、システムは無限ループに入る。報告には GDB の観測点、コンソールログ、メモリの前後比較が示されており、攻撃グループの三回の実行結果はバイト単位で一致している。</p>
+
+<p>定性は抑制的に書かれている。CVSS 3.1 は 6.8（AV:P）で、スコアは物理的接触または周辺機器のサプライチェーンという前提に抑えられているが、技術的な帰結は起動段階におけるカーネルの任意物理メモリ読み書きである。攻撃の前提は悪意あるいは改ざんされた PCIe デバイス（悪意あるファームウェアの NVMe ドライブ、すり替えられた周辺機器、露出した M.2 スロット）であり、いかなるソフトウェア権限やユーザー操作も必要としない。CWE-787、CWE-129、CWE-20 を関連付け、v5.2.0 から v5.3.0 および master のいずれも影響を受けると検証されている。報告者は同時に、PCI フレームワークにはこれまでセキュリティ監査の対象となったことがなく、この件は既存の報告のいずれとも重複しないと指摘している。</p>
+
+<h3 id="22-報告後-6-時間で修正提案五つの検証を一度に補完11-05">2.2 報告後 6 時間で修正提案：五つの検証を一度に補完（11-05）</h3>
+
+<p><strong>日付</strong>：2026-11-05 07:21（提案時刻）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11986">提案 #11986</a></p>
+
+<p>47 行追加、5 行削除で、PCI の MSI-X コアファイル msi.c のみを変更し、メンテナの BernardXiong が提出したもので、状態は依然としてレビュー待ちである。</p>
+
+<p>五つの検証は報告にある三つの欠陥と二つの細部に対応する。BIR が resource 配列の長さ以上なら直接拒否する。BAR が未割り当てとマークされているか size が 0 なら直接拒否する。table_offset に entries_nr 掛ける 16 を加えたものが完全に BAR 内に収まらなければならない（ついでに table_offset を PCIM_MSIX_TABLE_OFFSET マスクで整える）。設定レジスタ読み取りの戻り値を検査し、読み取り失敗時は続行しない。nvec が table_size を超える場合は拒否し、デバイスが二回の読み取りで不一致な表サイズを返すのを防ぐ。計算側では table_base_phys と table_bytes を 64 ビットに引き上げ、加算が 32 ビットでオーバーフローするのを避ける。</p>
+
+<p>検証はコンパイルまでに留まる。bsp/qemu-virt64-aarch64 で RT_USING_PCI と RT_PCI_MSI を有効にし、xPack aarch64-none-elf-gcc 13.2.1 で通過したが、攻撃の再現は行っていない。01:12 の報告から 07:21 の提案まで、六時間九分であり、これは本テーマでこれまで最速の「報告からパッチまで」である。</p>
+
+<h3 id="23-キューブロックデバイスパーティションパッチにまた更新四件が引き続き保留中11-05">2.3 キュー：ブロックデバイスパーティションパッチにまた更新、四件が引き続き保留中（11-05）</h3>
+
+<p><strong>日付</strong>：2026-11-05（提案更新時刻）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11981">提案 #11981</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11954">提案 #11954</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11971">提案 #11971</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11983">提案 #11983</a></p>
+
+<p>前回報告したブロックデバイスパーティションのユーザーポインタ強化（#11981、欠陥 #11952 の任意カーネル書き込みに対応）は 11-05 07:34 に再度更新があったが、依然としてマージされていない。修正方法は変わらず、ユーザー空間コンテキストでまずパーティションデータをカーネルスタックにコピーし、その後 lwp_put_to_user() で書き戻す。不正なポインタは -EFAULT を返し、書き込みは行わない。</p>
+
+<p>キューにある他の3件の状態：poll と epoll のカウント乗算ラップアラウンド（#11954）は 11-05 00:04 更新。pipe ioctl のユーザーポインタ強化（#11971）は 11-04 14:57 更新。自動実行にループとメモリサンプリングを追加する utest 提案（#11983）は 11-04 12:44 更新。3件ともレビュー待ち。前回マージされた #11978 は今回でクローズ済み。#11977、#11973、#11963、#11957 もすべてクローズ済みで、バックログはこれ以上厚くなっていない。</p>
+
+<hr />
+
+<h2 id="3-公式コミュニティイベント">3. 公式・コミュニティイベント</h2>
+
+<h3 id="31-睿擎-rk3576-デスクトップペットボードが聞くことと話すことを担いpc-が考えることを担う11-04">3.1 睿擎 RK3576 デスクトップペット：ボードが聞くことと話すことを担い、PC が考えることを担う（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 13:54（コラム公開時刻）/ 2026-11-04 20:00（ライブ配信時刻）　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a536769.html">電子工程専輯：睿擎プラットフォーム、RK3576 で青いクジラを飼う</a></p>
+
+<p>RT-Thread 公式コラムは 11-04 にエンジニアリング振り返り記事を公開し、DeepSeek Harness にいるあの青いクジラを RK3576 と小さな画面に移植する方法を説明した。KEY5 を押して一言話すと「diii」と鳴き、数秒後に大きな太った魚の口調で一言返し、画面上の目がそれに合わせて動く。同日 20:00 に睿擎技術ライブ配信室で実機デモを行った。</p>
+
+<p>役割分担は明確に書かれている。ボードが聞くことと話すことを担い、PC が考えることを担う。ボード側は RK3576 と ES8388 サウンドカードを搭載し、録音は arecord、再生は aplay で、いずれも hw:0,0 を経由する。表情は GPU を使わず、Qt や LVGL も動かさず、直接 mmap で /dev/fb0 を開いてピクセルを書き込む。人設、記憶、ツール、モデルはすべて PC の DSH Desktop 上にあり、ボードは API Key を保存せず、推論も行わない。PC の電源が入っていなければボードは黙ってしまう。</p>
+
+<p>1 回の対話は 7 ステップに分解される。evdev が KEY5 を読み取るとプロンプト音を鳴らして録音を開始。arecord は 16 kHz、S16_LE、ステレオで WAV に録音。voice-once はファイルを multipart POST で中継サービスの /v1/voice-turn に送信。server.mjs は WAV ヘッダーを剥がし、f32 PCM に変換して ASR に送る。session.prompt は「受理済み」だけを返し、本文は session.history をポーリングして安定するまで待つ。spokenForTts は【】内の文字だけを選んで Edge TTS に渡し mp3 を合成。ボード側は mpg123 で WAV に変換し、sox で 48 kHz にリサンプリングし、aplay で音を出す。同時にレスポンスヘッダーの表情マークに従ってフレームを切り替える。</p>
+
+<p>なぜ中間にブリッジを挟むのか、記事は2つの具体的な理由を挙げている。api.deepseek.com はテキストインターフェースしかなく、/v1/audio/ 系のエンドポイントがないため、ボード側の直接接続では音声チェーンを組めない。会話の連続性には固定の DSH_SESSION_ID が必要で、音声で新たなセッションを開くと人設とコンテキストがすべて変わってしまう。ブリッジはブロッキングで、ボード側の curl は 180 秒のタイムアウトを持ち、キー押下から音声が返るまでずっと待機する。</p>
+
+<p>3つの落とし穴は結論よりも価値がある。第一に、1回のキー押下で2回の対話が走ってしまったこと。デーモンプロセスが殺されても子プロセスが必ずしも一緒に死ぬとは限らず、2つのプロセスが同時に同じ event7 を読んでいた。補修方法は flock による単一インスタンス化、EVIOCGRAB によるデバイス独占、起動時に /proc の fd に基づいて孤児プロセスをクリアすることの3つで、どれか1つ欠けると再現する。第二に、ストリーミング TTS が途切れること。コード内の DSH_VOICE_TTS_SSE スイッチはデフォルトでオフになっており、コメントには often truncates と直接書かれている。初期は最初のセグメントを取得するとすぐ合成し、一言がわずか 10 KB だった。「連続して複数回ポーリングしても内容が変わらず、かつ読み上げが少なくとも2つの漢字を含む」場合にのみ合成するよう変更し、サイズは 115 KB になった。第三に、表情は2段階の優先度があり、idle、listening、speaking が 0、感情が 1 で、1 がロックされている間は 0 のリクエストは直接無視される。ロックが期限切れになると自動的に idle に戻らなければならず、そうしないと confused の再生後に最後のフレームで止まってしまう。</p>
+
+<p>この記事の価値は、「リアルタイム IO はボード側に残し、推論はより強力な演算側に置く」ということを再現可能な7ステップのチェーンとして書き出した点にある。烏鎮の「新光」記事にある AI を Linux 側に、制御を RT-Thread 側に置くという分担と同じ考え方だが、今回は推論が PC に移されている。今後の計画は LVGL インターフェース、割り込みメカニズム、大規模モデルによるハードウェア制御である。</p>
+
+<h3 id="32-公式ニュースインターフェースは依然6月で停止メディアコラムが唯一の安定した出口11-05">3.2 公式ニュースインターフェースは依然6月で停止、メディアコラムが唯一の安定した出口（11-05）</h3>
+
+<p><strong>日付</strong>：2026-11-05（確認）　<strong>情報源</strong>：<a href="https://www.rt-thread.org/news/list">RT-Thread 公式ニュース一覧</a></p>
+
+<p>公式ニュースインターフェース getList?type=rt_org が返す最新エントリは依然として 2026-06-17 の「RT-Thread 睿赛德科技、2026 アブダビ投資フォーラムへの招待出席」であり、公式サイトトップのニュース欄も同様に6月で停止しており、今回は新規追加なし。公式サイトのニュースモジュールのリスト領域は依然としてインターフェースで照合しないと完全には読めない。</p>
+
+<p>実際の公開経路はすでにメディアコラムで安定している。今号の『電子工程専輯』の RT-Thread アカウントが睿擎デスクトップペットの原稿を1本更新し、収録済みとなった。フォーラム club.rt-thread.org は依然として 468 を返し、先頭に WAF チャレンジページが付くため、投稿一覧と本文を直接読み取ることはできず、コミュニティ議論側は GitHub とコラムのクロスチェックに頼るしかない。</p>
+
+<hr />
+
+<h2 id="4-エコシステムとベンダー適配">4. エコシステムとベンダー適配</h2>
+
+<h3 id="41-esp32-s31-上で-rt-thread-を-esp-idf-に組み込む36-項目のセルフチェック全通過11-04">4.1 ESP32-S31 上で RT-Thread を ESP-IDF に組み込む：36 項目のセルフチェック全通過（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 20:56（プッシュ時間）　<strong>情報源</strong>：<a href="https://github.com/yilives/esp32s31-rtthread">リポジトリ：esp32s31-rtthread</a>、<a href="https://www.espressif.com/zh-hans/news/ESP32_S31_Release">楽鑫：ESP32-S31 リリース稿</a></p>
+
+<p>RT-Thread 5.4.0 を ESP32-S31 に移植したリポジトリで、形態はよくある BSP ではなく、自身を ESP-IDF v6.1 のコンポーネントにするものだ。component/ はそのまま esp-idf/components/rtthread にドロップインして FreeRTOS カーネルを置き換える。patches/ は git apply で IDF 自身の 10 ファイル・約 440 行を変更する。内容は freertos の Kconfig と CMakeLists、起動フロー、リンカスクリプトの割り込みスタックとヒープセグメント定義、さらに新規追加の RISC-V トラップ入口と flash クロスコアフックを含む。project/ はサンプルアプリのみを置く。RT-Thread のソースコードはゼロ修正を保ち、スクリプトが固定コミット 9e6dec3b で 5.4.0 を取得する。</p>
+
+<p>機能一覧は非常に具体的だ。スケジューリング、スレッド、セマフォ、ミューテックス、イベント、メールボックス、メッセージキュー、ソフトウェアタイマー、動的・静的オブジェクトが揃う。SMP デュアルコアスケジューリング（各コア独立 tick、独立割り込みスタック、IPI）、CLIC 割り込みとハードウェアネスト、割り込みウォッチドッグ、FinSH の 22 コマンド、内部 DRAM に 16 MB PSRAM を加えたヒープが利用可能。ペリフェラル側は UART、GPIO とピン割り込み、3 系統 I2C、SPI（ポーリング、完全なバスフレームワークではない）、2 系統 17 ビット ADC、8 系統 LEDC PWM、MCPWM の相補とデッドタイム、4 系統 GPTimer、PCNT、RMT、TWAI がすでに接続済み。ワイヤレス側は Wi-Fi 2.4 GHz が接続して IP を取得でき、スキャンも可能、BLE コントローラと NimBLE が使用可能。未移植なのは I2S、SD/MMC、LCD、カメラ、タッチ、イーサネット、ハードウェア暗号化と低消費電力だ。</p>
+
+<p>ボード上での結果は 36 項目のセルフチェックが全通過、失敗 0、デュアルコアともスレッドが動作し、Wi-Fi はデュアルコア有効下で接続して IP を取得できる。記事中の3つの非自明な設計ポイントは記録に値する。CONFIG_FREERTOS_UNICORE=y と「デュアルコア」は矛盾しない。この2つのマクロは FreeRTOS がマルチコア上でスケジューリングするかどうかを記述するもので、y に設定すると IDF は start_other_core を呼ばず、第2コアは RT-Thread 自身の起動に残される。n に設定すると逆に entry() がまったく呼ばれなくなる。CPU1 はまず mstatus.FS を 3 に設定する必要がある。トラップ入口が浮動小数点幅 32 のとき無条件に f0 から f31 まで保存するためだ。スレッドスタックフレーム構築時に FS は 3 だが、CPU1 の電源投入時は 0 であり、この一手を補わないと最初の浮動小数点保存でエラーになる。</p>
+
+<p>背景は楽鑫が 2026 年 3 月 26 日に発表した ESP32-S31 だ。デュアルコア 32 ビット RISC-V、最大 320 MHz、Wi-Fi 6、Bluetooth 5.4、802.15.4 を備え、公式ソフトウェアスタックは ESP-IDF と FreeRTOS。このプロジェクトはカーネルを交換しつつ IDF のワイヤレスファームウェアとドライバを保持する。つまり、ベンダーが1種類の RTOS しか提供しないチップ上で、別カーネルのプラガブル性を検証したことになる。位置づけは正直に書かれている。host とマルチアーキテクチャ移植はテスト参考にすぎず、製品目標は依然としてシングルコア MCU だ。</p>
+
+<h3 id="42-coact1つのヘッダファイルで-rt-threadfreertoslinux-を同時に接続11-04">4.2 coact：1つのヘッダファイルで RT-Thread、FreeRTOS、Linux を同時に接続（11-04）</h3>
+
+<p><strong>日付</strong>：2026-11-04 22:35（プッシュ時間）　<strong>情報源</strong>：<a href="https://github.com/DeguiLiu/coact">リポジトリ：coact</a></p>
+
+<p>C++17 のアクティブオブジェクトと階層状態機械フレームワーク。作者は DeguiLiu、MIT ライセンス、今調査期間で 98 スターまでプッシュされた。モデルは QP/C++ の路線に沿う。イベントがスレッドに取って代わり、振る舞いは階層状態機械として記述され、遷移表は constexpr で、実行期に一切の割り当てを行わない。同一のヘッダファイルが RT-Thread、FreeRTOS 上で動作し、Linux と Windows 上でも PAL を通じてコンパイルできる。host はテスト参考のみだ。</p>
+
+<p>それは三つの性質を構造的制約として書き、「スローガン」にはしていない。有界：各キュー、メモリプール、バッチサイズはいずれもコンパイル時定数であり、ヒープも new も delete もなく、動的登録もない。最悪時のフラッシュと RAM の占有量はリンク時に確定でき、リポジトリには Renode 上での占有量スクリプトが含まれている。検出可能：コミット結果は SubmitResult 戻り値で返され、さらに Monitor カウント、Breaker::level()、fatal_assert 処理がある。失敗時にはその発生箇所で、どのアクティブオブジェクト、どの区画に属するかを確認できる。回復可能：各アクティブオブジェクトにはサーキットブレーカの状態機械が付き、Normal、BrokenL1、BrokenL2、Safe、Recovering の五状態を持つ。回復条件は冷却時間、水位の持続的な低下、プローブ成功、連続ヘルスウィンドウとして明確化され、サンプルには安全監督器の完全な実装例が示されている。</p>
+
+<p>RT-Thread にとっての意義はアプリケーション層の方法論にある。エコシステムの多くのプロジェクトではスレッドとメッセージキューの上に直接ロジックを積み、状態機械は switch を手書きすることが多く、有界・可観測・回復可能を同時に制約する枠組みが欠けている。この実装はクリティカルセクションを注入インターフェースとし、RT-Thread 側では割り込み禁止、FreeRTOS 側ではタスククリティカルセクションに ISR マスクを加える。ISR パスはロックを取らず libatomic にも依存せず、シングルコア MCU を明確な設計点としている。</p>
+
+<hr />
+
+<h2 id="5-本期のトレンドとまとめ">5. 本期のトレンドとまとめ</h2>
+
+<h3 id="51-トレンド攻撃面はシステムコール引数からデバイスファームウェアへ移る">5.1 トレンド：攻撃面はシステムコール引数からデバイスファームウェアへ移る</h3>
+
+<p>本期の 24 時間でメインリポジトリには 3 件がマージされ（#11955、#11978、#11891）、新規提案が 1 件（#11986）、新規欠陥が 1 件（#11985）である。数は前期より少ないが、三つの線にそれぞれ実質的な変化がある。</p>
+
+<p>第一の線は、セキュリティ側で攻撃面が変わったことである。最近数期が報じていたのは、システムコール層の「値からオブジェクト」への検証欠如、すなわち getaddrinfo のネストしたユーザポインタ、pipe の ioctl ポインタ、timerfd が任意の fd を受け付ける問題、POSIX timer の id 越境、ブロックデバイス区画の生ポインタである。これらの欠陥の前提は「非特権プロセスが存在すること」であった。本期の MSI-X 欠陥は、前提が「悪意あるデバイスが挿入されること」に変わった：デバイスファームウェアが提供する読み取り専用設定レジスタをカーネルが信頼できる入力として扱い、BIR が 1 ビット越境するだけで rom メンバへ別名参照され、さらにはマッピング基底アドレスを任意の物理アドレスに変えてしまう。そのため CVSS は 6.8 にとどまるが、結果は同じく起動段階でのカーネル任意書き込みである。RT-Smart 以外でも、PCI フレームワークは MCU 上でも同様に影響を受け、これはデバイス側の入力検証がシステムコールよりも精査の少ない領域であることを示している。</p>
+
+<p>第二の線は対応速度である。01:12 の報告、07:21 の提案で、六時間である；前期のブロックデバイス区画は 10 月 29 日の報告、11 月 3 日の提案で、五日であった。報告者は PoC、GDB ログ、バージョン追跡を備えた完全な資料を提供しており、メンテナは受け取れば直接修正できる。これはどのようなプロセス規定よりも修正時間を短縮する。代償としてレビュー負荷が後ろに圧し掛かり続け、キューには依然として四件が審査待ちである。</p>
+
+<p>第三の線は、バージョン治理が初めて文書として形になったことである。751 行のバージョン番号とリリースプロセスは、Z を月次、Y を三から六か月、X を不定期と明記し、さらに Z は新規公開 API を導入してはならないこと、リリース後に元の Tag を変更してはならないこと、Y の周期はバージョン目標に書き込むことを規定している。下流のディストリビューションや商用バージョンにとって、これは一度のアップグレードを追随すべきか、どれだけの移行コストがかかるかを判断する直接の根拠となり、リリースノートの口頭の約束より信頼できる。</p>
+
+<p>エコシステム側では、相反する二つの動きが注目に値する：一方はコミュニティが RT-Thread を FreeRTOS しか提供しない新チップ（ESP32-S31）に組み込み、コンポーネント形式でカーネルを置き換えつつベンダの無線スタックを保持する；他方は coact のような C++ フレームワークがアクティブオブジェクトと階層状態機械の成熟したパラダイムを RT-Thread のアプリケーション層に持ち込む。一方はカーネルのプラガブル性を検証し、他方はアプリケーション層の方法論を補う。イベント側では、睿擎デスクペットが「ボード側のリアルタイム IO と PC 側推論」の最小再現可能サンプルを提供しており、烏鎮の「新光」稿のハイブリッド配置の語りと同じ線にある。</p>
+
+<h3 id="52-制限と重複排除の説明">5.2 制限と重複排除の説明</h3>
+
+<p>フォーラム club.rt-thread.org は本期も 468 を返し、WAF チャレンジページが前置され、スレッド一覧と本文は読み取れない。コミュニティ討論側の情報ギャップは GitHub とメディアコラムで補完した。公式ニュースインターフェースと公式サイトのニュース一覧はいずれも 6 月 17 日で止まっており、本期の新規はない。電子工程専輯のコラム集約ページは直リンクがタイムアウトし、睿擎デスクペットの一件は Google News でタイトルをヒットさせた後、元記事ページを取得して照合したもので、公開時期と本文はいずれも元ページによる。</p>
+
+<p>GitHub 側は本期、匿名インターフェースの割り当てが十分で、組織レベルの核查は 35 リポジトリをカバーした。期間内にプッシュがあったのはメインリポジトリのみで、packages、env、rtthread-nano、sdk、smart-build、UtestRunner などの重点リポジトリはいずれもコミットがない。リポジトリ検索 topic:rt-thread は 8 件ヒットし、2 件を収録した（ESP32-S31 移植、coact）。残りは汎用 GUI プロジェクトまたは個人フォークである。</p>
+
+<p>重複排除：#11978 は前期に提案状態として已閉環と記載したが、本期は実際のマージ時間に基づいて追記し、根因の詳細を示した；#11981、#11954、#11971、#11983 は前期に既出のため、本期は状態変化のみを記し、重複して展開しない；#11985 と #11986 は本期新規の一本の完全な連鎖で、欠陥と提案を二件に分けて記す。未収録：zlgopen/awtk のプッシュは汎用 GUI の改良に属し、RT-Thread との特段の関係はない；WorkerHMan/imx6ull_rt-thread と JiaVerso/myPilot_board は調査の結果、いずれも RT-Thread 本線の完全なフォークで独立したアプリケーションコードを持たないため、エコシステム項目としては扱わない；10 月 30 日のダブルイレブン販促稿は宣伝コンテンツに属し、すでに期間外である。</p>
+
+<hr />
+
+<h2 id="付録情報源チェック表と情報源リスト">付録：情報源チェック表と情報源リスト</h2>
+
+<h3 id="情報源チェック表">情報源チェック表</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>情報源</th>
+      <th>チェック結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>公式ニュースインターフェース（rt_org）</td>
+      <td>24時間で新規追加なし、最新項目は2026-06-17で停止</td>
+    </tr>
+    <tr>
+      <td>公式サイトニュース一覧</td>
+      <td>トップページのニュース欄は依然6月のまま、新規追加なし</td>
+    </tr>
+    <tr>
+      <td>コミュニティフォーラム</td>
+      <td>前置WAFチャレンジページ（HTTP 468）、一覧と本文が読み取り不可</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリ commits</td>
+      <td>調査期間内に3件、11-04 10:44と21:30から21:33に集中</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリ PR</td>
+      <td>マージ3件（#11955、#11978、#11891）、新規作成1件（#11986）</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリ Issue</td>
+      <td>新規作成1件（#11985）、PCI MSI-Xデバイス側入力が未検証</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリ releasesとtags</td>
+      <td>新規追加なし、最新は依然v5.3.0（2026-09-10）</td>
+    </tr>
+    <tr>
+      <td>RT-Thread orgリポジトリ</td>
+      <td>35リポジトリをチェック、メインリポジトリのみ調査期間内にプッシュあり</td>
+    </tr>
+    <tr>
+      <td>GitHubリポジトリ検索</td>
+      <td>topic:rt-thread 8件、収録2件（ESP32-S31移植、coact）</td>
+    </tr>
+    <tr>
+      <td>Google News 中国語</td>
+      <td>3日以内の3件はすべて調査期間前に既報またはプロモーション。7日検索で睿擎デスクトップペット1件がヒット、収録済み</td>
+    </tr>
+    <tr>
+      <td>Google News 英語</td>
+      <td>有効なヒットゼロ、無関係なHackerNoon記事1件のみ</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>7件すべてThreadネットワークプロトコル、求人または無関係な内容、除外済み</td>
+    </tr>
+    <tr>
+      <td>電子工程専輯公式コラム</td>
+      <td>11-04に睿擎デスクトップペット記事1件、収録済み</td>
+    </tr>
+    <tr>
+      <td>楽鑫公式発表稿</td>
+      <td>ESP32-S31の仕様と発表時期の照合に使用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完全な情報源リスト">完全な情報源リスト</h3>
+
+<ul>
+  <li><strong>[1]</strong> メインリポジトリのコミット記録
+<a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> 提案 #11955（バージョン番号とリリースプロセスのドキュメント）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11955">https://github.com/RT-Thread/rt-thread/pull/11955</a></li>
+  <li><strong>[3]</strong> 議題 #11956（リリースプロセスドキュメントの実装経路）
+<a href="https://github.com/RT-Thread/rt-thread/issues/11956">https://github.com/RT-Thread/rt-thread/issues/11956</a></li>
+  <li><strong>[4]</strong> 提案 #11891（シリアルポート TIOCGWINSZ と termios 更新の改善）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11891">https://github.com/RT-Thread/rt-thread/pull/11891</a></li>
+  <li><strong>[5]</strong> 提案 #11978（GPT パーティションエントリの先頭・末尾検証）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11978">https://github.com/RT-Thread/rt-thread/pull/11978</a></li>
+  <li><strong>[6]</strong> 缺陷 #11271（GPT パーティションのアンダーフロー）
+<a href="https://github.com/RT-Thread/rt-thread/issues/11271">https://github.com/RT-Thread/rt-thread/issues/11271</a></li>
+  <li><strong>[7]</strong> 缺陷 #11985（MSI-X テーブルの BIR とオフセットが未検証）
+<a href="https://github.com/RT-Thread/rt-thread/issues/11985">https://github.com/RT-Thread/rt-thread/issues/11985</a></li>
+  <li><strong>[8]</strong> 提案 #11986（MSI-X テーブルの BIR とオフセット検証の修正）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11986">https://github.com/RT-Thread/rt-thread/pull/11986</a></li>
+  <li><strong>[9]</strong> 提案 #11981（ブロックデバイスパーティション ioctl のユーザーポインタ強化）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11981">https://github.com/RT-Thread/rt-thread/pull/11981</a></li>
+  <li><strong>[10]</strong> 提案 #11954（poll と epoll のカウントラップアラウンド）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11954">https://github.com/RT-Thread/rt-thread/pull/11954</a></li>
+  <li><strong>[11]</strong> 提案 #11971（pipe ioctl のユーザーポインタ強化）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11971">https://github.com/RT-Thread/rt-thread/pull/11971</a></li>
+  <li><strong>[12]</strong> 提案 #11983（自動実行ループとメモリサンプリング）
+<a href="https://github.com/RT-Thread/rt-thread/pull/11983">https://github.com/RT-Thread/rt-thread/pull/11983</a></li>
+  <li><strong>[13]</strong> 電子工程専輯：睿擎プラットフォーム、RK3576 でブルーホエールを飼う
+<a href="https://www.eet-china.com/mp/a536769.html">https://www.eet-china.com/mp/a536769.html</a></li>
+  <li><strong>[14]</strong> 楽鑫：ESP32-S31 をリリース
+<a href="https://www.espressif.com/zh-hans/news/ESP32_S31_Release">https://www.espressif.com/zh-hans/news/ESP32_S31_Release</a></li>
+  <li><strong>[15]</strong> リポジトリ：esp32s31-rtthread（RT-Thread 5.4.0 を ESP-IDF コンポーネントとして）
+<a href="https://github.com/yilives/esp32s31-rtthread">https://github.com/yilives/esp32s31-rtthread</a></li>
+  <li><strong>[16]</strong> リポジトリ：coact（C++17 アクティブオブジェクトと階層状態機械フレームワーク）
+<a href="https://github.com/DeguiLiu/coact">https://github.com/DeguiLiu/coact</a></li>
+  <li><strong>[17]</strong> RT-Thread 公式ニュース一覧
+<a href="https://www.rt-thread.org/news/list">https://www.rt-thread.org/news/list</a></li>
+  <li><strong>[18]</strong> RT-Thread 公式リポジトリ組織ページ
+<a href="https://github.com/RT-Thread">https://github.com/RT-Thread</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ja/post.html#news-list" class="btn btn-main news-list-link">戻る</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>お問い合わせ</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Eメール:</strong> contact@kubuds.cn<br>
+            <strong>住所:</strong> 中国上海市宝山区高逸路 88 号 1 棟 1 階 108 室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>リンク</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

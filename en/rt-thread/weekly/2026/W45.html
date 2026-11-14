@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 周报" href="/rss/en/rt-thread/weekly.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/weekly/2026/W45.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/weekly/2026/W45.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/weekly/2026/W45.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/weekly/2026/W45.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/weekly/2026/W45.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Weekly Report (2026-11-02 ~ 2026-11-06) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Weekly Report (2026-11-02 ~ 2026-11-06)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Weekly Report (2026-11-02 ~ 2026-11-06)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-06</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Reporting period</strong>: Monday, November 2, 2026 to Friday, November 6, 2026 — 5 working days, 5 daily issues; also includes checks on the release day (November 7) of main repository commits, merged and pending proposals, newly filed defects, the releases page, and the tags page, covering wrap-up changes from 11-06 08:00 to 11-07 18:50
+<strong>Sources</strong>: 5 issues of this publication’s daily RT-Thread updates (11-02, 11-03, 11-04, 11-05, 11-06), totaling an effective window from 10-30 08:00 to 11-06 08:00 (the Monday issue covers a 72-hour window spanning the weekend); release-day checks are based on actual inspection of GitHub main repository commits, releases and tags, merged and pending proposals, and newly filed defect tickets
+<strong>Editorial note</strong>: Covers five dimensions — kernel and versions, security and stability, ecosystem and vendor adaptation, official and community activities, and industry applications; facts and dates in the body text are taken item by item from the original daily issues of the corresponding period, and release-day supplementary entries are individually marked with their verification method</p>
+
+<hr />
+
+<h2 id="i-weekly-highlights">I. Weekly Highlights</h2>
+
+<ul>
+  <li>
+    <p><strong>31 merges in one day on 11-05, clearing a backlog spanning four months (11-05)</strong>: The main repository merged 49 proposals this week, distributed by day as six on 11-02, four on 11-03, three on 11-04, thirty-one on 11-05, and five on 11-06. The 11-05 batch was highly concentrated in time—17 landed within the 31 minutes from 10:47 to 11:18, another 13 from 13:23 to 18:40, and the final one, an ARM Kconfig split, landed separately at 22:26. The batch composition shows this was not “written the same day, merged the same day”: many were opened in mid-to-late October, with the oldest, #11558, opened on July 5, and #11892 and #11897 both opened on 10-18. The merger structure is also clear: usualtreee with 7, BernardXiong with 5, cms19859230182-lang with 4, adilalperenciftci with 2, and the remaining 13 from various contributors—the division of labor where external contributors submit patches and maintainers validate and batch-merge has taken shape.</p>
+  </li>
+  <li>
+    <p><strong>Version numbering and release process documented formally in the repository for the first time (11-04)</strong>: Proposal #11955 was merged on 11-04 at 10:44, with 751 lines added across 14 files: bilingual (Chinese and English) “Version Numbering Rules and Implementation Details” and “Release Process,” accompanied by 7 flowcharts and registered in the Doxygen index. The rules put the cadence in numbers: Z revisions原则上 one per month, Y minor versions every 3 to 6 months, X major versions with no fixed cycle; Z must not introduce new public APIs, components, or driver frameworks, and a single BSP that brings in a new driver framework must be bumped to Y or X; after an official release, any issue found can only be addressed with X.Y.Z+1, and the original Tag, original Release content, or original deliverables must not be modified. Document examples are uniformly written as v6.0.0, v6.1.0, v6.1.1, and the next mainline is planned on the 6 series.</p>
+  </li>
+  <li>
+    <p><strong>Attack surface shifts from syscall arguments to device firmware, with patches for both chains within hours (11-05 ~ 11-06)</strong>: The MSI-X table flaw #11985 was reported on 11-05 at 01:12: a malicious PCIe device fills the BIR in a read-only configuration register with 6, aliasing out of bounds into <code class="highlighter-rouge">pdev-&gt;rom</code>, after which the mapping base becomes an absolute physical address of 0 plus offset, allowing arbitrary physical memory writes at boot time; #11986 posted a fix at 07:21 and was merged on 11-05 at 10:47, closing the loop within two days from report to merge. The next day, ivshmem’s #11992 was reported at 00:54: the device describes “shared memory” as a kernel memory region, and once the window is registered as <code class="highlighter-rouge">/dev/ivshmemN</code>, any unprivileged process can read and write kernel physical memory at byte granularity; #11993 was posted at 03:05, adding a default-off RT_IVSHMEM_JAILHOUSE option—two hours and eleven minutes from report to proposal. Both share the same root cause: a single missing check—<code class="highlighter-rouge">rt_ioremap()</code> performs no physical address validity check and maps whatever the device says.</p>
+  </li>
+  <li>
+    <p><strong>The family-wide cleanup of RT-Smart syscall boundaries closed out this week, with only mailbox converted to a structural TODO (11-02 ~ 11-07)</strong>: The graphics device negative offset #11969 got #11970 after 31 minutes; pipe’s #11958 was fixed by #11971 and merged; getaddrinfo’s #11977 was redone by a maintainer and merged; the GPT partition head-tail inversion #11978 was merged; timerfd and POSIX timer’s #11984 and #11980 received #11996 and #11997 on 11-07 at 03:04. The remaining mailbox #11960 received a maintainer reply on 11-07 at 03:05: confirming that <code class="highlighter-rouge">sys_mb_send()</code> / <code class="highlighter-rouge">sys_mb_send_wait()</code> forward user object pointers directly to <code class="highlighter-rouge">rt_mb_*</code>, and that <code class="highlighter-rouge">RT_ASSERT</code> only reads the type field in the object and cannot substitute for an ownership check; noting that this requires a structural fix via LWP object AVL lookup plus reference holding, and that the same check should also cover semaphore, mutex, event, message queue, and timer paths; and that this round did not submit an incomplete fix due to the absence of an RT-Smart cross toolchain.</p>
+  </li>
+  <li>
+    <p><strong>Wuzhen “New Light”: the AIOS foundation enters a national-level platform’s product recommendation list (11-02 ~ 11-03)</strong>: The 2026 World Internet Conference Wuzhen Summit was held November 2–5, with 671 Chinese and foreign enterprises and institutions from 54 countries and regions exhibiting, and 35 “New Light” products and 20 “New Shine” scenarios selected and recommended. RT-Thread’s entry was the “RT-Thread Heterogeneous Converged Edge-Side Intelligent AIOS Foundation,” and Ecosystem Director Li Yan gave a keynote on-site at the expo titled “Virtualized Hybrid Deployment Embodied Intelligence Solution · AI Kit.” The technical proposition is stated clearly: AI inference on the Linux side, real-time control on the RT-Thread side, the two sides running independently, so that if the AI side fails the control side can still execute—officially claimed control precision down to the microsecond level; the accompanying AI Kit bundles the inference engine, model optimization, hardware adaptation, and debugging environment into one toolchain. The significance lies in the narrative framing—previously pitched externally as a “real-time control foundation,” this time the selected vehicle is an edge-side intelligent operating system, with the landing point being robot “brain” and “cerebellum” coordination.</p>
+  </li>
+  <li>
+    <p><strong>HPMicro pushes 12 BSP repositories to v1.13.0 within thirteen minutes and opens HPM5100EVK (11-02)</strong>: Among the 64 repositories under the HPMicro organization, 12 RT-Thread BSP repositories were pushed in a burst on November 2 from 11:43 to 11:56, covering HPM6750, HPM6E00, HPM6P00, HPM6800, HPM6300, HPM6200, HPM5E00, HPM5300, HPM5301, and the newly added HPM5100EVK. Per-repository verification shows all three commit messages read “RT-Thread BSP v1.13.0 for <board name="">," with timestamps falling within the same second-level interval, indicating a scripted batch release rather than individual development; the previous commit for HPM6800EVK and HPM6E00EVK was v1.11.0 on 2026-02-03, about nine months earlier with no v1.12.0 record in between. The new repository HPM5100EVK was created at 10:59, with its first commit being v1.13.0.</board></p>
+  </li>
+  <li>
+    <p><strong>Z-release test checklists begin producing code: three framework test suites merged, two wired into CI (11-03 ~ 11-07)</strong>: #11972, posted on 11-02, broke “can a Z release ship” into per-framework QEMU and utest checklists; within the following week, three were merged—DAC framework tests #11976, I2C emulated bus tests #11982, and watchdog smoke tests #11883—while SPI in-firmware virtual loopback bus #11979 and dlmodule QEMU regression #11989 are under review; #11990 on 11-06 at 13:10 wired DAC and I2C into the qemu-vexpress-a9 CI job, requiring both to leave explicit PASSED records; 11-07 brought Touch framework tests #12002, filling the Touch gap in the #11972 checklist. The shift in test infrastructure from “wait for hardware” to “go into CI” gained consecutive examples this week.</p>
+  </li>
+  <li>
+    <p><strong>Kernel pluggability validated in two directions: a new chip replaces FreeRTOS, a new architecture enters libcpu (11-04 ~ 11-07)</strong>: The community packaged RT-Thread 5.4.0 as a component of ESP-IDF v6.1, directly drop-in replacing the FreeRTOS kernel, with RT-Thread source kept unmodified and pulled by script at a fixed commit; all 36 on-board self-checks passed, both cores are running threads, and Wi-Fi connects and obtains an IP with both cores enabled. In the same week, on 11-06 at 09:37, Canaan K230D support (128 MB DDR variant, GPIO pin device, ext4 rootfs, ptyfs and procfs mounts) was merged with #11897; on 11-07 at 03:41 came the Renesas RH850 G4KH port proposal #11998, with 48 files and 3,916 lines added, including TRAP0 thread switching, nested interrupts, FPU context, and the qemu-rh850-u2c board, with kernel_basic passing 22/22 on QEMU.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="ii-kernel-and-version-dynamics">II. Kernel and Version Dynamics</h2>
+
+<h3 id="versions-and-mainline">Versions and Mainline</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/releases">Main repository releases page</a></p>
+
+<ul>
+  <li><strong>Official releases</strong>: Still no new releases or tags this week; both the releases and tags endpoints remain at v5.3.0 from 09-10, nearly two months after release. The main repo is in 5.4.0 development state (the previous weekly report already noted that RT_VER_NUM was bumped to 0x50400 on 10-29); no version macro changes were recorded in any daily report this week, and there are no pre-release tags or binaries.</li>
+  <li><strong>Mainline commits</strong>: 49 proposals were merged into master this week: six on 11-02, four on 11-03, three on 11-04, thirty-one on 11-05, and five on 11-06. All five 11-06 commits landed between 09:20 and 13:10 that day; these wrap-up changes after the daily report cutoff (08:00) are consolidated in this report’s release-day verification.</li>
+  <li><strong>Cadence characteristics</strong>: Monday’s six commits were backlog deferred from Friday through Sunday; Tuesday and Wednesday fell back to four and three; Thursday saw a one-off surge to thirty-one; Friday wrapped up with five. As of the verification cutoff (18:50) on 11-07, there were no new commits. This matches the “stall first, then clear the books in bulk” pattern of recent weeks, except that this week’s peak was higher and the span longer.</li>
+  <li><strong>Organization level</strong>: Only env and sdk saw pushes among affiliated repositories this week (the serverless index rework of the Env plugin marketplace, see Chapter III); packages, vscode-rt-smart, pkgs-test, rtthread-nano, smart-build, and UtestRunner all have no commit records.</li>
+</ul>
+
+<h3 id="this-weeks-merge-list-49-proposals">This Week’s Merge List (49 proposals)</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-06　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">Main repository master commit stream</a></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Count</th>
+      <th>Main items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>11-02</td>
+      <td>6</td>
+      <td>SDHCI name buffer stack overflow (#11542), USB string descriptor index and MS OS compatible ID length (#11545, #11546), tiny vsnprintf long long truncation (#11600), klibc byte loop rewritten as memset (#11965), SCMI reset controller container conversion (#11946)</td>
+    </tr>
+    <tr>
+      <td>11-03</td>
+      <td>4</td>
+      <td>getaddrinfo nested user pointer hardening (#11977), macro comment placement convention (#11973), mailbox test case repeatability (#11963), DM365 SPI rejects zero frequency (#11957)</td>
+    </tr>
+    <tr>
+      <td>11-04</td>
+      <td>3</td>
+      <td>Mainline version numbering and release process documentation (#11955), GPT partition head-tail reversal validation (#11978), serial TIOCGWINSZ and termios update (#11891)</td>
+    </tr>
+    <tr>
+      <td>11-05</td>
+      <td>31</td>
+      <td>11 security and bounds checks, 7 drivers and tools, 3 Smart and kernel, 5 test infrastructure, 1 ARM Kconfig split, plus 4 tools and CI</td>
+    </tr>
+    <tr>
+      <td>11-06</td>
+      <td>5</td>
+      <td>STM32F1/H7 input capture (#11975), K230D support and Smart improvements (#11897), SDIO block device read/write test (#11758), CAN transmit/receive test (#11752), QEMU DAC and I2C framework tests (#11990)</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>All six 11-02 commits are old debts</strong>: The SDHCI stack overflow only triggers when RT_NAME_MAX is set to 64; the tiny vsnprintf truncation only appears with tiny-version long long support enabled; the klibc link failure only surfaces on targets without a C library—all three share the trait of being untestable under default configuration. The four proposals were opened on 2026-07-01 or 2026-07-09 and sat in the queue for nearly four months.</li>
+  <li><strong>The 11-05 security fixes are tightly clustered</strong>: terminal ioctl user pointer hardening (#11941, +503/-57, seven files), signalfd close-path bounds checks and safe unlinking (#11935, +526/-228, 11 files), framebuffer rejection of invalid offsets (#11970), pipe ioctl user pointer validation (#11971), 9PFS clamping server-controlled lengths to actually received bytes (#11918), CFI MTD erase-region count and sector table bounds (#11558), device tree unflatten depth limit (#11901), AB32 ADC channel number restriction (#11962), plus three listed separately (#11986, #11895, #11899).</li>
+  <li><strong>Seven driver and tool commits</strong>: SDIO block size set after block configuration completes (#11886), serial close-fd only detaches callbacks when the reference count reaches zero (#11931), virtio NIC releases RX buffer on pbuf allocation failure (#11726), NVMe leaks one allocation per inactive namespace (#11920), virtio RPMsg releases resources on probe failure path (#11968), USB HID interface descriptor fills bInterfaceProtocol per protocol (#11873), mkdist disk command fixes duplicate RTT_ROOT injection and read-only directory failure (#11874).</li>
+  <li><strong>Five commits not listed separately in daily reports</strong>: 9pfs unaligned access (#11876), CI scheduled failure reports and monthly BSP builds (#11921), Eclipse project generation duplicate rewrites (#11321), dist-strip compile_commands path resolution (#11551), CI git diff path resolution (#11554). These five are routine tool and CI fixes and are not expanded here.</li>
+  <li><strong>The five 11-06 commits are strategic wrap-up</strong>: STM32F1/H7 input capture added (+746 lines, 9 files), K230D board variant and Smart mount points added, SDIO and CAN utests each with complete tests (+438 and +1792 lines), and #11990 wires the matured framework tests into CI.</li>
+</ul>
+
+<h3 id="security-and-defects">Security and Defects</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues">Main repository issue list</a></p>
+
+<ul>
+  <li><strong>Eight new issues this week, six defects and two feature requests</strong>, with reporters highly concentrated: XueDugu alone contributed five—#11969, #11980, #11984, #11985, #11992—all with PoCs, GDB logs, and version tracing; plus anamarija-j’s #11991 (ESP32-C3 prebuilt image rejects v1.x chips), CYFS3’s #11972 (QEMU test manifest), and wdfk-prog’s #11967 (STM32 input capture request).</li>
+  <li><strong>Syscall and descriptor family</strong>: graphics device negative offset (#11969, <code class="highlighter-rouge">pread64()</code> / <code class="highlighter-rouge">pwrite64()</code> allow negative positions, leading directly to arbitrary kernel read/write), timerfd accepting arbitrary fds (#11984, after type confusion a wait queue node can be placed in user memory, and a single indirect function-pointer call controls the kernel PC), POSIX timer id not validated (#11980, index 0x35a5 aliases to the console device, and <code class="highlighter-rouge">timer_settime()</code> can overwrite <code class="highlighter-rouge">rx_indicate</code> and <code class="highlighter-rouge">ops</code>). All three presuppose “an unprivileged process”.</li>
+  <li><strong>Device-side family</strong>: MSI-X BIR and offset (#11985, CVSS 3.1 of 6.8, precondition is a malicious or tampered PCIe device), ivshmem config word (#11992, no privilege needed once the window is registered as a <code class="highlighter-rouge">/dev</code> node). Both have the technical consequence of arbitrary kernel physical memory read/write during boot; the shared gap is that <code class="highlighter-rouge">rt_ioremap()</code> does not validate physical addresses.</li>
+  <li><strong>Closed this week</strong>: #11969 → #11970 (31 minutes), #11958 → #11971 (merged), #11952 → #11981 (proposal under review), #11985 → #11986 (merged), #11984 → #11996 and #11980 → #11997 (both posted at 11-07 03:04, pending review).</li>
+  <li><strong>Still queued or converted to structural TODOs</strong>: mailbox #11960 was confirmed by maintainers on 11-07 as needing unified handling via LWP object AVL lookup plus reference holding, with the same checks extended to semaphores, mutexes, events, message queues, and timers; no fix was submitted this round. Block device partition #11981 has been open for over three days since reporting on 10-29 and was still being updated at 11-05 16:03. ESP32-C3 #11991 requires changing both SConstruct’s <code class="highlighter-rouge">image.min_rev</code> and reissuing the package—a simple fix, but it involves re-releasing artifacts.</li>
+</ul>
+
+<h3 id="review-queue-observations">Review Queue Observations</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pulls">Main repository pull request list</a></p>
+
+<ul>
+  <li><strong>Queue depth did not thin with the clearing of the books</strong>: 48 pending proposals were updated within the window as of 11-05, thicker than the previous report’s queue. The reason is that 28 proposals were newly opened this week and 49 merged—roughly balanced in and out—but security proposals cost more to review than ordinary fixes, since each requires understanding the PoC and reproduction conditions.</li>
+  <li><strong>Three pending items worth watching</strong>: the block device partition arbitrary kernel write fix (#11981, +169/-57, five files, six discussion threads) has been open for over three days; the defect is high severity and should be prioritized. RISC-V AIA APLIC level interrupt EOI (#11966) was still being updated at 11-07 10:52; the fix first reads the valid input state of <code class="highlighter-rouge">in_clrip</code> and only writes <code class="highlighter-rouge">setipnum_le</code> when the device still holds the interrupt valid, resolving the delayed thread not resuming on QEMU 8.2.2. ulog output of calling function, file, and line number (#11987, +156 lines) was updated at 11-06 21:05 and is an observability enhancement.</li>
+  <li><strong>New architecture port</strong>: Renesas RH850 G4KH #11998 submits 48 files and 3916 new lines in one go, including libcpu thread switching and interrupt nesting, bsp startup and OSTM/RLIN3 UART drivers, and the qemu-rh850-u2c board; the author marks it as a draft, with a prerequisite of the picolibc ctime fix (i.e., #11999). Review cycles for whole-architecture ports like this typically run in weeks.</li>
+  <li><strong>Large hardware support still queued</strong>: Realtek RTL8125 Ethernet driver (#11944, +1934 lines), RK3588 and RK3528 display and audio (#11943, 36 files, +5483/-391), ESP32-S3-DevKitM-1 board (#11844, over a month since creation on 9-28), NXP RT1180 industrial Ethernet linker script (#11959, 46 files, +13408/-1027)—none merged this week. Review focus remains on licensing terms for whole-package imports and on-board testing, not merely whether the functionality runs.</li>
+  <li><strong>Parallel progress on test infrastructure</strong>: SPI in-firmware virtual loopback bus (#11979), dlmodule QEMU regression (#11989), utest auto-run loop and memory sampling (#11983), ADC framework test (#11974)—four under review, forming the same combination punch as the three framework test suites merged this week.</li>
+</ul>
+
+<hr />
+
+<h2 id="iii-ecosystem-and-vendor-adaptation">III. Ecosystem and Vendor Adaptation</h2>
+
+<h3 id="vendor-bsps-and-drivers">Vendor BSPs and Drivers</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://github.com/hpmicro/rtt-bsp-hpm5100evk">Repo: hpmicro/rtt-bsp-hpm5100evk</a></p>
+
+<ul>
+  <li><strong>HPMicro</strong>: Twelve RT-Thread BSP repositories were pushed to v1.13.0 in a concentrated burst between 11:43 and 11:56 on November 2, spanning HPM6750EVK, HPM6750EVK2, HPM6750EVKMINI, HPM6E00EVK, HPM6P00EVK, HPM6800EVK, HPM6300EVK, HPM6200EVK, HPM5E00EVK, HPM5300EVK, HPM5301EVKLITE, and the newly opened HPM5100EVK. The new repo ships with examples covering adc, blink_led, flashdb, mcan, pwm, spi_nor_flash_fs, timer, uart_dma, usb_device_generic_hid, and usb_host_msc_udisk; dual-role CAN and USB, the file system, and FlashDB are all in the default scope, leaning toward industrial and data-logging scenarios.</li>
+  <li><strong>Third-party boards follow the same project structure</strong>: The Studio BSP for the Wildfire HPM6750 BTB was created on 11-04 03:47, with BSP version 1.0.19, MCU HPM6750IVM2 (dual-core 32-bit RISC-V, up to 816 MHz), running on RT-Thread 5.4.0 with the RISC-V GCC 11.1.0 toolchain; the installation flow is documented in five steps (download the ZIP from Releases, install via Studio’s SDK Manager, create a project and select the board, check peripherals in Settings, download via USB／DAPLink／J-Link). The convention of splitting the BSP into a standalone repo and maintaining it as a Studio project has now spread from the silicon vendor to the community.</li>
+  <li><strong>Community BSP for Nuvoton N9H30</strong>: Target chips are N9H30F61IEC or F63IEC, ARM926EJ-S core up to 300 MHz, with a built-in TFT LCD controller and 2D graphics acceleration, a parallel interface capable of driving up to 1024x768 at 24-bit color, and 64 MB of on-chip DDR. N9H is a typical HMI platform; RT-Thread BSPs on such MPUs have always been community-maintained, and Nuvoton’s official support is far less dense than for its MCU lines.</li>
+  <li><strong>NXP</strong>: A user survey opened on 11-02 disclosed the adaptation scope, with MCX N947, MCX A366, MCX A156, and several other chips already adapted; the campaign runs from November 2 to November 23, with the draw on November 24. The MCX A series is the general-purpose MCU line promoted over the past two years; the presence of A366 and A156 on the list shows coverage has expanded from NPU-equipped parts like the N947 to general-purpose parts. On the industrial Ethernet side, the RT1180 linker script proposal (#11959) is still in the queue this week—one item is breadth on the MCU side, the other depth on the crossover processor side.</li>
+  <li><strong>Canaan</strong>: K230D support was merged with #11897 on 11-06 09:37, +398/-198 across 15 files. Changes include the SOC_K230／SOC_K230D selection options and the default 128 MB DDR memory layout, registering GPIO as an RT-Thread pin device, adding ext4 root filesystem support and mounting ptyfs and procfs, removing unused board-level peripheral definitions, and retaining the SDK’s riscv64-unknown-linux-musl toolchain.</li>
+  <li><strong>STMicroelectronics (STM32)</strong>: Input capture support for STM32F1 and STM32H7 was merged on 11-06 09:20 (#11975, +746 lines, 9 files), corresponding to requirement ticket #11967 opened on 11-02.</li>
+  <li><strong>Allwinner and Silicon Labs</strong>: Allwinner D1s gained a qemu-d1s.sh launch script, allowing the BSP to run directly on the d1s QEMU machine type (#11903); EFM32 gained Kconfig and .config, formally supporting <code class="highlighter-rouge">scons --menuconfig</code>, where previously the configuration could only be edited by hand (#11867).</li>
+  <li><strong>Espressif</strong>: The community packaged RT-Thread 5.4.0 as an ESP-IDF v6.1 component that drop-in replaces the FreeRTOS kernel; the patches directory uses <code class="highlighter-rouge">git apply</code> to modify 10 files in IDF itself, about 440 lines (including FreeRTOS’s Kconfig and CMakeLists, the startup flow, interrupt stack and heap segment definitions in the linker script, and newly added RISC-V trap entry and flash cross-core hooks), with all 36 on-board self-checks passing. Note the core distinction: ESP32-S31 and C3／C5／C6 are RISC-V, while S2／S3 are Xtensa.</li>
+  <li><strong>ZLG (AWTK)</strong>: zlgopen/awtk had one push on 11-02, with the last three commit titles all “improve edit”—routine iteration on a general-purpose GUI framework, with no RT-Thread-specific changes, so no entry is expanded this issue.</li>
+</ul>
+
+<h3 id="software-packages-and-middleware">Software Packages and Middleware</h3>
+
+<p><strong>Date</strong>: 2026-11-04 ~ 2026-11-06　<strong>Source</strong>: <a href="https://github.com/RT-Thread/env/pull/304">PR env #304 (serverless index for plugin marketplace)</a></p>
+
+<ul>
+  <li><strong>Env plugin marketplace switched to a serverless index (merged 11-06 07:05)</strong>: The sdk repo adds an env-plugins directory, with one subdirectory per plugin, each holding an index.json; the env repo implements reading this index and downloading .epack installers from GitHub Releases. The change is +1108/-48 across 18 files on the env side (marketplace logic, WebUI frontend, CLI subcommands, and five test groups), and +125 lines across four files on the sdk side. The externally visible change is that the index is read from the local SDK repo by default, with no need to deploy a marketplace server; explicitly setting an environment variable or running <code class="highlighter-rouge">rt-env plugin market set</code> still prioritizes the HTTP marketplace, and <code class="highlighter-rouge">rt-env plugin market clear</code> reverts. The first listed plugin is the RT-Kconfig configurator 0.1.34, whose download record points to a real asset in that repo’s Release.</li>
+  <li><strong>The security boundary is finer than expected</strong>: Download size is capped, returning 413 when exceeded; redirects must be same-host and same-protocol; index paths cannot escape the env-plugins directory; plugin IDs are regex-constrained and duplicates are detected. The cost is that the trust boundary shifts from “official marketplace” to “repo maintainer”—third-party plugins no longer wait for review; publishing a Release and adding an index entry is enough to distribute.</li>
+  <li><strong>coact (pushed 11-04 22:35)</strong>: A C++17 active-object and hierarchical state machine framework, MIT-licensed, 98 stars. Events replace threads, behavior is written as hierarchical state machines, transition tables are constexpr, and there are no runtime allocations; the same headers run on RT-Thread and FreeRTOS, and also compile on Linux and Windows via a PAL. Three properties are enforced as structural constraints: bounded (queues, memory pools, and batch sizes are all compile-time constants, with no heap and no new／delete), detectable (SubmitResult return codes, Monitor counters, Breaker::level()), and recoverable (each active object has a five-state circuit breaker). Its value to RT-Thread lies in application-layer methodology—most projects in the ecosystem pile up logic directly with threads and message queues, lacking a framework that constrains boundedness, observability, and recoverability together.</li>
+  <li><strong>ulog observability enhancement (pending review)</strong>: #11987 makes ulog output the calling function, file, and line number, +156 lines across four files, with updates still coming as of 11-06 21:05.</li>
+</ul>
+
+<h3 id="toolchain-and-development-environment">Toolchain and Development Environment</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">Main repo master commit stream</a></p>
+
+<ul>
+  <li><strong>Four merges on the build and CI side</strong>: Eclipse project generation avoids unnecessary project file rewrites (#11321), compile_commands path resolution in dist-strip (#11551), git diff path resolution in CI (#11554), and scheduled CI failure reports plus monthly BSP builds (#11921). What these four share is that “the tooling’s own error reports were untrustworthy”; only after the fixes do CI verdicts become trustworthy.</li>
+  <li><strong>QEMU moves from scattered scripts to a unified entry point</strong>: The Allwinner D1s qemu-d1s.sh (#11903) hardens image lookup and argument assembly into a script; #11990 wires DAC and I2C framework tests into the qemu-vexpress-a9 CI job and adds a shared config <code class="highlighter-rouge">components/dac_i2c.cfg</code>, requiring an explicit PASSED after boot; #12002 on 11-07 adds mock-ops tests for the Touch framework, covering device registration, reads, coordinate ranges, ISR callback ordering, and interrupt error propagation, without depending on touchscreen hardware.</li>
+  <li><strong>New-architecture toolchain</strong>: The RH850 port in #11998 uses toolchain v1.1.0 (GCC 14.3, picolibc) and qemu-rh850 v1.0.0 on QEMU, with msh booting and kernel_basic passing 22/22; both hard-float and soft-float builds are in the CI matrix. The author also notes the prerequisite is aligning picolibc’s asctime_r／ctime_r prototypes (#11999).</li>
+  <li><strong>Release process documentation</strong>: Two documents totaling 751 lines break a release into six phases: version preparation, setting preliminary goals for the next version, development preparation, development, pre-release, and release; the pre-release section includes feature freeze, bug regression, and test case templates grouped by architecture and BSP. For downstream distributions and commercial editions, this is the direct basis for judging whether to follow an upgrade and how much migration cost it entails.</li>
+</ul>
+
+<h3 id="verification-notes">Verification Notes</h3>
+
+<ul>
+  <li>Neither releases nor tags in the main repo had a new version this week, ending at v5.3.0 from 09-10; throughout, the text describes “5.4.0 in development, not yet released” and does not substitute version macros for release facts.</li>
+  <li>The GitHub anonymous API limit (60 requests per hour) was hit during several collection rounds this week; organization-level checks switched to Atom commit feeds of key repos and the web organization page; release-date checks switched to a single search API pull of merged, created, and updated truths, followed by the per-repo pulls API to re-verify key entries.</li>
+  <li>Both the official news API and the website news list are stuck at June 17; the website news module had a loading failure this week (the page reported “Oops, failed to load”), so the release side can only rely on media columns.</li>
+  <li>The forum club.rt-thread.org returned 468 with a WAF challenge page in front all week, making post lists and bodies unreadable; the information gap on the community discussion side was filled by GitHub issue and PR comments and media columns.</li>
+</ul>
+
+<hr />
+
+<h2 id="iv-official-and-community-activities">IV. Official and Community Activities</h2>
+
+<h3 id="official-channels">Official Channels</h3>
+
+<p><strong>Date</strong>: 2026-11-02 to 2026-11-06　<strong>Source</strong>: <a href="https://www.rt-thread.org/news/list">RT-Thread Official News List</a></p>
+
+<ul>
+  <li><strong>News API silent for the sixth consecutive month</strong>: The latest entry returned by <code class="highlighter-rouge">getList?type=rt_org</code> is still the 2026-06-17 item “RT-Thread Technology Invited to Attend the 2026 Abu Dhabi Investment Forum,” with no new additions across five checks this week. The news section on the official homepage likewise remains frozen at June.</li>
+  <li><strong>Media column is the only stable outlet</strong>: The RT-Thread account on Electronic Engineering Album published five updates this week—the 10-30 Wuhan tour training recap and 11-04 livestream preview, the 11-02 NXP user survey, the 11-03 Wuzhen “New Light” piece, the 11-04 Ruaiqing desktop pet project recap, and the 11-05 Titan Board OpenMV integration. A separate 11-01 Double Eleven promotional piece is marketing content and was not included.</li>
+  <li><strong>Signal of a narrative shift</strong>: The line in the Wuzhen piece—”a key leap from a real-time control foundation to an edge-side intelligent operating system”—is the formal version of this narrative, with the community scale still cited at roughly 300,000 developers; the same week’s Ruaiqing desktop pet recap turns “keep real-time IO on the board, put inference on the side with more compute” into a reproducible seven-step pipeline, putting marketing and engineering on the same line.</li>
+</ul>
+
+<h3 id="conferences-and-events">Conferences and Events</h3>
+
+<p><strong>Date</strong>: 2026-10-29 to 2026-11-04　<strong>Source</strong>: <a href="https://sheitc.sh.gov.cn/zxxx/20261102/3726d0f2497f49f49f96afdbed62bd11.html">Shanghai Municipal Commission of Economy and Informatization: Shanghai Open Source Software Application Innovation Competition Concludes</a></p>
+
+<ul>
+  <li><strong>2026 Shanghai Open Source Software Application Innovation Competition concludes (10-29 to 10-30, official release 11-02)</strong>: Organized by OSChina, the competition received 766 registered projects since registration opened on August 5, with more than 40 partner enterprises and open source communities participating; 12 real industry challenges attracted 269 projects responding to them, and 30 teams advanced to the finals to compete for a prize pool worth RMB 1 million in total. Among the issuers of the 12 challenges, RT-Thread Technology is listed alongside Shanghai-based companies including COMAC, CSSC Haizhou, DaoCloud, Yunzhou Technology, and Mofa Technology, while the other side features national technology companies and communities such as Baidu Maps, the openKylin community, and the open-supOS community—for RT-Thread, this position means industrial and embedded scenarios are treated as sources of real industry problems rather than as sponsor slots.</li>
+  <li><strong>The Wuzhen Summit’s “New Light” list (11-02 to 11-05)</strong>: In addition to the AIOS foundation being selected among 35 recommended products, the concurrent “Light of the Internet” Expo showcased and released more than 1,000 new technologies and products; RT-Thread’s focus is robot “brain” and “cerebellum” coordination, with a hybrid deployment architecture that separates AI inference and real-time control onto two sides.</li>
+  <li><strong>The Open Source AIOS Alliance’s technical division of labor spelled out for the first time (11-03 report / 10-23 event)</strong>: At the “Jishu Maker Workshop: Small Embodied Intelligence Solution Seminar” hosted by Arm China’s Jishu community, Rockchip, Radxa Computer, and RT-Thread shared the stage as alliance partners. RT-Thread senior AI engineer Zheng Wei presented three types of Agent solutions—robot dogs, HyperCar, and Codex orchestration—with the goal of pushing agents from “conversation” to “execution”; Rockchip discussed decoupling compute and control via a host SoC plus AI coprocessor, Radxa discussed using open source hardware like the ZERO 3W for prototype-to-volume delivery, and RT-Thread discussed system-side Agent scheduling and execution. The report came ten days after the event and is included because it provides a specific technical division of labor for the first time, not because it was a new event that day.</li>
+  <li><strong>NXP joint survey (11-02 to 11-23)</strong>: Respondents are asked to fill in end devices, application scenarios, and development pain points, and are welcome to suggest improvements to chip performance, peripherals, and ecosystem compatibility; the draw takes place on November 24.</li>
+  <li><strong>Ruaiqing 3576 desktop pet livestream (11-04 20:00)</strong>: Moving the desktop pet character from DeepSeek Harness onto an RK3576 with a small screen—press KEY5 to say a sentence, and a few seconds later it replies in the tone of “Da Fei Yu,” with the eyes on screen moving along. The division of labor is that the board handles listening and speaking while the PC handles thinking: the board side uses arecord/aplay via hw:0,0, and expressions skip the GPU by writing directly to <code class="highlighter-rouge">/dev/fb0</code> via mmap; the persona, memory, tools, and model all live in DSH Desktop on the PC, and the board stores no API Key and does no inference. The article describes three pitfalls candidly—one keypress triggering two rounds of dialogue (requiring the trio of flock single-instance, EVIOCGRAB exclusive grab, and orphan process cleanup), streaming TTS truncation (changed to synthesize only when “polled content remains unchanged across consecutive polls and the spoken text is at least two Chinese characters,” with size going from 10 KB to 115 KB), and two levels of expression priority requiring a lock that automatically returns to idle on expiry.</li>
+</ul>
+
+<h3 id="community-projects-and-competitions">Community Projects and Competitions</h3>
+
+<p><strong>Date</strong>: 2026-10-30 to 2026-11-05　<strong>Source</strong>: <a href="https://github.com/hyh12138938/titan-mini-pcb-inspector">Repository: Titan Mini PCB Inspector</a></p>
+
+<ul>
+  <li><strong>Competition entries open-sourced in a concentrated wave after the event</strong>: Within the window, 15 newly created RT-Thread-related repositories appeared on GitHub, 7 of which describe themselves as 2026 RT-Thread Embedded Competition entries, with the concentrated open-sourcing falling between 10-30 and 11-01, matching the competition’s requirement to “post about the work on the forum and open-source the code.” Four edge AI vision projects are packed onto two boards: Titan Mini PCB Inspector on the Renesas Titan Board Mini (RA8P1, Cortex-M85 plus Ethos-U55) (camera views the board, 800×480 LCD, local inference on Ethos-U55, cloud LLM writes suggestions, fallback to table-driven expert rules when offline) and Lingxi Zhimou (INT8 pose model handling up to 10 people per frame with 17 keypoints each, classifying four behaviors—hand raised, lying on desk, standing, sitting upright—outputting a focus score from 0 to 100, with timestamped events written to a CSV on SD card and raw footage never leaving the classroom); and two SENTINEL projects on the Fullhan MC632X (Cortex-A7), one connecting to an M5Stack AtomS3R for voice announcements and dual-channel MJPEG preview, person detection, and tripwire counting, and the other emphasizing standalone operation without a PC, automatically completing network configuration and Web service startup on power-up.</li>
+  <li><strong>Handmade and debugging tools</strong>: This week saw no long kernel analysis pieces like the previous issue, and community attention has clearly shifted to the project repositories themselves—board model numbers, model quantization bit widths, and partition layouts in repository READMEs say more about engineering trade-offs than post bodies do.</li>
+  <li><strong>Platform distribution</strong>: Competition entries cover five boards—Titan Board Mini, MC632X, PSoC Edge E84, NS800RT7P65D, and FRDM-MCXA346—which exactly correspond to the range in the competition’s board list from high-performance MCUs with NPUs to dual-core motor control chips.</li>
+</ul>
+
+<hr />
+
+<h2 id="v-industry-applications-and-business-trends">V. Industry Applications and Business Trends</h2>
+
+<h3 id="industrial-control-and-industrial-connectivity">Industrial Control and Industrial Connectivity</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-03　<strong>Source</strong>: <a href="https://github.com/luhan777-shen/rtthread-industrial-gateway">Repo: rtthread-industrial-gateway</a></p>
+
+<ul>
+  <li><strong>An industrial gateway with the entire chain on-board</strong>: A newly created personal project implements all four links of an industrial data gateway on a single STM32F407VGT6 — downstream, FreeModbus acts as an RTU master, periodically polling the holding registers of field slaves; locally, LVGL 8.3 provides the HMI, with button control and readback sharing a single holding-register mirror table; upstream, an ML307 4G module carries MQTT QoS1 to ThingsBoard, with RPC-based reverse control; for remote upgrades, HTTP chunked download plus CRC32 verification writes to the download partition, after which rtboot moves the image to the app partition and jumps to it. The hardware configuration is documented in more detail than most comparable repos: an FSMC 8080 parallel 16-bit TFT, an xpt2046 resistive touchscreen over SPI, a W25Q128 (16 MB) on SPI1 with chip select software-controlled via PG15, the ML307 on uart6 using AT commands, and the Modbus slave on uart3 at 9600 8N1.</li>
+  <li><strong>Dual-MCU disinfection device</strong>: “Jingxun Weishi” targets small and medium public areas such as classrooms, corridors, and public seating. The architecture uses a GD32H759IMT6 (Cortex-M7) as the motion main controller and an STM32F103C8T6 (Cortex-M3) for spray control, both running RT-Thread 4.1.1. Features cover four-wheel differential movement, robotic-arm atomized spraying, HX711 load-cell weighing for remaining-liquid monitoring, remote control, scheduled disinfection, status reporting, and video backhaul. The repo structure is tidier than most competition projects: <code class="highlighter-rouge">docs/</code> contains hardware notes, the communication protocol, code style, and submission documents; <code class="highlighter-rouge">scripts/</code> contains Keil build and repo self-check scripts; and a clang-format config is included. The trade-off is clear: motion control demands real-time responsiveness, while spraying and remaining-liquid monitoring are slow variables; splitting them leaves headroom on each chip, and a single serial protocol suffices for the communication cost.</li>
+</ul>
+
+<h3 id="motor-control-and-edge-ai">Motor Control and Edge AI</h3>
+
+<p><strong>Date</strong>: 2026-10-30 ~ 2026-11-04　<strong>Source</strong>: <a href="https://github.com/illustriousness/ns800rt7p65-focdemo">Repo: NS800RT7P65D FOC and CANopen</a></p>
+
+<ul>
+  <li><strong>20 kHz sensorless FOC on dual Cortex-M7</strong>: The NOVOSENSE NS800RT7P65D is split into two logical CPUs — one runs 20 kHz ADC sampling and PWM, performing sensorless FOC, sliding-mode observer, and PLL estimation with hardware shutdown; the other runs UART and FinSH, CANopenNode v4.1 with CiA 402 bridging, and CAN transmit/receive. Cross-core communication uses only an asynchronous command mailbox and a consistent six-field, 24-byte snapshot, avoiding haphazard shared-memory reads; the foundation is RT-Thread 5.3.1 in an SMP configuration. This is the competition entry closest to production form this week.</li>
+  <li><strong>On-device MLP for vibration diagnostics</strong>: EdgeDoctor-RT on the Infineon PSoC Edge E84 processes a vibration data block every 20 ms, extracts 64-dimensional band features over a 1-second sliding window, and feeds them to a 64-32-5 MLP that classifies five states — normal, bearing inner-race fault, bearing outer-race fault, misalignment, and imbalance — along with confidence and recommended action. It is based on the official Edgi_Talk_M55_XiaoZhi v1.4.0, layering only application code without modifying boot, linking, HAL, or Wi-Fi resources.</li>
+  <li><strong>Two kinds of push-down in motion control and inspection</strong>: On the NXP FRDM-MCXA346, one project does closed-loop stepper positioning (encoder feedback plus a Python and Tkinter host application, running 10-degree and 90-degree positioning, a 45-degree relative reversal, and return to software zero), while another builds an inspection cart with ultrasonic obstacle avoidance and smoke detection, with vision recognition kept on the PC side. Both examples illustrate how far competition boards have been pushed down: the same general-purpose MCU carries both closed-loop motion control and low-speed inspection.</li>
+  <li><strong>The shared trade-off across four vision projects</strong>: Models are compressed onto edge NPUs or MCUs, complex judgments go to the cloud or a rules engine, and raw imagery never leaves the device — the same engineering judgment as the Ruiqing desktop pet, with “the brain on the PC and the body on the board.”</li>
+</ul>
+
+<h3 id="wearables-and-verification-platforms">Wearables and Verification Platforms</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-03　<strong>Source</strong>: <a href="https://github.com/fbiego/helios-sf32">Repo: helios-sf32 (Sifli SF32LB52 watch firmware)</a></p>
+
+<ul>
+  <li><strong>Smartwatch firmware on the Sifli SF32LB52</strong>: Based on the OpenSifli SDK, targeting the LCD screen of the SF32LB52 development board, with an LVGL UI on an RT-Thread base; the repo was created on September 4 and saw one push within the window. Wearables are a relatively rare landing spot for RT-Thread, and the constraints of such products are the opposite of industrial boards — smooth screen refresh, low standby power, and hot-updatable UI resources — and the OpenSifli SDK adopting RT-Thread as its default RTOS shows that this product line chose its base at the SDK level.</li>
+  <li><strong>An RV32IM dual-issue FPGA CPU uses Nano as its minimal verification stack</strong>: A pipelined CPU project targeting Xilinx Kintex-7, with the RV32IM instruction set, machine-mode CSRs, and timer interrupts; the main execution channel plus an integer side channel supports dual-instruction pairing; the front end has a BTB, RAS, and indirect-jump prediction; and the memory side has dual-channel forwarding, load/store pairing, and cache-hit bypass. On the software side it runs RT-Thread Nano v3.1.5 with a UART command line and CoreMark 1.0. The verification data is more detailed than typical hobby projects: with timingopt15 plus a 256-line DCache and an ideal 180 MHz clock, a 100-iteration behavioral simulation of CoreMark yields 31,445,017 CPU cycles, 30,605,777 retired instructions, CPI 1.027421, a final CRC of 0x988c, and 7 directed regressions passing; the shortcomings are also stated — after 180 MHz routing, WNS is -1.371 ns and WHS is +0.013 ns, so timing has not converged and no bitstream has been generated yet. For RT-Thread, Nano once again serves as the minimal runnable software stack for CPU verification, exposing problems in interrupt, context-switch, and timer paths better than bare-metal tests.</li>
+</ul>
+
+<h3 id="business-trends">Business Trends</h3>
+
+<p><strong>Date</strong>: 2026-11-02 ~ 2026-11-07　<strong>Source</strong>: <a href="https://www.eet-china.com/mp/a536485.html">EE Times China: RT-Thread appears at the Wuzhen Summit</a></p>
+
+<ul>
+  <li><strong>No new reports of commercial deployments, financing, or orders this week</strong>. Vendor-side activity centers on two things: first, original manufacturers releasing BSP repos in scripted batches (HPM’s 12 repos at the same version); second, laying the narrative groundwork around edge intelligence (Wuzhen “Xinguang,” AI Kit, and the division of labor within the Open Source AIOS Alliance). The former demonstrates delivery capability, while the latter is closer to expressing solution positioning; neither has yet translated into specific customer or order information.</li>
+  <li><strong>Commercialization signals on the competition and challenge side</strong>: The Shanghai Open Source Software Application Innovation Competition lists RT-Thread (Ruiside) as one of the issuers of its 12 industry challenges, which are drawn from real problems in industrial and embedded scenarios; the commercial value of this position lies in front-loading vendor requirements into competition challenges rather than post-competition procurement.</li>
+</ul>
+
+<hr />
+
+<h2 id="vi-trend-observations">VI. Trend Observations</h2>
+
+<ul>
+  <li><strong>The backlog clearance peaked this week and was a one-off</strong>: 31 of the 49 merges landed on 11-05, spanning four months (the oldest, #11558, was opened on 7-05, and several were opened between 10-18 and 10-29). The direct implication for downstream is that pulling master over these two days will surface a large batch of changes, concentrating regression-testing cost rather than spreading it across days. The stable metric for judging project health remains queue turnaround time—28 new items were opened this week and 49 merged, so inflow and outflow were roughly balanced and the queue did not get thinner.</li>
+  <li><strong>The attack surface has shifted once: from syscall arguments to device firmware</strong>. Reports from late October to early November concerned missing validation of “value to object” (nested pointers in getaddrinfo, the ioctl pointer in pipe, the fd type in timerfd, the id in POSIX timer, the raw pointer in block device partitions); this week’s two switched to “believe whatever the device says”—a single out-of-bounds bit in MSI-X’s BIR aliases to the rom member, and ivshmem’s config word directly describes kernel memory as shared memory. The common technical gap is that <code class="highlighter-rouge">rt_ioremap()</code> does not validate physical addresses; the recommendation is to extract this into a unified layer rather than checking it separately in each driver.</li>
+  <li><strong>“Report to patch” has reached the hour level, and the bottleneck has moved to review and verification</strong>: this week’s three samples were 31 minutes (#11969 → #11970), six hours and nine minutes (#11985 → #11986), and two hours and eleven minutes (#11992 → #11993). Reporters provided complete material with PoC, GDB logs, and version tracing, so maintainers could patch directly upon receipt—this compresses time more than any process rule. The cost is that review pressure is pushed downstream: 48 items await review, the block device partition item has been pending for more than three days, and the mailbox item explicitly states that it “needs a structural fix and no incomplete patch will be submitted this round.”</li>
+  <li><strong>Version governance has moved from documentation to evidence, and mainline planning already looks toward the 6 series</strong>: the three rules—Z monthly, Y every three to six months, X irregular—have been written into the repository documentation, and the accompanying #11972 breaks “can a Z release ship” into per-framework QEMU and utest checklists; within a week, three framework test suites were merged and two were hooked into CI. Documentation examples are uniformly written as v6.0.0 / v6.1.0 / v6.1.1, indicating that the next mainline round is planned around the 6 series—for downstream distributions, this means there may be no 5.5 after 5.4, and migration-window judgments must be recalculated on that premise.</li>
+  <li><strong>The external narrative has steadily shifted to “edge intelligent operating system,” backed by engineering samples</strong>: at Wuzhen, “Xinguang” put the AIOS foundation on a national-level platform’s recommendation list, and AI Kit discussed virtualized hybrid deployment; in the same week, the Ruiqing desktop-pet retrospective gave a reproducible seven-step chain of “board-side real-time IO plus PC-side inference,” the open-source AIOS alliance draft gave three types of Agent solutions and the division of labor among three partners, and the four vision projects among the competition entries consistently compressed models to the edge while sending complex judgments to the cloud. For the first time, the promotional messaging and the engineering trade-offs match.</li>
+  <li><strong>The board-level ecosystem is moving in two directions, and kernel pluggability has been validated by external projects</strong>: on one side, vendors are scripting BSP repositories and releasing them in batches at the same version (HPMicro’s 12 repos released the same version on the same day) to ensure consistency across boards; on the other, the community is filling in BSPs for third-party boards (Wildfire HPM6750 BTB) and older platforms (Nuvoton N9H30) to cover the long tail. At the same time, the community replaced the kernel with RT-Thread as an ESP-IDF component on the ESP32-S31, which only provides FreeRTOS, and passed 36 self-checks; porting proposals for new architectures such as RH850 have also entered the queue—”kernel pluggability” has gone from a slogan to a reproducible engineering result.</li>
+</ul>
+
+<hr />
+
+<h2 id="appendix-sources-and-verification">Appendix: Sources and Verification</h2>
+
+<h3 id="source-inventory">Source Inventory</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Issue</th>
+      <th>Date</th>
+      <th>Effective Window</th>
+      <th>Entries Included (by subheading)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Issue 1</td>
+      <td>2026-11-02 (Mon)</td>
+      <td>10-30 08:00 to 11-02 08:00 (72 hours)</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>Issue 2</td>
+      <td>2026-11-03 (Tue)</td>
+      <td>11-02 08:00 to 11-03 08:00 (24 hours)</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Issue 3</td>
+      <td>2026-11-04 (Wed)</td>
+      <td>11-03 08:00 to 11-04 08:00 (24 hours)</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>Issue 4</td>
+      <td>2026-11-05 (Thu)</td>
+      <td>11-04 08:00 to 11-05 08:00 (24 hours)</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Issue 5</td>
+      <td>2026-11-06 (Fri)</td>
+      <td>11-05 08:00 to 11-06 08:00 (24 hours)</td>
+      <td>17</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>All five daily reports are present with no missing dates; the Monday issue uses a 72-hour window spanning the weekend, with its start point carried over from the previous issue’s cutoff. The two merges folded in on 10-30 (#11915 dlmodule, #11936 clang-format version pinning) were already recorded in the previous weekly report’s release-day verification and are not repeated here.</li>
+  <li>The weekly report body consolidates same-topic entries from the five daily reports, so its entry count differs from the table above; this is normal consolidation. Security defects are merged into two families—”system calls and descriptors” and “device side”—rather than expanded item by item.</li>
+</ul>
+
+<h3 id="verification-notes-1">Verification Notes</h3>
+
+<ul>
+  <li><strong>Release-day verification (11-06 08:00 to 11-07 18:50)</strong>: Main-repo commits, releases and tags, merged and pending proposals, and newly filed defect tickets were each checked directly. Verification found five merges landing after the Friday daily report’s cutoff—STM32F1/H7 input capture #11975 (11-06 09:20), K230D #11897 (09:37), SDIO block device test #11758 (09:44), CAN send/receive test #11752 (09:45), and QEMU runs of DAC and I2C framework tests #11990 (13:10)—all of which have been folded into the Chapter 2 merge list and the Chapter 1 highlights. There were no new commits on 11-07.</li>
+  <li><strong>Entries added after the cutoff</strong>: Four landed in the early hours of 11-07 (#11996 timerfd fd type validation, #11997 POSIX timer bounds validation, #11998 RH850 G4KH port, #11999 picolibc prototype alignment), and four more during the day (#12000 OFW tree exposed via procfs, #12001 non-SMART CPU time accounting, #12002 Touch framework test, #12003 Bouffalo ADC DMA channel validation); all are recorded as new proposals and not counted as merges.</li>
+  <li><strong>Accounting basis</strong>: This week’s 49 merges, 28 new proposals, and 8 new defect and feature tickets are all measured values for 11-02 00:00 to 11-07 18:50; the version basis is “5.4.0 in development, with releases and tags stopped at v5.3.0,” and version macros are not used as a substitute for release facts.</li>
+  <li><strong>Excluded items</strong>: Routine commits to zlgopen/awtk (general-purpose GUI, no specific tie to RT-Thread); personal new repositories with single-digit stars and no substantive description; the 11-01 Double 11 promotional piece (promotional content and outside the window); and the alliance piece about a 10-23 event that was only reported on 11-03, which is recorded as “first disclosure of technical division of labor” rather than as an event of that day.</li>
+  <li><strong>Channel limitations</strong>: The forum at club.rt-thread.org returned 468 with a WAF challenge page in front of it all week; the official news API and the website news list are frozen at June 17, and the website news module experienced load failures; Google News Chinese-language hits were concentrated on event and survey pieces, while multiple English-language queries returned zero hits; HN Algolia hits were mostly false matches on the word “thread” and were discarded wholesale. The GitHub anonymous API rate limit was reached in some issues, so organization-level verification fell back to the Atom commit feed and the web organization page.</li>
+</ul>
+
+<h3 id="full-source-list">Full Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> Issue #11985 (MSI-X table BIR and offset not validated) — <a href="https://github.com/RT-Thread/rt-thread/issues/11985">https://github.com/RT-Thread/rt-thread/issues/11985</a></li>
+  <li><strong>[2]</strong> PR #11986 (five MSI-X validations) — <a href="https://github.com/RT-Thread/rt-thread/pull/11986">https://github.com/RT-Thread/rt-thread/pull/11986</a></li>
+  <li><strong>[3]</strong> Issue #11992 (ivshmem config word treated as trusted input) — <a href="https://github.com/RT-Thread/rt-thread/issues/11992">https://github.com/RT-Thread/rt-thread/issues/11992</a></li>
+  <li><strong>[4]</strong> PR #11993 (ivshmem JailHouse fallback disabled by default) — <a href="https://github.com/RT-Thread/rt-thread/pull/11993">https://github.com/RT-Thread/rt-thread/pull/11993</a></li>
+  <li><strong>[5]</strong> Issue #11984 (timerfd accepts arbitrary fd) — <a href="https://github.com/RT-Thread/rt-thread/issues/11984">https://github.com/RT-Thread/rt-thread/issues/11984</a></li>
+  <li><strong>[6]</strong> PR #11996 (timerfd fd type validation, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/11996">https://github.com/RT-Thread/rt-thread/pull/11996</a></li>
+  <li><strong>[7]</strong> Issue #11980 (POSIX timer id not validated) — <a href="https://github.com/RT-Thread/rt-thread/issues/11980">https://github.com/RT-Thread/rt-thread/issues/11980</a></li>
+  <li><strong>[8]</strong> PR #11997 (timer id bounds validation, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/11997">https://github.com/RT-Thread/rt-thread/pull/11997</a></li>
+  <li><strong>[9]</strong> Issue #11969 (graphic negative offset) — <a href="https://github.com/RT-Thread/rt-thread/issues/11969">https://github.com/RT-Thread/rt-thread/issues/11969</a></li>
+  <li><strong>[10]</strong> PR #11970 (framebuffer rejects invalid offsets) — <a href="https://github.com/RT-Thread/rt-thread/pull/11970">https://github.com/RT-Thread/rt-thread/pull/11970</a></li>
+  <li><strong>[11]</strong> Issue #11958 (pipe FIONREAD user pointer) — <a href="https://github.com/RT-Thread/rt-thread/issues/11958">https://github.com/RT-Thread/rt-thread/issues/11958</a></li>
+  <li><strong>[12]</strong> PR #11971 (pipe ioctl user pointer hardening) — <a href="https://github.com/RT-Thread/rt-thread/pull/11971">https://github.com/RT-Thread/rt-thread/pull/11971</a></li>
+  <li><strong>[13]</strong> Issue #11960 (RT-Smart mailbox fake object) — <a href="https://github.com/RT-Thread/rt-thread/issues/11960">https://github.com/RT-Thread/rt-thread/issues/11960</a></li>
+  <li><strong>[14]</strong> Issue #11952 (block device partition arbitrary kernel write) — <a href="https://github.com/RT-Thread/rt-thread/issues/11952">https://github.com/RT-Thread/rt-thread/issues/11952</a></li>
+  <li><strong>[15]</strong> PR #11981 (block device partition user pointer hardening) — <a href="https://github.com/RT-Thread/rt-thread/pull/11981">https://github.com/RT-Thread/rt-thread/pull/11981</a></li>
+  <li><strong>[16]</strong> PR #11977 (getaddrinfo nested user pointer hardening) — <a href="https://github.com/RT-Thread/rt-thread/pull/11977">https://github.com/RT-Thread/rt-thread/pull/11977</a></li>
+  <li><strong>[17]</strong> PR #11978 (GPT partition first/last reversed validation) — <a href="https://github.com/RT-Thread/rt-thread/pull/11978">https://github.com/RT-Thread/rt-thread/pull/11978</a></li>
+  <li><strong>[18]</strong> Issue #11271 (GPT partition size underflow) — <a href="https://github.com/RT-Thread/rt-thread/issues/11271">https://github.com/RT-Thread/rt-thread/issues/11271</a></li>
+  <li><strong>[19]</strong> PR #11941 (terminal ioctl copyin/copyout) — <a href="https://github.com/RT-Thread/rt-thread/pull/11941">https://github.com/RT-Thread/rt-thread/pull/11941</a></li>
+  <li><strong>[20]</strong> PR #11935 (signalfd close path and slot lookup) — <a href="https://github.com/RT-Thread/rt-thread/pull/11935">https://github.com/RT-Thread/rt-thread/pull/11935</a></li>
+  <li><strong>[21]</strong> PR #11954 (poll and epoll count wraparound) — <a href="https://github.com/RT-Thread/rt-thread/pull/11954">https://github.com/RT-Thread/rt-thread/pull/11954</a></li>
+  <li><strong>[22]</strong> PR #11911 (cromfs directory name bounds) — <a href="https://github.com/RT-Thread/rt-thread/pull/11911">https://github.com/RT-Thread/rt-thread/pull/11911</a></li>
+  <li><strong>[23]</strong> PR #11918 (9pfs length convergence) — <a href="https://github.com/RT-Thread/rt-thread/pull/11918">https://github.com/RT-Thread/rt-thread/pull/11918</a></li>
+  <li><strong>[24]</strong> PR #11947 (DHCP address pool exhaustion unbounded search) — <a href="https://github.com/RT-Thread/rt-thread/pull/11947">https://github.com/RT-Thread/rt-thread/pull/11947</a></li>
+  <li><strong>[25]</strong> PR #11901 (fdt_unflatten depth limit) — <a href="https://github.com/RT-Thread/rt-thread/pull/11901">https://github.com/RT-Thread/rt-thread/pull/11901</a></li>
+  <li><strong>[26]</strong> PR #11558 (CFI MTD array bounds) — <a href="https://github.com/RT-Thread/rt-thread/pull/11558">https://github.com/RT-Thread/rt-thread/pull/11558</a></li>
+  <li><strong>[27]</strong> PR #11962 (Bluetrum AB32 ADC channel validation) — <a href="https://github.com/RT-Thread/rt-thread/pull/11962">https://github.com/RT-Thread/rt-thread/pull/11962</a></li>
+  <li><strong>[28]</strong> Issue #11991 (ESP32-C3 prebuilt image rejects v1.x) — <a href="https://github.com/RT-Thread/rt-thread/issues/11991">https://github.com/RT-Thread/rt-thread/issues/11991</a></li>
+  <li><strong>[29]</strong> PR #11955 (mainline linear version numbering and release process documentation) — <a href="https://github.com/RT-Thread/rt-thread/pull/11955">https://github.com/RT-Thread/rt-thread/pull/11955</a></li>
+  <li><strong>[30]</strong> Issue #11956 (version management CI and release process) — <a href="https://github.com/RT-Thread/rt-thread/issues/11956">https://github.com/RT-Thread/rt-thread/issues/11956</a></li>
+  <li><strong>[31]</strong> Issue #11972 (QEMU automated test checklist for Z-version releases) — <a href="https://github.com/RT-Thread/rt-thread/issues/11972">https://github.com/RT-Thread/rt-thread/issues/11972</a></li>
+  <li><strong>[32]</strong> PR #11976 (DAC framework test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11976">https://github.com/RT-Thread/rt-thread/pull/11976</a></li>
+  <li><strong>[33]</strong> PR #11982 (I2C framework simulated bus test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11982">https://github.com/RT-Thread/rt-thread/pull/11982</a></li>
+  <li><strong>[34]</strong> PR #11883 (watchdog smoke test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11883">https://github.com/RT-Thread/rt-thread/pull/11883</a></li>
+  <li><strong>[35]</strong> PR #11979 (in-firmware virtual loopback bus for SPI) — <a href="https://github.com/RT-Thread/rt-thread/pull/11979">https://github.com/RT-Thread/rt-thread/pull/11979</a></li>
+  <li><strong>[36]</strong> PR #11990 (CI runs DAC and I2C framework tests in QEMU) — <a href="https://github.com/RT-Thread/rt-thread/pull/11990">https://github.com/RT-Thread/rt-thread/pull/11990</a></li>
+  <li><strong>[37]</strong> PR #12002 (Touch framework interrupt error propagation and test, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/12002">https://github.com/RT-Thread/rt-thread/pull/12002</a></li>
+  <li><strong>[38]</strong> PR #11989 (QEMU regression coverage for dlmodule) — <a href="https://github.com/RT-Thread/rt-thread/pull/11989">https://github.com/RT-Thread/rt-thread/pull/11989</a></li>
+  <li><strong>[39]</strong> PR #11983 (utest auto-run with loops and memory sampling) — <a href="https://github.com/RT-Thread/rt-thread/pull/11983">https://github.com/RT-Thread/rt-thread/pull/11983</a></li>
+  <li><strong>[40]</strong> PR #11974 (ADC framework test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11974">https://github.com/RT-Thread/rt-thread/pull/11974</a></li>
+  <li><strong>[41]</strong> PR #11988 (ARM configuration split into libcpu/arm/Kconfig) — <a href="https://github.com/RT-Thread/rt-thread/pull/11988">https://github.com/RT-Thread/rt-thread/pull/11988</a></li>
+  <li><strong>[42]</strong> Issue #9187 (original libcpu Kconfig split issue) — <a href="https://github.com/RT-Thread/rt-thread/issues/9187">https://github.com/RT-Thread/rt-thread/issues/9187</a></li>
+  <li><strong>[43]</strong> PR #11892 (RISC-V Smart MMU and user exceptions) — <a href="https://github.com/RT-Thread/rt-thread/pull/11892">https://github.com/RT-Thread/rt-thread/pull/11892</a></li>
+  <li><strong>[44]</strong> PR #11895 (signal delivery order and ELF segment protection) — <a href="https://github.com/RT-Thread/rt-thread/pull/11895">https://github.com/RT-Thread/rt-thread/pull/11895</a></li>
+  <li><strong>[45]</strong> PR #11899 (sys_sigaction validates signal number) — <a href="https://github.com/RT-Thread/rt-thread/pull/11899">https://github.com/RT-Thread/rt-thread/pull/11899</a></li>
+  <li><strong>[46]</strong> PR #11542 (SDHCI name buffer stack overflow) — <a href="https://github.com/RT-Thread/rt-thread/pull/11542">https://github.com/RT-Thread/rt-thread/pull/11542</a></li>
+  <li><strong>[47]</strong> PR #11545 (USB string descriptor index validation) — <a href="https://github.com/RT-Thread/rt-thread/pull/11545">https://github.com/RT-Thread/rt-thread/pull/11545</a></li>
+  <li><strong>[48]</strong> PR #11546 (USB MS OS compatible ID response length clamping) — <a href="https://github.com/RT-Thread/rt-thread/pull/11546">https://github.com/RT-Thread/rt-thread/pull/11546</a></li>
+  <li><strong>[49]</strong> Issue #4782 (USB string descriptor out-of-bounds, 2021) — <a href="https://github.com/RT-Thread/rt-thread/issues/4782">https://github.com/RT-Thread/rt-thread/issues/4782</a></li>
+  <li><strong>[50]</strong> Issue #11287 (MS OS compatible ID length out-of-bounds) — <a href="https://github.com/RT-Thread/rt-thread/issues/11287">https://github.com/RT-Thread/rt-thread/issues/11287</a></li>
+  <li><strong>[51]</strong> PR #11600 (tiny vsnprintf long long truncation) — <a href="https://github.com/RT-Thread/rt-thread/pull/11600">https://github.com/RT-Thread/rt-thread/pull/11600</a></li>
+  <li><strong>[52]</strong> PR #11965 (klibc byte loop rewritten as memset) — <a href="https://github.com/RT-Thread/rt-thread/pull/11965">https://github.com/RT-Thread/rt-thread/pull/11965</a></li>
+  <li><strong>[53]</strong> Issue #6128 (implicit contract between klibc and GCC, 2022) — <a href="https://github.com/RT-Thread/rt-thread/issues/6128">https://github.com/RT-Thread/rt-thread/issues/6128</a></li>
+  <li><strong>[54]</strong> PR #11946 (SCMI reset controller container conversion and registration order) — <a href="https://github.com/RT-Thread/rt-thread/pull/11946">https://github.com/RT-Thread/rt-thread/pull/11946</a></li>
+  <li><strong>[55]</strong> PR #11957 (DM365 SPI rejects zero frequency) — <a href="https://github.com/RT-Thread/rt-thread/pull/11957">https://github.com/RT-Thread/rt-thread/pull/11957</a></li>
+  <li><strong>[56]</strong> Issue #11950 (DM365 SPI divider divide-by-zero) — <a href="https://github.com/RT-Thread/rt-thread/issues/11950">https://github.com/RT-Thread/rt-thread/issues/11950</a></li>
+  <li><strong>[57]</strong> PR #11963 (mailbox test case repeatable) — <a href="https://github.com/RT-Thread/rt-thread/pull/11963">https://github.com/RT-Thread/rt-thread/pull/11963</a></li>
+  <li><strong>[58]</strong> Issue #6565 (mailbox test case fails on second run, 2021) — <a href="https://github.com/RT-Thread/rt-thread/issues/6565">https://github.com/RT-Thread/rt-thread/issues/6565</a></li>
+  <li><strong>[59]</strong> PR #11973 (macro comment placement convention) — <a href="https://github.com/RT-Thread/rt-thread/pull/11973">https://github.com/RT-Thread/rt-thread/pull/11973</a></li>
+  <li><strong>[60]</strong> Issue #10097 (macro comment style criteria) — <a href="https://github.com/RT-Thread/rt-thread/issues/10097">https://github.com/RT-Thread/rt-thread/issues/10097</a></li>
+  <li><strong>[61]</strong> PR #11891 (serial TIOCGWINSZ and termios update) — <a href="https://github.com/RT-Thread/rt-thread/pull/11891">https://github.com/RT-Thread/rt-thread/pull/11891</a></li>
+  <li><strong>[62]</strong> PR #11886 (SDIO block size setting timing) — <a href="https://github.com/RT-Thread/rt-thread/pull/11886">https://github.com/RT-Thread/rt-thread/pull/11886</a></li>
+  <li><strong>[63]</strong> PR #11931 (serial shared port retains receive callback) — <a href="https://github.com/RT-Thread/rt-thread/pull/11931">https://github.com/RT-Thread/rt-thread/pull/11931</a></li>
+  <li><strong>[64]</strong> PR #11726 (virtio NIC RX buffer leak) — <a href="https://github.com/RT-Thread/rt-thread/pull/11726">https://github.com/RT-Thread/rt-thread/pull/11726</a></li>
+  <li><strong>[65]</strong> PR #11920 (NVMe inactive namespace leak) — <a href="https://github.com/RT-Thread/rt-thread/pull/11920">https://github.com/RT-Thread/rt-thread/pull/11920</a></li>
+  <li><strong>[66]</strong> PR #11968 (virtio RPMsg probe error handling) — <a href="https://github.com/RT-Thread/rt-thread/pull/11968">https://github.com/RT-Thread/rt-thread/pull/11968</a></li>
+  <li><strong>[67]</strong> PR #11873 (USB HID interface protocol field) — <a href="https://github.com/RT-Thread/rt-thread/pull/11873">https://github.com/RT-Thread/rt-thread/pull/11873</a></li>
+  <li><strong>[68]</strong> PR #11874 (two defects in mkdist disk command) — <a href="https://github.com/RT-Thread/rt-thread/pull/11874">https://github.com/RT-Thread/rt-thread/pull/11874</a></li>
+  <li><strong>[69]</strong> PR #11975 (STM32F1/H7 input capture support) — <a href="https://github.com/RT-Thread/rt-thread/pull/11975">https://github.com/RT-Thread/rt-thread/pull/11975</a></li>
+  <li><strong>[70]</strong> Issue #11967 (STM32 input capture feature request) — <a href="https://github.com/RT-Thread/rt-thread/issues/11967">https://github.com/RT-Thread/rt-thread/issues/11967</a></li>
+  <li><strong>[71]</strong> PR #11752 (CAN send/receive test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11752">https://github.com/RT-Thread/rt-thread/pull/11752</a></li>
+  <li><strong>[72]</strong> PR #11758 (SDIO block device read/write test) — <a href="https://github.com/RT-Thread/rt-thread/pull/11758">https://github.com/RT-Thread/rt-thread/pull/11758</a></li>
+  <li><strong>[73]</strong> PR #11903 (Allwinner D1s QEMU boot script) — <a href="https://github.com/RT-Thread/rt-thread/pull/11903">https://github.com/RT-Thread/rt-thread/pull/11903</a></li>
+  <li><strong>[74]</strong> PR #11867 (EFM32 menuconfig support) — <a href="https://github.com/RT-Thread/rt-thread/pull/11867">https://github.com/RT-Thread/rt-thread/pull/11867</a></li>
+  <li><strong>[75]</strong> PR #11897 (K230D support and Smart improvements) — <a href="https://github.com/RT-Thread/rt-thread/pull/11897">https://github.com/RT-Thread/rt-thread/pull/11897</a></li>
+  <li><strong>[76]</strong> PR #11998 (Renesas RH850 G4KH port and qemu-rh850-u2c, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[77]</strong> PR #12000 (OFW tree exposed via procfs, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/12000">https://github.com/RT-Thread/rt-thread/pull/12000</a></li>
+  <li><strong>[78]</strong> PR #12001 (CPU time accounting for non-SMART configurations, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/12001">https://github.com/RT-Thread/rt-thread/pull/12001</a></li>
+  <li><strong>[79]</strong> PR #12003 (Bouffalo ADC DMA sampling channel validation, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/12003">https://github.com/RT-Thread/rt-thread/pull/12003</a></li>
+  <li><strong>[80]</strong> PR #11999 (picolibc asctime_r/ctime_r prototypes, 11-07) — <a href="https://github.com/RT-Thread/rt-thread/pull/11999">https://github.com/RT-Thread/rt-thread/pull/11999</a></li>
+  <li><strong>[81]</strong> PR #11966 (RISC-V AIA APLIC level interrupt EOI) — <a href="https://github.com/RT-Thread/rt-thread/pull/11966">https://github.com/RT-Thread/rt-thread/pull/11966</a></li>
+  <li><strong>[82]</strong> PR #11987 (ulog outputs calling function, file, and line number) — <a href="https://github.com/RT-Thread/rt-thread/pull/11987">https://github.com/RT-Thread/rt-thread/pull/11987</a></li>
+  <li><strong>[83]</strong> PR #11959 (NXP RT1180 industrial Ethernet linker script) — <a href="https://github.com/RT-Thread/rt-thread/pull/11959">https://github.com/RT-Thread/rt-thread/pull/11959</a></li>
+  <li><strong>[84]</strong> PR #11915 (dlmodule uninitialized globals, merged 10-30) — <a href="https://github.com/RT-Thread/rt-thread/pull/11915">https://github.com/RT-Thread/rt-thread/pull/11915</a></li>
+  <li><strong>[85]</strong> Issue #5705 (dlmodule global variable address overlap, 2022) — <a href="https://github.com/RT-Thread/rt-thread/issues/5705">https://github.com/RT-Thread/rt-thread/issues/5705</a></li>
+  <li><strong>[86]</strong> PR #11936 (clang-format pinned to 22.1.8 and kernel formatting, merged 10-30) — <a href="https://github.com/RT-Thread/rt-thread/pull/11936">https://github.com/RT-Thread/rt-thread/pull/11936</a></li>
+  <li><strong>[87]</strong> Repository: hpmicro/rtt-bsp-hpm5100evk — <a href="https://github.com/hpmicro/rtt-bsp-hpm5100evk">https://github.com/hpmicro/rtt-bsp-hpm5100evk</a></li>
+  <li><strong>[88]</strong> Repository: hpmicro/rtt-bsp-hpm6800evk — <a href="https://github.com/hpmicro/rtt-bsp-hpm6800evk">https://github.com/hpmicro/rtt-bsp-hpm6800evk</a></li>
+  <li><strong>[89]</strong> Repository: hpmicro/rtt-bsp-hpm6e00evk — <a href="https://github.com/hpmicro/rtt-bsp-hpm6e00evk">https://github.com/hpmicro/rtt-bsp-hpm6e00evk</a></li>
+  <li><strong>[90]</strong> Repository: Fire HPM6750 BTB Studio BSP — <a href="https://github.com/sendu2wfdx/rt-thread-bsp-hpm6750-fire-btb">https://github.com/sendu2wfdx/rt-thread-bsp-hpm6750-fire-btb</a></li>
+  <li><strong>[91]</strong> Repository: Nuvoton N9H30 community BSP — <a href="https://github.com/Memory-afk/sdk-bsp-nk-n9h30">https://github.com/Memory-afk/sdk-bsp-nk-n9h30</a></li>
+  <li><strong>[92]</strong> Repository: zlgopen/awtk — <a href="https://github.com/zlgopen/awtk">https://github.com/zlgopen/awtk</a></li>
+  <li><strong>[93]</strong> PR env #304 (plugin marketplace serverless index) — <a href="https://github.com/RT-Thread/env/pull/304">https://github.com/RT-Thread/env/pull/304</a></li>
+  <li><strong>[94]</strong> PR sdk #11 (env-plugins index directory) — <a href="https://github.com/RT-Thread/sdk/pull/11">https://github.com/RT-Thread/sdk/pull/11</a></li>
+  <li><strong>[95]</strong> Index directory env-plugins — <a href="https://github.com/RT-Thread/sdk/tree/main/env-plugins">https://github.com/RT-Thread/sdk/tree/main/env-plugins</a></li>
+  <li><strong>[96]</strong> Repository: esp32s31-rtthread (RT-Thread as an ESP-IDF component) — <a href="https://github.com/yilives/esp32s31-rtthread">https://github.com/yilives/esp32s31-rtthread</a></li>
+  <li><strong>[97]</strong> Espressif: ESP32-S31 release announcement — <a href="https://www.espressif.com/zh-hans/news/ESP32_S31_Release">https://www.espressif.com/zh-hans/news/ESP32_S31_Release</a></li>
+  <li><strong>[98]</strong> Repository: coact (active object and hierarchical state machine framework) — <a href="https://github.com/DeguiLiu/coact">https://github.com/DeguiLiu/coact</a></li>
+  <li><strong>[99]</strong> Project: Titan_Openmv — <a href="https://github.com/RT-Thread-Studio/sdk-bsp-ra8p1-titan-board/tree/main/project/Titan_Openmv">https://github.com/RT-Thread-Studio/sdk-bsp-ra8p1-titan-board/tree/main/project/Titan_Openmv</a></li>
+  <li><strong>[100]</strong> Repository: rtthread-industrial-gateway — <a href="https://github.com/luhan777-shen/rtthread-industrial-gateway">https://github.com/luhan777-shen/rtthread-industrial-gateway</a></li>
+  <li><strong>[101]</strong> Repository: helios-sf32 (Sifli SF32LB52 watch firmware) — <a href="https://github.com/fbiego/helios-sf32">https://github.com/fbiego/helios-sf32</a></li>
+  <li><strong>[102]</strong> Repository: GD32 (dual-MCU disinfection device) — <a href="https://github.com/Allin-JO/GD32">https://github.com/Allin-JO/GD32</a></li>
+  <li><strong>[103]</strong> Repository: RISC-V-CPU (RV32IM dual-issue FPGA core) — <a href="https://github.com/LinLuofirefly/RISC-V-CPU">https://github.com/LinLuofirefly/RISC-V-CPU</a></li>
+  <li><strong>[104]</strong> Repository: titan-mini-pcb-inspector — <a href="https://github.com/hyh12138938/titan-mini-pcb-inspector">https://github.com/hyh12138938/titan-mini-pcb-inspector</a></li>
+  <li><strong>[105]</strong> Repository: NS800RT7P65D FOC and CANopen — <a href="https://github.com/illustriousness/ns800rt7p65-focdemo">https://github.com/illustriousness/ns800rt7p65-focdemo</a></li>
+  <li><strong>[106]</strong> EET-China: Wuhan stop of the roadshow training — <a href="https://www.eet-china.com/mp/a535641.html">https://www.eet-china.com/mp/a535641.html</a></li>
+  <li><strong>[107]</strong> EET-China: Ruixin 3576 desktop pet livestream preview — <a href="https://www.eet-china.com/mp/a535640.html">https://www.eet-china.com/mp/a535640.html</a></li>
+  <li><strong>[108]</strong> EET-China: RT-Thread and NXP user survey — <a href="https://www.eet-china.com/mp/a536257.html">https://www.eet-china.com/mp/a536257.html</a></li>
+  <li><strong>[109]</strong> EET-China: RT-Thread appears at the Wuzhen Summit — <a href="https://www.eet-china.com/mp/a536485.html">https://www.eet-china.com/mp/a536485.html</a></li>
+  <li><strong>[110]</strong> EET-China: Ruixin platform recreates desktop pet with RK3576 — <a href="https://www.eet-china.com/mp/a536769.html">https://www.eet-china.com/mp/a536769.html</a></li>
+  <li><strong>[111]</strong> EET-China: Titan Board integrates OpenMV — <a href="https://www.eet-china.com/mp/a537138.html">https://www.eet-china.com/mp/a537138.html</a></li>
+  <li><strong>[112]</strong> World Internet Conference: Light of the Internet Expo opens in Wuzhen — <a href="https://cn.wicinternet.org/2026-11/03/content_39082074.htm">https://cn.wicinternet.org/2026-11/03/content_39082074.htm</a></li>
+  <li><strong>[113]</strong> Cyberspace Administration of China: 2026 World Internet Conference Wuzhen Summit press release — <a href="https://www.cac.gov.cn/2026-11/02/c_1795373863477368.htm">https://www.cac.gov.cn/2026-11/02/c_1795373863477368.htm</a></li>
+  <li><strong>[114]</strong> Phoenix Net: Open Source AIOS Alliance assembles at WTCC 2026 — <a href="https://biz.ifeng.com/c/8xZ1SQBmhnC">https://biz.ifeng.com/c/8xZ1SQBmhnC</a></li>
+  <li><strong>[115]</strong> Shanghai Municipal Commission of Economy and Informatization: Shanghai Open Source Software Application Innovation Competition concludes — <a href="https://sheitc.sh.gov.cn/zxxx/20261102/3726d0f2497f49f49f96afdbed62bd11.html">https://sheitc.sh.gov.cn/zxxx/20261102/3726d0f2497f49f49f96afdbed62bd11.html</a></li>
+  <li><strong>[116]</strong> People’s Daily Online: Bringing more open source results from the competition to the market — <a href="http://sh.people.com.cn/n2/2026/1030/c134768-41737721.html">http://sh.people.com.cn/n2/2026/1030/c134768-41737721.html</a></li>
+  <li><strong>[117]</strong> RT-Thread official news list — <a href="https://www.rt-thread.org/news/list">https://www.rt-thread.org/news/list</a></li>
+  <li><strong>[118]</strong> Main repository master commit feed — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[119]</strong> Main repository releases page — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[120]</strong> Main repository tags page — <a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[121]</strong> Main repository pull request list — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[122]</strong> Main repository issue list — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+  <li><strong>[123]</strong> RT-Thread organization repository list (sorted by pushed) — <a href="https://github.com/orgs/RT-Thread/repositories?sort=pushed">https://github.com/orgs/RT-Thread/repositories?sort=pushed</a></li>
+</ul>
+
+<p><em>Data sources: Daily RT-Thread intelligence reports (five issues, 2026-11-02 to 2026-11-06) and this cycle’s release-day verification; the reporting period is 2026-11-02 to 2026-11-06. Suggested period for the next weekly report: 2026-11-09 to 2026-11-13.</em></p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>
