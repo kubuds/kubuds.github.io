@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/tw/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/tw/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/tw/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/tw/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/tw/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/tw/">首頁</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服務與支援 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/service/simulator.html">模擬器</a></li>
+              <li><a class="dropdown-item" href="/tw/service/os.html">作業系統</a></li>
+              <li><a class="dropdown-item" href="/tw/service/toolchain.html">軟體工具鏈</a></li>
+              <li><a class="dropdown-item" href="/tw/service/chip.html">嵌入式晶片</a></li>
+
+              <li><a class="dropdown-item" href="/tw/service/ide.html">整合開發環境</a></li>
+              <li><a class="dropdown-item" href="/tw/service/aisys.html">AI軟體棧服務</a></li>
+              <li><a class="dropdown-item" href="/tw/service/consultation.html">專家諮詢</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解決方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社群 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/tw/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/tw/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/tw/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/tw/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/tw/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/tw/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/post.html" style="white-space: nowrap;">新聞與活動</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/about.html" style="white-space: nowrap;">關於我們</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/tw/career.html">招賢納士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              繁體中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1119.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1119.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1119.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1119.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1119.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread 每日動態報告（2026-11-19） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/tw/">首頁</a></li>
+                                <li class="breadcrumb-item"><a href="/tw/post.html#news-list" class="news-list-link">新聞與活動</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread 每日動態報告（2026-11-19）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread 每日動態報告（2026-11-19）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-19</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>調研視窗</strong>：2026-11-18 08:00 ~ 2026-11-19 08:00（北京時間，24 小時）</p>
+
+<p><strong>信源</strong>：RT-Thread 官方新聞介面（分類 rt_org）、GitHub 主倉庫 commits 與 PR、releases 與 tags。另含 RT-Thread org 全倉推送與軟體包索引倉 packages。補充通道為 Windows 工具倉 env-windows、topic:rt-thread 活躍倉庫、Google News（走代理）、Hacker News。</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>一、裝置層
+    <ul>
+      <li>一個 2021 年的議題，靠換編碼收掉（11-18）</li>
+      <li>撞碼的位置：fcntl 的 1 到 4 與裝置命令同值（11-18）</li>
+      <li>十四個檔案跟著改，包圍 BSP 與 rt-link（11-18）</li>
+    </ul>
+  </li>
+  <li>二、測試與 CI
+    <ul>
+      <li>memheap 用例在沒有 MEMHEAP 的 BSP 上被靜默丟掉（11-18）</li>
+      <li>utest 文件裡混用的路徑分隔符（11-18）</li>
+      <li>凌晨三筆，當天落一筆（11-18）</li>
+    </ul>
+  </li>
+  <li>三、軟體包與生態
+    <ul>
+      <li>AI Agent 包加 A2A 通道與分層記憶（11-18）</li>
+    </ul>
+  </li>
+  <li>四、官方與社群
+    <ul>
+      <li>官方新聞介面連續第九期無新增（11-19）</li>
+      <li>沒有新版本，也沒有新標籤（11-19）</li>
+    </ul>
+  </li>
+  <li>五、在審佇列
+    <ul>
+      <li>RH850 移植一週內長到 52 個檔案（11-18）</li>
+      <li>其餘三筆只在時間戳上動過（11-18）</li>
+      <li>視窗內沒有新提案與新議題（11-19）</li>
+    </ul>
+  </li>
+  <li>六、總結與趨勢
+    <ul>
+      <li>今天的分量壓在一條提案上</li>
+      <li>靜默丟棄是測試側最難發現的缺口</li>
+      <li>命令數值位移之後，倉外程式碼要自己核</li>
+      <li>AI Agent 包的第二次改動</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="一裝置層命令空間的重新劃分">一、裝置層：命令空間的重新劃分</h2>
+
+<h3 id="11-一個-2021-年的議題靠換編碼收掉11-18">1.1 一個 2021 年的議題，靠換編碼收掉（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 09:11（合入）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11881">#11881</a>。</p>
+
+<p>議題 #5073 提於 2021 年 9 月 17 日。標題寫的是串列埠走 POSIX 介面 ioctl 設不了底層引數，不會調到底層 config，原因落在「宏定義的數值為 3」上。議題至今仍開著。</p>
+
+<p>提案 #11881 於 2026 年 10 月 17 日提出。11 月 18 日上午 9 點 11 分，Rbb666 把它合入。從報告到合入 5 年 2 個月，從提案到合入 32 天。</p>
+
+<p>提交號 629a7970。規模是 14 個檔案、新增 80 行、刪除 57 行。方向不是給某個驅動打補丁，是把裝置控制命令的編號方式整體換掉。</p>
+
+<h3 id="12-撞碼的位置fcntl-的-1-到-4-與裝置命令同值11-18">1.2 撞碼的位置：fcntl 的 1 到 4 與裝置命令同值（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18（提案正文）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/5073">#5073</a>。</p>
+
+<p>提案正文把衝突列成了表。POSIX 這邊 <code class="highlighter-rouge">F_GETFD</code>、<code class="highlighter-rouge">F_SETFD</code>、<code class="highlighter-rouge">F_GETFL</code>、<code class="highlighter-rouge">F_SETFL</code> 分別是 1、2、3、4。舊定義裡 <code class="highlighter-rouge">RT_DEVICE_CTRL_RESUME</code>、<code class="highlighter-rouge">SUSPEND</code>、<code class="highlighter-rouge">CONFIG</code>、<code class="highlighter-rouge">CLOSE</code> 是 0x01、0x02、0x03、0x04。</p>
+
+<p>兩套命令共用一個 int 引數。<code class="highlighter-rouge">F_GETFL</code> 與 <code class="highlighter-rouge">CONFIG</code> 撞在 3，<code class="highlighter-rouge">F_SETFL</code> 與 <code class="highlighter-rouge">CLOSE</code> 撞在 4。</p>
+
+<p>路徑也寫清楚了。<code class="highlighter-rouge">fcntl</code> 經 <code class="highlighter-rouge">dfs_file_ioctl</code>、<code class="highlighter-rouge">dfs_file_fcntl</code> 走到 <code class="highlighter-rouge">fops-&gt;ioctl</code>。驅動按數值匹配時，會把 <code class="highlighter-rouge">F_GETFL</code> 當成 <code class="highlighter-rouge">CONFIG</code> 處理。這正是議題 #5073 裡「設不了引數」的機械原因。</p>
+
+<p>新編碼把裝置類搬進高位元組。<br />
+基址宏是 <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Type)</code>。它按類編號加一、再乘 0x100 計算，高位元組放類編號，低位元組放類內索引。</p>
+
+<p>九個通用命令改用 <code class="highlighter-rouge">BASE(Unknown) + 1..9</code>，實際落在 0x2001 至 0x2009。這與 POSIX 的 0 到 4 完全錯開。</p>
+
+<p>舊的 <code class="highlighter-rouge">RT_DEVICE_CTRL_MASK = 0x1f</code> 只看低 5 位，與新編碼不相容。作者 grep 過全倉，沒有呼叫者，直接刪除。換成 <code class="highlighter-rouge">RT_DEVICE_CTRL_CLASS_MASK = 0xff00</code> 與 <code class="highlighter-rouge">RT_DEVICE_CTRL_INDEX_MASK = 0x00ff</code>。</p>
+
+<p>一處細節值得留意。提案裡「驗證的 bsp 和 config」那一欄是空的，<code class="highlighter-rouge">.config</code> 與 action 連結也沒有填。</p>
+
+<h3 id="13-十四個檔案跟著改包圍-bsp-與-rt-link11-18">1.3 十四個檔案跟著改，包圍 BSP 與 rt-link（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18（提交改動面）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/commit/629a7970">629a7970</a>。</p>
+
+<p>跟隨改動的檔案裡，八個是 efm32 板級驅動。acmp、adc、ethernet、iic、leuart、sdcard、timer、usart，每個改三到四行命令值。hk32f030c8-mini 的 <code class="highlighter-rouge">rtconfig.py</code> 動了一行。</p>
+
+<p>標頭檔案側改動更集中。<br />
+<code class="highlighter-rouge">dev_pin.h</code> 裡 <code class="highlighter-rouge">PIN_CONFIG_BIAS_BUS_HOLD</code> 原本是列舉首項、值為 0，<br />
+現在改為 <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Pin) + 1</code>。</p>
+
+<p><code class="highlighter-rouge">dev_serial_v2.h</code> 把 <code class="highlighter-rouge">RT_HW_SERIAL_CTRL_GETC</code>、<code class="highlighter-rouge">PUTC</code>、<code class="highlighter-rouge">GET_DMA_PING_BUF</code> 三個裸宏換成列舉。取值從 <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Char) + 0x40</code> 起，並註明 0x40 至 0x4f 留給硬體串列埠控制。</p>
+
+<p>rt-link 的兩個檔案也跟著改。<code class="highlighter-rouge">include/rtdef.h</code> 是最大的一處，新增 34 行、刪除 16 行。版本註釋加了一行：2026-11-07，CXSforHPU，class-encode RT_DEVICE_CTRL_* commands。</p>
+
+<p><strong>判斷</strong>：九個通用命令從 0x01 至 0x09 移到 0x2001 至 0x2009。倉外 BSP 或軟體包若把舊值寫死，升級後會走到錯誤分支。依據是提交只同步了倉庫內 14 個檔案，沒有留相容宏，驗證 BSP 一欄為空。</p>
+
+<h2 id="二測試與-ci-收口">二、測試與 CI 收口</h2>
+
+<h3 id="21-memheap-用例在沒有-memheap-的-bsp-上被靜默丟掉11-18">2.1 memheap 用例在沒有 MEMHEAP 的 BSP 上被靜默丟掉（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 17:29（合入）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12066">#12066</a>。</p>
+
+<p>提交說明寫明瞭因果鏈。<code class="highlighter-rouge">RT_UTEST_MEMHEAP</code> 依賴 <code class="highlighter-rouge">RT_USING_MEMHEAP</code>。<code class="highlighter-rouge">mem.cfg</code> 沒有選中這一項。於是 memheap 那組用例在不帶該配置的 BSP 上沒有編進去。舊的 <code class="highlighter-rouge">mem.conf</code> 原本是選中的。</p>
+
+<p>修復是在 <code class="highlighter-rouge">.github/utest/configs/kernel/mem.cfg</code> 裡補兩行。提案 #12066 當日凌晨 3 點 13 分提出，17 點 29 分合入，間隔 14 小時。</p>
+
+<p>這類缺口不會讓構建失敗，也不會讓測試報紅。報告上顯示的是透過，被丟掉的用例不出現在統計裡。</p>
+
+<h3 id="22-utest-文件裡混用的路徑分隔符11-18">2.2 utest 文件裡混用的路徑分隔符（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 10:01（合入）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/commit/ebd32d7a">ebd32d7a</a>。</p>
+
+<p><code class="highlighter-rouge">components/utilities/utest/README.md</code> 改了兩行，把混用的路徑分隔符統一。作者 sexenteen，11 月 16 日寫好，11 月 18 日上午合入。文件級改動，不影響行為。</p>
+
+<h3 id="23-凌晨三筆當天落一筆11-18">2.3 凌晨三筆，當天落一筆（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18（提案狀態）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12064">#12064</a>。</p>
+
+<p>昨天列的三筆凌晨提案，今天有了不同去向。#12066 已合入。#12064 與 #12065 仍是開啟狀態，最後一次更新分別是 19 點 08 分與 20 點 25 分。</p>
+
+<p>三筆都出自 parthitce。#12065 的正文寫明測試環境：RH850 <code class="highlighter-rouge">qemu-rh850-u2c</code> 的 <code class="highlighter-rouge">kernel_basic</code>。<code class="highlighter-rouge">-O2</code> 下棧破壞會讓 <code class="highlighter-rouge">rt_memmove</code> 崩潰，修復後 22 項用例全部透過。</p>
+
+<p>用例本身的缺陷是拿 11 位元組去讀寫 6 位元組源與 10 位元組目標兩個陣列。</p>
+
+<h2 id="三軟體包與生態">三、軟體包與生態</h2>
+
+<h3 id="31-ai-agent-包加-a2a-通道與分層記憶11-18">3.1 AI Agent 包加 A2A 通道與分層記憶（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 09:45（提交）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/packages/commit/6595550d">6595550d</a>。</p>
+
+<p>軟體包索引倉收到一筆提交，只改 <code class="highlighter-rouge">ai/Agent/Kconfig</code>，新增 378 行、刪除 212 行。提交說明寫的是三件事。</p>
+
+<p>一是增加 a2a channel 支援。二是補上分層記憶的開關、容量與持久化選項。三是落盤開啟時自動選中 DFS 與 4.1 以上的 POSIX 檔案介面，不用使用者回去補元件。</p>
+
+<p>包本體 <code class="highlighter-rouge">ai/Agent</code> 的自述是「rtthread 輕量級 Agent 軟體包」。關鍵詞為 ai、Agent、llm、toolcall。倉庫指向作者自己的 <code class="highlighter-rouge">CXSforHPU/Agent</code>，依賴 cJSON、webclient、mbedTLS 與 ulog。</p>
+
+<p>這是兩天內第二次動這個選單。11 月 16 日 11 點 22 分合入過 #2050「補齊 Agent 配置項，按用途重排選單」，改的也是這份 Kconfig。作者 CXSforHPU 今天還在主倉庫合入了 1.1 那筆命令編碼提交。</p>
+
+<h2 id="四官方與社群活動">四、官方與社群活動</h2>
+
+<h3 id="41-官方新聞介面連續第九期無新增11-19">4.1 官方新聞介面連續第九期無新增（11-19）</h3>
+
+<p><strong>日期</strong>：2026-11-19（介面核查）。<strong>來源</strong>：<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">介面</a>。</p>
+
+<p>介面返回五條。最新一條仍是 11 月 6 日 15 點 54 分的《從 OS 根基到 AI 落地：RT-Thread 睿賽德全棧能力錨定工業智慧化升級》。從 11 月 7 日算起，這是連續第九期零新增。</p>
+
+<h3 id="42-沒有新版本也沒有新標籤11-19">4.2 沒有新版本，也沒有新標籤（11-19）</h3>
+
+<p><strong>日期</strong>：2026-11-19（版本與標籤核查）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/releases">releases</a>。</p>
+
+<p>release 最新是 v5.3.0，釋出於 9 月 10 日。tag 列表一致，視窗內沒有新增。</p>
+
+<p>主分支的版本號註釋在 10 月 17 日已記為 v5.4.0。議題 #12063 的報告人也把 master 寫作 v5.4.0-dev。正式釋出的版本仍是 5.3.0，兩者差一個開發週期。</p>
+
+<h2 id="五在審佇列">五、在審佇列</h2>
+
+<h3 id="51-rh850-移植一週內長到-52-個檔案11-18">5.1 RH850 移植一週內長到 52 個檔案（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 20:15（最近更新）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11998">#11998</a>。</p>
+
+<p>Renesas RH850 G4KH 移植與 <code class="highlighter-rouge">qemu-rh850-u2c</code> 板級包 11 月 6 日提出。昨天是 48 個檔案、新增 3921 行。今天變成 52 個檔案、新增 4122 行，一天加了 4 個檔案、201 行。</p>
+
+<p>內容分三塊。<code class="highlighter-rouge">libcpu/rh850</code> 用 TRAP0 做執行緒切換，含巢狀中斷、FPU 上下文與故障轉儲。<code class="highlighter-rouge">bsp/renesas/rh850</code> 有啟動程式碼、INTC、OSTM 與 RLIN3 串列埠，串列埠只支援 serial V1。CI 做硬浮點與軟浮點兩種構建，加 QEMU 上的 kernel utest，工具鏈與 QEMU 包在解壓前校驗 SHA-256。</p>
+
+<p>作者給出的實測環境是工具鏈 v1.2.0（GCC 14.3、picolibc）與 qemu-rh850 v1.2.0。</p>
+
+<p><strong>判斷</strong>：這筆還在加內容，不是在等評審。依據是檔案數與行數在一天內同時上漲，而評審側的評論數沒有對應增長。</p>
+
+<h3 id="52-其餘三筆只在時間戳上動過11-18">5.2 其餘三筆只在時間戳上動過（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 19:26（最近更新）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11842">#11842</a>。</p>
+
+<p>HUST CSE 的 devtmpfs 超長路徑元件棧溢位修復仍是 5 筆提交、4 個檔案、新增 314 行、刪除 8 行。與昨日核對一致，最近更新 19 點 26 分。#12064 與 #12065 的情況見 2.3。</p>
+
+<p>三筆都只重新整理了更新時間，沒有新提交進來。</p>
+
+<h3 id="53-視窗內沒有新提案與新議題11-19">5.3 視窗內沒有新提案與新議題（11-19）</h3>
+
+<p><strong>日期</strong>：2026-11-19（提案與議題計數）。<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pulls">提案列表</a>。</p>
+
+<p>視窗內新建提案 0 筆、新建議題 0 個。未關閉提案 138 筆，上期 141。未關閉議題 341 個，與上期持平。</p>
+
+<h2 id="六總結與趨勢觀察">六、總結與趨勢觀察</h2>
+
+<h3 id="61-今天的分量壓在一條提案上">6.1 今天的分量壓在一條提案上</h3>
+
+<p>視窗內三條提交，共 16 個檔案、新增 84 行、刪除 59 行。其中 629a7970 一條佔 14 個檔案、新增 80、刪除 57。另外兩條各動一個檔案、各兩行。</p>
+
+<p><strong>判斷</strong>：今天是一次裝置命令空間的重新劃分，不是補丁堆疊。依據是改動集中在 <code class="highlighter-rouge">include/rtdef.h</code> 與四個裝置標頭檔案，BSP 側只是跟隨改數值，沒有邏輯變化。</p>
+
+<h3 id="62-靜默丟棄是測試側最難發現的缺口">6.2 靜默丟棄是測試側最難發現的缺口</h3>
+
+<p>memheap 那組用例不是編譯失敗，是根本沒編進去。構建透過，測試透過。報告上看不出異常。</p>
+
+<p><strong>判斷</strong>：這類問題只能靠配置對照發現，靠跑測試發現不了。依據是提交說明寫明的機制：<code class="highlighter-rouge">RT_UTEST_MEMHEAP</code> 依賴 <code class="highlighter-rouge">RT_USING_MEMHEAP</code>，<code class="highlighter-rouge">mem.cfg</code> 未選中時整組用例被跳過，而舊 <code class="highlighter-rouge">mem.conf</code> 是選中的。</p>
+
+<h3 id="63-命令數值位移之後倉外程式碼要自己核">6.3 命令數值位移之後，倉外程式碼要自己核</h3>
+
+<p><strong>判斷</strong>：九個通用命令從 0x01 至 0x09 移到 0x2001 至 0x2009，倉外 BSP 與軟體包若把舊值寫進程式碼，升級後會走到錯誤分支。依據是提交只同步倉庫內 14 個檔案，沒有留相容宏，驗證 BSP 一欄為空。</p>
+
+<h3 id="64-ai-agent-包的第二次改動">6.4 AI Agent 包的第二次改動</h3>
+
+<p>11 月 16 日重排選單，11 月 18 日加 A2A 通道與分層記憶。兩次都只改 Kconfig。</p>
+
+<p><strong>判斷</strong>：這個包的配置面在往「協議接入 + 記憶管理」擴，不再只是功能開關。依據是第二次提交新增了 a2a channel 與記憶容量、持久化選項，而第一次只是按用途重排選單。</p>
+
+<h2 id="附錄信源核查表">附錄：信源核查表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread 官方新聞介面</td>
+      <td>五條，最新 11-06 15:54，連續第九期零新增</td>
+    </tr>
+    <tr>
+      <td>官網新聞頁</td>
+      <td>客戶端渲染，抓不到條目，以介面為準</td>
+    </tr>
+    <tr>
+      <td>主倉庫 commits</td>
+      <td>視窗內 3 筆，16 個檔案，新增 84 行、刪除 59 行</td>
+    </tr>
+    <tr>
+      <td>視窗內合入的提案</td>
+      <td>2 筆：#11881（命令編碼）、#12066（mem.cfg）</td>
+    </tr>
+    <tr>
+      <td>視窗內新建的提案</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>視窗內新建的議題</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>未關閉提案 / 議題</td>
+      <td>138 / 341（上期 141 / 341）</td>
+    </tr>
+    <tr>
+      <td>releases 與 tags</td>
+      <td>最新仍為 v5.3.0（2026-09-10），視窗內無新增</td>
+    </tr>
+    <tr>
+      <td>軟體包索引倉 packages</td>
+      <td>視窗內 1 筆（ai/Agent 配置，+378/-212）</td>
+    </tr>
+    <tr>
+      <td>Windows 工具倉 env-windows</td>
+      <td>最近推送 11-16 17:14，視窗內零提交</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org 其餘倉庫</td>
+      <td>視窗內無推送，按推送排序前二為 rt-thread、packages</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread 活躍倉庫</td>
+      <td>5 個倉，僅 zlgopen/awtk 於 11-18 16:42 推送兩筆（點陣圖字型載入、framebuffer 行寬），通用 GUI 改進，與 RT-Thread 無專項關聯</td>
+    </tr>
+    <tr>
+      <td>Google News 中文</td>
+      <td>視窗內零條；最近一條為 38.6 小時前的大賽特等獎專案分享（昨日已收錄）；睿賽德、睿擎派三日零命中</td>
+    </tr>
+    <tr>
+      <td>Google News 英文</td>
+      <td>三日與七日視窗零命中，裸查詢正常，可排除通道故障</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>兩條候選全為 thread 字面誤匹配，已剔除</td>
+    </tr>
+    <tr>
+      <td>安全公告</td>
+      <td>無 RT-Thread 條目，本期無新編號</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完整信源清單">完整信源清單</h3>
+
+<ul>
+  <li><strong>[1]</strong> 提案 #11881（裝置控制命令按類編碼，修 POSIX 撞碼） — <a href="https://github.com/RT-Thread/rt-thread/pull/11881">https://github.com/RT-Thread/rt-thread/pull/11881</a></li>
+  <li><strong>[2]</strong> 議題 #5073（串列埠走 POSIX ioctl 設不了底層引數） — <a href="https://github.com/RT-Thread/rt-thread/issues/5073">https://github.com/RT-Thread/rt-thread/issues/5073</a></li>
+  <li><strong>[3]</strong> 提交 629a7970（命令編碼合入） — <a href="https://github.com/RT-Thread/rt-thread/commit/629a7970ebb0902383db6cbc003e5bc248ff76d6">https://github.com/RT-Thread/rt-thread/commit/629a7970ebb0902383db6cbc003e5bc248ff76d6</a></li>
+  <li><strong>[4]</strong> 提交 ebd32d7a（utest README 路徑分隔符） — <a href="https://github.com/RT-Thread/rt-thread/commit/ebd32d7a">https://github.com/RT-Thread/rt-thread/commit/ebd32d7a</a></li>
+  <li><strong>[5]</strong> 提交 6fdfe700（mem.cfg 選中 RT_USING_MEMHEAP） — <a href="https://github.com/RT-Thread/rt-thread/commit/6fdfe700">https://github.com/RT-Thread/rt-thread/commit/6fdfe700</a></li>
+  <li><strong>[6]</strong> 提案 #12066（mem.cfg 選中 MEMHEAP） — <a href="https://github.com/RT-Thread/rt-thread/pull/12066">https://github.com/RT-Thread/rt-thread/pull/12066</a></li>
+  <li><strong>[7]</strong> 提案 #12064（sys/signal.h 採用 picolibc 型別） — <a href="https://github.com/RT-Thread/rt-thread/pull/12064">https://github.com/RT-Thread/rt-thread/pull/12064</a></li>
+  <li><strong>[8]</strong> 提案 #12065（klibc memmove 用例邊界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12065">https://github.com/RT-Thread/rt-thread/pull/12065</a></li>
+  <li><strong>[9]</strong> 提交 6595550d（packages ai/Agent 配置） — <a href="https://github.com/RT-Thread/packages/commit/6595550d">https://github.com/RT-Thread/packages/commit/6595550d</a></li>
+  <li><strong>[10]</strong> 提案 #2050（Agent 配置項補齊與選單重排） — <a href="https://github.com/RT-Thread/packages/pull/2050">https://github.com/RT-Thread/packages/pull/2050</a></li>
+  <li><strong>[11]</strong> 軟體包 ai/Agent 描述檔案 — <a href="https://github.com/RT-Thread/packages/blob/master/ai/Agent/package.json">https://github.com/RT-Thread/packages/blob/master/ai/Agent/package.json</a></li>
+  <li><strong>[12]</strong> 提案 #11998（Renesas RH850 G4KH 移植與 qemu 板級包） — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[13]</strong> 提案 #11842（devtmpfs 超長路徑元件棧溢位） — <a href="https://github.com/RT-Thread/rt-thread/pull/11842">https://github.com/RT-Thread/rt-thread/pull/11842</a></li>
+  <li><strong>[14]</strong> RT-Thread 官方新聞介面 — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[15]</strong> RT-Thread org 倉庫列表 — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[16]</strong> 主倉庫提案列表 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[17]</strong> 主倉庫議題列表 — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/tw/post.html#news-list" class="btn btn-main news-list-link">返回新聞列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>聯絡我們</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>郵箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市寶山區高逸路88號1幢1層108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>連結</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

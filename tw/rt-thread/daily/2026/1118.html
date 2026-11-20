@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/tw/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/tw/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/tw/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/tw/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/tw/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/tw/">首頁</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服務與支援 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/service/simulator.html">模擬器</a></li>
+              <li><a class="dropdown-item" href="/tw/service/os.html">作業系統</a></li>
+              <li><a class="dropdown-item" href="/tw/service/toolchain.html">軟體工具鏈</a></li>
+              <li><a class="dropdown-item" href="/tw/service/chip.html">嵌入式晶片</a></li>
+
+              <li><a class="dropdown-item" href="/tw/service/ide.html">整合開發環境</a></li>
+              <li><a class="dropdown-item" href="/tw/service/aisys.html">AI軟體棧服務</a></li>
+              <li><a class="dropdown-item" href="/tw/service/consultation.html">專家諮詢</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解決方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/tw/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/tw/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社群 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/tw/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/tw/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/tw/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/tw/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/tw/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/tw/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/post.html" style="white-space: nowrap;">新聞與活動</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/tw/about.html" style="white-space: nowrap;">關於我們</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/tw/career.html">招賢納士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              繁體中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1118.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1118.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1118.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1118.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1118.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread 每日動態報告（2026-11-18） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/tw/">首頁</a></li>
+                                <li class="breadcrumb-item"><a href="/tw/post.html#news-list" class="news-list-link">新聞與活動</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread 每日動態報告（2026-11-18）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread 每日動態報告（2026-11-18）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-18</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>調研視窗</strong>：2026-11-17 08:00 ~ 2026-11-18 08:00（北京時間，24 小時）</p>
+
+<p><strong>信源</strong>：RT-Thread 官方新聞介面（club.rt-thread.org，分類 rt_org）、GitHub 主倉庫 commits / PR / Issue / releases / tags、RT-Thread org 全部倉庫按推送排序核查、軟體包索引倉 packages、Windows 工具倉 env-windows、topic:rt-thread 活躍倉庫檢索、Google News 中英文查詢（走代理，含三日與七日視窗）、Hacker News Algolia、Tavily 檢索</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>一、核心與安全修復
+    <ul>
+      <li>BLK_PARTITION ioctl：使用者指標直接當核心地址（11-17）</li>
+      <li>FinSH 路徑補全：五十餘天后的一行截斷（11-17）</li>
+      <li>STM32 輸入捕獲：一個定時器拆成四個裝置（11-17）</li>
+    </ul>
+  </li>
+  <li>二、新報缺陷：DMA ping 緩衝與 cache line
+    <ul>
+      <li>serial_v2 的錯位：44 位元組頭把 ping 緩衝擠離 32 位元組邊界（11-17）</li>
+    </ul>
+  </li>
+  <li>三、BSP 與廠商適配
+    <ul>
+      <li>ArtInChip D213：三天從在審到合入（11-17）</li>
+    </ul>
+  </li>
+  <li>四、官方與社群活動
+    <ul>
+      <li>嵌入式大賽特等獎專案開源：一套六層 Agent 監測系統（11-17）</li>
+      <li>官方新聞介面連續第八期無新增（11-18）</li>
+    </ul>
+  </li>
+  <li>五、在審佇列
+    <ul>
+      <li>三筆維護補丁在凌晨排隊（11-18）</li>
+      <li>兩筆長跑提案仍在外圍（11-17）</li>
+      <li>一筆重複提案自行撤回（11-17）</li>
+    </ul>
+  </li>
+  <li>六、總結與趨勢觀察
+    <ul>
+      <li>一天清掉四筆，安全線在收斂</li>
+      <li>延遲幾乎全在報到一個提案這一段</li>
+      <li>缺陷報告的證據標準在抬高</li>
+      <li>生態側的三天週期</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="一核心與安全修復">一、核心與安全修復</h2>
+
+<h3 id="11-blk_partition-ioctl使用者指標直接當核心地址11-17">1.1 BLK_PARTITION ioctl：使用者指標直接當核心地址（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 14:50（合入時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11981">提案 #11981</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11952">議題 #11952</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/265116d7">提交 265116d7</a></p>
+
+<p>議題 10 月 29 日提出，報告區間寫的是 master（v5.4.0-dev）與 v5.2.0 至 v5.3.0，引入點是公共塊層的 c424cb818695。復現環境是 QEMU vexpress-a9、RT-Smart、ARMv7-A、32 位、帶 SD 映象，核心建出 <code class="highlighter-rouge">/dev/sd0</code>。</p>
+
+<p>問題的形狀很直接：<code class="highlighter-rouge">RT_DEVICE_CTRL_BLK_PARTITION</code> 把使用者態傳入的裸指標當成 <code class="highlighter-rouge">rt_memcpy</code> 的目的地址，非特權程序於是可以指定任意核心地址作為寫入目標。更麻煩的是 <code class="highlighter-rouge">rt_memcpy</code> 之後沒有把 <code class="highlighter-rouge">err</code> 置為成功，所以即使 ioctl 最終返回 -1，目標地址的內容已經被改寫——錯誤碼與事實相反，呼叫方拿到的”失敗”是假象。</p>
+
+<p>修復分兩條路徑。<code class="highlighter-rouge">RT_USING_LWP</code> 下先用 <code class="highlighter-rouge">lwp_self()</code> 判斷是否處於使用者態上下文，是使用者態就先把分割槽資料拷到核心棧上的臨時變數，再用 <code class="highlighter-rouge">lwp_put_to_user()</code> 安全回拷；指標非法時 <code class="highlighter-rouge">lwp_put_to_user()</code> 返回 -EFAULT，且不寫入任何位元組。核心內部呼叫沿用原來的 <code class="highlighter-rouge">rt_memcpy</code> 路徑，並補上遺漏的 <code class="highlighter-rouge">err = RT_EOK</code>。規模 294 行新增、59 行刪除，五個檔案全在 <code class="highlighter-rouge">components/drivers/block/</code> 下：<code class="highlighter-rouge">blk.c</code>、<code class="highlighter-rouge">blk_dev.c</code>、<code class="highlighter-rouge">blk_dev.h</code>、<code class="highlighter-rouge">blk_dfs.c</code>、<code class="highlighter-rouge">blk_dfs.h</code>。</p>
+
+<p>11 月 3 日提案，11 月 17 日下午合入，中間 14 天。議題本身沒有隨提案關閉，仍在開啟狀態；報告人順帶提到的 <code class="highlighter-rouge">RT_DEVICE_CTRL_BLK_GETGEOME</code> 一類命令是否同構，本期沒有結論。</p>
+
+<h3 id="12-finsh-路徑補全五十餘天后的一行截斷11-17">1.2 FinSH 路徑補全：五十餘天后的一行截斷（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 11:33（合入時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12057">提案 #12057</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11839">缺陷 #11839</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/4c823281">提交 4c823281</a></p>
+
+<p>缺陷 #11839 是 9 月 25 日提的，標題寫明 CWE-122 堆越界寫：<code class="highlighter-rouge">msh_auto_complete_path</code> 在拼接當前工作目錄與使用者輸入時沒有守住定長緩衝區（<code class="highlighter-rouge">RT_PATH_MAX</code> 或硬編碼的 256 位元組），在 msh 裡對超長路徑按 Tab 觸發補全即可寫出邊界。報告環境是 stm32f407-atk-explorer、GCC、v5.3.0。</p>
+
+<p>修復只有 5 行新增、0 行刪除，一個檔案 <code class="highlighter-rouge">components/finsh/msh.c</code>。提案正文寫得也直白：碰到超長輸入路徑直接截斷，別讓棧原地爆掉。11 月 14 日提出，11 月 17 日上午合入，缺陷在同一秒關閉。</p>
+
+<p>這筆在昨天的報告裡還是”四筆社群小補丁仍在外圍排隊”之一；今天它是四筆裡第三筆落地的。從報告到修復 53 天，從提案到合入 3 天——延遲幾乎全壓在”報告之後有人動手”這一段。</p>
+
+<h3 id="13-stm32-輸入捕獲一個定時器拆成四個裝置11-17">1.3 STM32 輸入捕獲：一個定時器拆成四個裝置（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 08:59（合入時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12052">提案 #12052</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/0dffe478">提交 0dffe478</a></p>
+
+<p>原驅動的粒度是物理定時器：一個 TIM 註冊一個裝置，只能選一個捕獲通道，同一定時器其餘通道閒置；也沒有基於 CH1/CH2 配對的 PWM 輸入與雙邊沿採集。</p>
+
+<p>新版把粒度降到通道。TIM1 至 TIM4 可分別選 CH1 至 CH4，同一物理定時器的不同通道各自注冊為獨立的 Input Capture 裝置，共享計數器、預分頻與 HAL 控制代碼，各自維護捕獲狀態。另加兩種獨佔模式：PWM Input 用 CH1 直連與 CH2 間接捕獲配對，靠定時器 Slave Reset 計算週期與高低電平持續時間；DUAL_EDGE 用 CH1/CH2 分別捕同一訊號的兩個邊沿，計數器自由執行，中斷裡按時間戳算相鄰邊沿間隔。兩種獨佔模式都要求整隻 TIM 不被其他獨立 EDGE 裝置佔用。</p>
+
+<p>Kconfig 增加 TIM1 至 TIM4 的模式與通道選擇項，板級引數（裝置名、數字濾波、捕獲極性、ARR）放進 f1 與 h7 兩份 <code class="highlighter-rouge">inputcapture_config.h</code>。規模 1540 行新增、285 行刪除、五個檔案。11 月 12 日提案，5 天后合入。</p>
+
+<h2 id="二新報缺陷dma-ping-緩衝與-cache-line">二、新報缺陷：DMA ping 緩衝與 cache line</h2>
+
+<h3 id="21-serial_v2-的錯位44-位元組頭把-ping-緩衝擠離-32-位元組邊界11-17">2.1 serial_v2 的錯位：44 位元組頭把 ping 緩衝擠離 32 位元組邊界（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 08:33（議題時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/12063">缺陷 #12063</a></p>
+
+<p>上午 8 點 33 分，一條帶硬體復現的缺陷報告進了議題區。標題很長，但把因果寫全了：serial_v2 的 DMA 接收 ping 緩衝沒有按 cache line 對齊，D-cache 失效操作越界到相鄰堆塊，STM32H7 上表現為 tx fifo 環形緩衝頭部回退、下一次寫觸發斷言。</p>
+
+<p>分配方式是這樣的：<code class="highlighter-rouge">rt_serial_rx_enable()</code> 一次 <code class="highlighter-rouge">rt_malloc</code> 拿下 rx fifo 結構體、rx 環形緩衝與 DMA ping 緩衝三塊連續記憶體，ping 緩衝的起點是 <code class="highlighter-rouge">sizeof(struct rt_serial_rx_fifo) + rx_bufsz</code>。32 位 Cortex-M7 上這個結構體是 44 位元組（兩個 16 位元組的 <code class="highlighter-rouge">rt_ringbuffer</code> 加 <code class="highlighter-rouge">rx_cpt</code>、<code class="highlighter-rouge">rx_cpt_index</code>、<code class="highlighter-rouge">rx_timeout</code>）。於是只要 <code class="highlighter-rouge">rx_bufsz</code> 是 32 的整數倍，ping 緩衝的起點就恆等於 <code class="highlighter-rouge">44 + rx_bufsz ≡ 12 (mod 32)</code>——永遠落不到 32 位元組邊界上，塊尾同樣不對齊。</p>
+
+<p>觸發點在 STM32 的 serial_v2 驅動：每次 DMA 接收空閒事件都調 <code class="highlighter-rouge">SCB_InvalidateDCache_by_Addr()</code> 失效這段 ping 緩衝。Cortex-M7 的 cache line 是 32 位元組，失效按整行算，兩頭都出事。向下，ping 緩衝之前最多 31 位元組（rx 環形緩衝尾部、CPU 剛寫入的資料）被一起失效，髒行被丟棄，資料退回 DDR 裡的舊內容——接收資料靜默損壞。向上，STM32Cube 包裡的 CMSIS 版本把長度按起始偏移補足（<code class="highlighter-rouge">op_size = dsize + (addr &amp; 31)</code>），迴圈會走過 ping 緩衝末尾最多 31 位元組，失效掉下一個堆塊。</p>
+
+<p>硬體上看到的後果很具體：rx fifo 之後緊鄰的堆塊是 tx fifo（<code class="highlighter-rouge">rt_serial_tx_enable()</code> 單獨分配），它的首欄位 <code class="highlighter-rouge">rb</code> 的 <code class="highlighter-rouge">buffer_ptr</code> 正好在偏移 0，落在被多失效的那一行裡。<code class="highlighter-rouge">rt_ringbuffer_init()</code> 寫進去的指標還沒回寫就被丟棄，記憶體重新讀出分配前的零值，<code class="highlighter-rouge">buffer_ptr</code> 變 NULL，下一次 <code class="highlighter-rouge">rt_device_write()</code> 直接斷言。結論一句話：在開了 D-cache 的 M7 板上啟用 serial_v2 的 DMA 接收，收幾個位元組再發，傳送側就死。</p>
+
+<p>報告人給了框架級修法：在 <code class="highlighter-rouge">rt_serial_rx_enable()</code> 裡把 ping 緩衝起點按 32 位元組向上對齊（<code class="highlighter-rouge">RT_ALIGN</code>），長度也向上取整到 32 的倍數，分配時多留約 32 位元組餘量，兩次按行取整就都落在自己塊內；無 D-cache 的核上零成本。影響面寫得很清楚：v5.3.0（第一個帶 DMA ping 設計的版本）與 master 都受影響，引入點是 <code class="highlighter-rouge">ac8fba012</code>（作者日期 2024-09-04，2025-05-16 合入的 serial_v2 改造）；同一塊緩衝還交給 gd32、hc32、n32、at32、wch、imxrt 的 serial_v2 驅動，這些核目前沒有 D-cache，但 imxrt 的 <code class="highlighter-rouge">drv_uart_v2.c</code> 完全沒做 cache 維護，報告人另記了一筆。嚴重度自評中等，CVSS 3.1 約 4.6 至 5.3，觸發需要物理或串列埠線路接入，後果是核心堆完整性受損加確定性斷言。</p>
+
+<p>議題在 4 個半小時後被 liangzhan5 認領——就是上午合入塊裝置那筆的同一位維護者。標籤給了 in progress 與 component: drivers。</p>
+
+<h2 id="三bsp-與廠商適配">三、BSP 與廠商適配</h2>
+
+<h3 id="31-artinchip-d213三天從在審到合入11-17">3.1 ArtInChip D213：三天從在審到合入（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 11:19（合入時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12058">提案 #12058</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/9ddb0249">提交 9ddb0249</a></p>
+
+<p>D213ECV-DEMO-V4-0 是芯擎（ArtInChip）的評估板，核心是平頭哥 C906、RV64GC、128 MiB DDR3。11 月 14 日提案，11 月 17 日上午合入，三天走完評審，比同期多數提案快。</p>
+
+<p>三十個檔案、新增 1783 行、零刪除。內容是一套完整板級包：複用 RISC-V 公共移植層（M 模式啟動、上下文切換、FPU 狀態、PLIC、系統節拍），補 D213 平臺初始化、連結佈局、GPIO 與 UART0 的時鐘和復位、serial-v1 的 UART0 適配；外部載入器先初始化 DDR、PLL 與記憶體和 cache 屬性，再把 RT-Thread 裝到 <code class="highlighter-rouge">0x40000000</code>。UART0 輪詢傳送，接收執行緒往 serial-v1 的 FIFO 裡灌，接收執行緒優先順序高於 FinSH，預設接收緩衝 512 位元組，傳送與配置等待都有上限，分頻寫入要求 LCR/DLAB 讀回成功。</p>
+
+<p>前天的報告裡它還是”與那筆浮點修復同源”的在審提案；今天它是主線裡的一個 BSP 目錄。對 RISC-V 側的觀察者，值得記的是這條線的一貫性：D213 的移植者先在自家 BSP 上撞到執行緒切換後 <code class="highlighter-rouge">fs1</code> 不對，回官方 <code class="highlighter-rouge">qemu-virt64-riscv</code> 復現，才有了那筆浮點上下文修復；板級包進來時，那條修復已經在主線上了。</p>
+
+<h2 id="四官方與社群活動">四、官方與社群活動</h2>
+
+<h3 id="41-嵌入式大賽特等獎專案開源一套六層-agent-監測系統11-17">4.1 嵌入式大賽特等獎專案開源：一套六層 Agent 監測系統（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 17:30（釋出）　<strong>來源</strong>：<a href="https://www.eet-china.com/mp/a539885.html">EE Times China 專欄文章</a></p>
+
+<p>11 月 9 日公佈排名的 2026 RT-Thread 嵌入式大賽，昨天傍晚由官方公眾號專欄放出了特等獎作品的技術拆解。作品名「基於端側 Agent 核心的多感測裝置資訊融合監測系統」，作者曹顯嵩，硬體是大賽提供的 Edgi-Talk（英飛凌 PSoC E84：Cortex-M55 加 Helium、M33、Ethos-U55 NPU、6 MB SRAM），軟體跑在 RT-Thread 5.0.2 上。</p>
+
+<p>架構分六層：應用層（七個 LVGL 頁面）、Agent 核心、工具與通道、網路協議棧、核心與 BSP、外部服務。Agent 核心引自上游獨立軟體包 Agent-latest，只讀方式引入；一條 <code class="highlighter-rouge">AgentLoop</code> 執行緒序列處理會話，棧 10 KB、優先順序 10，輸入輸出兩組 mailbox 深度各 10，佇列滿則丟訊息並打日誌。一輪對話最多向大模型發 6 次請求，同一工具最多執行 3 次，引數簽名完全重複的呼叫直接跳過；上下文每輪裁剪到 16 條，system prompt 常駐。</p>
+
+<p>工具層註冊 10 個：add、mul、compare 三個示例，加 mqtt_connect、mqtt_disconnect、mqtt_publish、mqtt_subscribe、mqtt_receive、mqtt_rule、mqtt_history 七個 MQTT 業務工具；訂閱表 13 個槽位、4 條閾值規則，每個話題留最近 6 條歷史供趨勢總結，另設深度 8 的滾動視窗快取來不及即時分析的報文。網路棧是 wifi-host-driver（CYW55500 Wi-Fi 6）、SAL 與 netdev、lwIP 2.1.2、paho-mqtt、webclient 2.2.0、mbed TLS 2.28.1，檔案系統走 DFS 與 FAL。</p>
+
+<p>文章自己把缺口寫出來了：broker 目前是明文 TCP 加賬號密碼鑑權，多節點規模化接入前要補 TLS 或賬號隔離；TTS、NPU 推理、服務層管理與視覺化都還是預留項。程式碼在 Gitee（cxs_123/muti_device_fusion），可直接用 RT-Thread Studio 匯入。</p>
+
+<p>這一篇的看點不在”又一個大獎作品”，而在把 Agent 核心的邊界劃清了：意圖理解、融合研判、告警文案交給遠端大模型，端側只做訊息路由、工具排程與結果回灌。對一個實時核心來說，這是當前最省算力也最不容易出錯的切法。</p>
+
+<h3 id="42-官方新聞介面連續第八期無新增11-18">4.2 官方新聞介面連續第八期無新增（11-18）</h3>
+
+<p>介面裡仍是 11 月 6 日上傳的五條舊稿：工業智慧化升級的全棧能力稿、Vinaro 技術沙龍的 PLC 稿、東南亞產教融合稿、汽車軟體產業生態沙龍稿、工博會 AI 小車稿。逐條核對上傳時間，全部落在 11 月 6 日 10:53 至 15:54 之間，本期視窗內零新增。官網新聞頁是客戶端渲染，抓不到條目，仍以介面為準。</p>
+
+<h2 id="五在審佇列">五、在審佇列</h2>
+
+<h3 id="51-三筆維護補丁在凌晨排隊11-18">5.1 三筆維護補丁在凌晨排隊（11-18）</h3>
+
+<p><strong>日期</strong>：2026-11-18 03:11 至 03:13（提案時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12064">提案 #12064</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12065">提案 #12065</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12066">提案 #12066</a></p>
+
+<p>凌晨 3 點 11 分至 3 點 13 分，parthitce 連提三筆：<code class="highlighter-rouge">[libc][common]</code> 讓 <code class="highlighter-rouge">sys/signal.h</code> 採用 picolibc 的型別定義（#12064）、<code class="highlighter-rouge">[utest][klibc]</code> 把 <code class="highlighter-rouge">TC_rt_memmove_too_long</code> 的訪問收在自己的緩衝區內（#12065）、<code class="highlighter-rouge">[ci][utest]</code> 在 <code class="highlighter-rouge">mem.cfg</code> 裡選中 <code class="highlighter-rouge">RT_USING_MEMHEAP</code>（#12066）。三筆都不動功能，是測試與標頭檔案一致性上的收口，規模都不大。</p>
+
+<h3 id="52-兩筆長跑提案仍在外圍11-17">5.2 兩筆長跑提案仍在外圍（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17（最近更新）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11998">提案 #11998</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11912">提案 #11912</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11842">提案 #11842</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11964">提案 #11964</a></p>
+
+<p>RH850 G4KH 移植與 <code class="highlighter-rouge">qemu-rh850-u2c</code> 板級包（#11998）自 11 月 6 日掛到現在，48 個檔案、新增 3921 行，昨天凌晨還有更新；OctaFlash 支援（#11912）自 10 月 21 日起，34 個檔案、加 4550 減 1302，是佇列裡體積最大的一筆；HUST CSE 的 devtmpfs 超長路徑元件棧溢位修復（#11842）從 9 月 27 日排到今天，4 個檔案、加 314 減 8；signal 用例（#11964）自 11 月 1 日。四筆的共同點是都在等評審，而不是等作者。</p>
+
+<h3 id="53-一筆重複提案自行撤回11-17">5.3 一筆重複提案自行撤回（11-17）</h3>
+
+<p><strong>日期</strong>：2026-11-17 09:16（關閉時間）　<strong>來源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12055">提案 #12055</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12029">提案 #12029</a></p>
+
+<p>11 月 14 日提出的 ptyfs 登出釋放（#12055）在 11 月 17 日上午 9 點 16 分關閉，未合入——同一問題已由 #12029 在前一天合入。這是本輪審計線的常見收尾：同一缺陷被兩撥人看到，先到的那筆進主線，後到的自行撤下。</p>
+
+<h2 id="六總結與趨勢觀察">六、總結與趨勢觀察</h2>
+
+<h3 id="61-一天清掉四筆安全線在收斂">6.1 一天清掉四筆，安全線在收斂</h3>
+
+<p>主倉庫視窗內合入 4 筆：塊裝置分割槽的任意核心寫、FinSH 路徑補全溢位、STM32 輸入捕獲擴充套件、ArtInChip D213 板級包。前兩筆是安全，後兩筆是功能。未關閉提案 141（上期 143），未關閉議題 341（與上期持平）。</p>
+
+<p>對審計線來說，這一天的意義在於清賬：10 月 29 日報出的塊裝置問題今天合入，9 月 25 日報出的 FinSH 溢位今天關閉。加上此前幾期的 ptyfs、ivshmem、iso9660，7 月底以來報出的 RT-Smart 與檔案系統類缺陷，主線上的存量已經不多。</p>
+
+<h3 id="62-延遲幾乎全在報到一個提案這一段">6.2 延遲幾乎全在報到一個提案這一段</h3>
+
+<p>同樣是合入，兩筆安全修復的時間結構完全不同。塊裝置那筆 10 月 29 日報告、11 月 3 日提案、11 月 17 日合入，報告到提案 5 天、提案到合入 14 天；FinSH 那筆 9 月 25 日報告、11 月 14 日提案、11 月 17 日合入，報告到提案 50 天、提案到合入 3 天。昨天 iso9660 那筆是 17 分鐘。</p>
+
+<p>三個樣本指向同一個結論：評審並不慢，慢的是有人願意動手。缺陷報告寫得再細，沒有提案就只是賬本上的一行。這也是為什麼 #12063 值得單獨看——它在 4 個半小時內被認領，而 #11839 等了 50 天。</p>
+
+<h3 id="63-缺陷報告的證據標準在抬高">6.3 缺陷報告的證據標準在抬高</h3>
+
+<p>#12063 是近期質量最高的一份報告：給了受影響版本區間（v5.3.0 起，master 未修）、引入提交（作者日期與合入日期都給）、位元組級的結構體尺寸推算（<code class="highlighter-rouge">44 + rx_bufsz ≡ 12 mod 32</code>）、兩個 CMSIS 變體的行為差異、硬體上的具體症狀（tx fifo 頭部歸零、下一次寫斷言）、CVSS 自評，以及”已檢索無重複”的宣告。這不是”我發現一個 bug”，而是一份可以直接照著改的工單。</p>
+
+<p>對維護者，這種報告的價值在於省掉復現；對專案，它把”框架與驅動之間的契約”這類跨模組問題擺到了檯面上——問題不在某個驅動，而在 serial_v2 把三塊記憶體連著分配卻沒約定對齊。</p>
+
+<h3 id="64-生態側的三天週期">6.4 生態側的三天週期</h3>
+
+<p>D213 的板級包 11 月 14 日提案、17 日合入。三天，對一筆三十個檔案、近一千八百行的新 BSP 來說算快。RISC-V 側的板級支援今年明顯在提速：從 C906 單板到主線目錄的平均時間在縮短，且多數提案帶著外部載入器與記憶體佈局說明，評審有據可依。</p>
+
+<p>官方側繼續安靜：新聞介面連續第八期零新增，最後一條仍是 11 月 6 日的活動回顧。當日唯一有實質內容的官方口徑是傍晚那篇大賽特等獎專案拆解——它更像技術佈道而非產品釋出，但對想弄清端側 Agent 到底怎麼落在實時核心上的人，這篇比任何宣傳稿都有用。</p>
+
+<h2 id="附錄信源核查表">附錄：信源核查表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread 官方新聞介面</td>
+      <td>五條，均為 11-06 上傳的舊活動稿，連續第八期零新增</td>
+    </tr>
+    <tr>
+      <td>官網新聞頁</td>
+      <td>客戶端渲染，抓不到條目，以介面為準</td>
+    </tr>
+    <tr>
+      <td>主倉庫 commits</td>
+      <td>視窗內 4 筆，新增 3622 行、刪除 344 行，涉及 41 處檔案改動</td>
+    </tr>
+    <tr>
+      <td>視窗內合入的提案</td>
+      <td>4 筆：#11981、#12057、#12058、#12052</td>
+    </tr>
+    <tr>
+      <td>視窗內新建的提案</td>
+      <td>3 筆：#12064、#12065、#12066</td>
+    </tr>
+    <tr>
+      <td>視窗內新建的議題</td>
+      <td>1 個：#12063</td>
+    </tr>
+    <tr>
+      <td>視窗內關閉的議題</td>
+      <td>1 個：#11839（隨 #12057 合入關閉）</td>
+    </tr>
+    <tr>
+      <td>視窗內關閉未合入的提案</td>
+      <td>1 筆：#12055（與 #12029 重複）</td>
+    </tr>
+    <tr>
+      <td>未關閉提案 / 議題</td>
+      <td>141 / 341（上期 143 / 341）</td>
+    </tr>
+    <tr>
+      <td>releases 與 tags</td>
+      <td>最新仍為 v5.3.0（2026-09-10），視窗內無新增</td>
+    </tr>
+    <tr>
+      <td>軟體包索引倉 packages</td>
+      <td>最近推送 11-16 11:22，視窗內零提交</td>
+    </tr>
+    <tr>
+      <td>Windows 工具倉 env-windows</td>
+      <td>最近推送 11-16 17:14，視窗內零提交</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org 其餘倉庫</td>
+      <td>視窗內無推送，按推送排序前五為 rt-thread、env-windows、packages、smart-build、env</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread 活躍倉庫</td>
+      <td>僅 zlgopen/awtk（11-17 09:06），通用 GUI 改進，與 RT-Thread 無專項關聯</td>
+    </tr>
+    <tr>
+      <td>Google News 中文</td>
+      <td>三日一條 EE Times 專欄（大賽專案分享，已收錄）與四條 CSDN 綜合稿；睿賽德、睿擎派三日零命中</td>
+    </tr>
+    <tr>
+      <td>Google News 英文</td>
+      <td>三日與七日視窗零命中，裸查詢正常，可排除通道故障</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>四條候選全為 thread 字面誤匹配（gilguard、green threads 等），已剔除</td>
+    </tr>
+    <tr>
+      <td>安全公告</td>
+      <td>GitHub 安全公告介面無 RT-Thread 條目，本期無新編號</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完整信源清單">完整信源清單</h3>
+
+<ul>
+  <li><strong>[1]</strong> 提案 #11981（BLK_PARTITION ioctl 防任意核心寫） — <a href="https://github.com/RT-Thread/rt-thread/pull/11981">https://github.com/RT-Thread/rt-thread/pull/11981</a></li>
+  <li><strong>[2]</strong> 議題 #11952（塊裝置分割槽 ioctl 複製到未校驗使用者指標） — <a href="https://github.com/RT-Thread/rt-thread/issues/11952">https://github.com/RT-Thread/rt-thread/issues/11952</a></li>
+  <li><strong>[3]</strong> 提交 265116d7（塊裝置修復） — <a href="https://github.com/RT-Thread/rt-thread/commit/265116d7">https://github.com/RT-Thread/rt-thread/commit/265116d7</a></li>
+  <li><strong>[4]</strong> 提案 #12057（FinSH 路徑補全限制緩衝複製） — <a href="https://github.com/RT-Thread/rt-thread/pull/12057">https://github.com/RT-Thread/rt-thread/pull/12057</a></li>
+  <li><strong>[5]</strong> 缺陷 #11839（FinSH 路徑補全堆溢位） — <a href="https://github.com/RT-Thread/rt-thread/issues/11839">https://github.com/RT-Thread/rt-thread/issues/11839</a></li>
+  <li><strong>[6]</strong> 提交 4c823281（FinSH 修復） — <a href="https://github.com/RT-Thread/rt-thread/commit/4c823281">https://github.com/RT-Thread/rt-thread/commit/4c823281</a></li>
+  <li><strong>[7]</strong> 提案 #12052（STM32 輸入捕獲多通道與配對邊沿） — <a href="https://github.com/RT-Thread/rt-thread/pull/12052">https://github.com/RT-Thread/rt-thread/pull/12052</a></li>
+  <li><strong>[8]</strong> 提交 0dffe478（輸入捕獲擴充套件） — <a href="https://github.com/RT-Thread/rt-thread/commit/0dffe478">https://github.com/RT-Thread/rt-thread/commit/0dffe478</a></li>
+  <li><strong>[9]</strong> 議題 #12063（serial_v2 DMA ping 緩衝未對齊） — <a href="https://github.com/RT-Thread/rt-thread/issues/12063">https://github.com/RT-Thread/rt-thread/issues/12063</a></li>
+  <li><strong>[10]</strong> 提交 ac8fba012（serial_v2 改造，緩衝區分配方式的引入點） — <a href="https://github.com/RT-Thread/rt-thread/commit/ac8fba012">https://github.com/RT-Thread/rt-thread/commit/ac8fba012</a></li>
+  <li><strong>[11]</strong> 提案 #12058（ArtInChip D213 初版支援） — <a href="https://github.com/RT-Thread/rt-thread/pull/12058">https://github.com/RT-Thread/rt-thread/pull/12058</a></li>
+  <li><strong>[12]</strong> 提交 9ddb0249（D213 板級包合入） — <a href="https://github.com/RT-Thread/rt-thread/commit/9ddb0249">https://github.com/RT-Thread/rt-thread/commit/9ddb0249</a></li>
+  <li><strong>[13]</strong> EE Times China：基於端側 Agent 核心的多感測裝置資訊融合監測系統 — <a href="https://www.eet-china.com/mp/a539885.html">https://www.eet-china.com/mp/a539885.html</a></li>
+  <li><strong>[14]</strong> 提案 #12064（sys/signal.h 採用 picolibc 型別） — <a href="https://github.com/RT-Thread/rt-thread/pull/12064">https://github.com/RT-Thread/rt-thread/pull/12064</a></li>
+  <li><strong>[15]</strong> 提案 #12065（klibc memmove 用例邊界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12065">https://github.com/RT-Thread/rt-thread/pull/12065</a></li>
+  <li><strong>[16]</strong> 提案 #12066（mem.cfg 選中 RT_USING_MEMHEAP） — <a href="https://github.com/RT-Thread/rt-thread/pull/12066">https://github.com/RT-Thread/rt-thread/pull/12066</a></li>
+  <li><strong>[17]</strong> 提案 #11998（Renesas RH850 G4KH 移植） — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[18]</strong> 提案 #11912（OctaFlash 支援） — <a href="https://github.com/RT-Thread/rt-thread/pull/11912">https://github.com/RT-Thread/rt-thread/pull/11912</a></li>
+  <li><strong>[19]</strong> 提案 #11842（devtmpfs 超長路徑元件棧溢位） — <a href="https://github.com/RT-Thread/rt-thread/pull/11842">https://github.com/RT-Thread/rt-thread/pull/11842</a></li>
+  <li><strong>[20]</strong> 提案 #11964（signal 用例覆蓋） — <a href="https://github.com/RT-Thread/rt-thread/pull/11964">https://github.com/RT-Thread/rt-thread/pull/11964</a></li>
+  <li><strong>[21]</strong> 提案 #12055（ptyfs 登出釋放，重複撤回） — <a href="https://github.com/RT-Thread/rt-thread/pull/12055">https://github.com/RT-Thread/rt-thread/pull/12055</a></li>
+  <li><strong>[22]</strong> RT-Thread 官方新聞介面 — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[23]</strong> RT-Thread org 倉庫列表 — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[24]</strong> 主倉庫提案</li>
+</ul>
+
+<p>列表 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></p>
+<ul>
+  <li><strong>[25]</strong> 主倉庫議題列表 — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+  <li><strong>[26]</strong> 主倉庫提交記錄 — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/tw/post.html#news-list" class="btn btn-main news-list-link">返回新聞列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>聯絡我們</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>郵箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市寶山區高逸路88號1幢1層108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>連結</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

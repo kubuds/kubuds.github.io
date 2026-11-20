@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ch/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/ch/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ch/">首页</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服务与支持 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/service/simulator.html">模拟器</a></li>
+              <li><a class="dropdown-item" href="/ch/service/os.html">操作系统</a></li>
+              <li><a class="dropdown-item" href="/ch/service/toolchain.html">软件工具链</a></li>
+              <li><a class="dropdown-item" href="/ch/service/chip.html">嵌入式芯片</a></li>
+
+              <li><a class="dropdown-item" href="/ch/service/ide.html">集成开发环境</a></li>
+              <li><a class="dropdown-item" href="/ch/service/aisys.html">AI软件栈服务</a></li>
+              <li><a class="dropdown-item" href="/ch/service/consultation.html">专家咨询</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解决方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社区 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ch/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ch/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ch/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ch/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ch/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ch/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/post.html" style="white-space: nowrap;">新闻与活动</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/about.html" style="white-space: nowrap;">关于我们</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ch/career.html">招贤纳士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1112.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1112.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1112.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/risc-v/daily/2026/1112.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1112.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 全球动态日报（2026-11-12） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ch/">首页</a></li>
+                                <li class="breadcrumb-item"><a href="/ch/post.html#news-list" class="news-list-link">新闻与活动</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 全球动态日报（2026-11-12）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 全球动态日报（2026-11-12）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-12</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>调研窗口</strong>：2026-11-11 05:00 ~ 2026-11-12 05:00（北京时间，24 小时）
+<strong>信源</strong>：Google News 聚合（中英文 24 组查询，走代理）、Hacker News、Phoronix、CNX Software、LinuxGizmos、RISC-V International 官网、openRuyi 官网与主仓、RISC-V 会员企业官网巡检（391 家）、riscv100.top 榜单巡检，以及 GitHub 上香山 XiangShan／NEMU／difftest／XSCache、CORE-V CVW／CVA6／cvfpu、达摩院玄铁、奕斯伟、算能、芯来、乐鑫、进迭时空与 spacemit-robotics、矽速、revyos、openRuyi-Project、Radxa Linkr 等组织与重点仓库的提交与发布检索。</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>今日重点：北京印发具身智能机器人三年行动方案，20 万台年产能与 5 万 PFlops 集群把需求侧量化（11-11）</li>
+  <li>一、开源社区与软件生态
+    <ul>
+      <li>RevyOS 内核单窗口 101 笔：K3 显示与 USB3 落地、EIC7700 风扇与热区、SG2044 SRD3 双板入树（11-11）</li>
+      <li>openRuyi 36 笔：OpenTelemetry 与四个 Python 认证包安全更新，OpenCL 三包入树，内核升至 7.3.4／6.18.63（11-11）</li>
+      <li>乐鑫 esp-riscv-trace 0.2.0：RISC-V 指令级 trace 补上 decode／profile／stats／history 四条命令（11-11）</li>
+      <li>ch32rv-clang：CH32 Arduino 核改用 RISC-V-only clang 与 lld，只编 RISCV 后端（11-11）</li>
+      <li>NEMU 四笔：SMBLOCKCTL 加 PF 刷新位、RVV 零长访存置脏 VS、AME 矩阵快路径（11-11）</li>
+      <li>openRuyi-Project 新建 ruyi-deck：面向仓库与发布的运维台（11-11）</li>
+    </ul>
+  </li>
+  <li>二、产品与生态动态
+    <ul>
+      <li>平头哥分拆从传闻走到公告：阿里 11-10 晚间公告拟分拆赴港，港交所确认可拆分（11-11）</li>
+    </ul>
+  </li>
+  <li>三、国内团队深挖
+    <ul>
+      <li>香山昆明湖 V3：TLB 一次重构 18 笔，权限检查与 PTW 旁路收敛到单一出口（11-11）</li>
+      <li>进迭时空 llama.cpp：F16 GEMM 主循环改双缓冲，attention 初始化与 ASR 调度修复（11-11）</li>
+      <li>进迭 ai-sdk 与 model-zoo-vision：推理线程改按 TCM 核预算分配（11-11）</li>
+      <li>算能 19 仓周更：cviruntime 打出 2026.11.12 周版本，SDK 全家桶同批对齐（11-11）</li>
+      <li>芯来工具指南：GDB 实时变量观察写入 2026.10 变更说明（11-11）</li>
+      <li>矽速 SLogicWeb 14 笔：逻辑分析仪前端补行为设置与缓存治理（11-11）</li>
+    </ul>
+  </li>
+  <li>四、具身智能与机器人专章
+    <ul>
+      <li>进迭 SuperMimic 从 LingLong 扩到 G1：待机加四个可选动作与通用动作目录同批落地（11-11）</li>
+    </ul>
+  </li>
+  <li>五、总结与趋势观察</li>
+  <li>附录：完整信源清单与信源核查表</li>
+</ul>
+
+<hr />
+
+<h2 id="今日重点北京印发具身智能机器人三年行动方案20-万台年产能与-5-万-pflops-集群把需求侧量化11-11">今日重点：北京印发具身智能机器人三年行动方案，20 万台年产能与 5 万 PFlops 集群把需求侧量化（11-11）</h2>
+
+<p>北京市经济和信息化局 11 月 11 日印发《北京市具身智能机器人产业高质量发展行动方案（2026—2028 年）》，自印发之日起实施，有效期至 2028 年 12 月 31 日。文件把此前多轮政策里的方向性表述换成了可考核的数字：到 2028 年培育不少于 5 家国际一流、10 家国内领先的人形机器人整机企业；京津冀区域整机产能占全国 25%，关键零部件配套率超过 60%；在京形成 20 万台／年的整机生产能力；新增建设总规模超过 50000 PFlops 的具身智能专用算力集群，并推动重点企业与算力节点建设单位以「结对子」方式形成算力供需协同。</p>
+
+<p>技术路线写得比以往具体。方案明确支持视觉语言动作模型（VLA）、世界模型（WM）、强化学习等多路线布局与融合，并把攻关拆成「大脑」与「小脑」两侧：大脑侧是多源信息融合、物理空间理解与人类情感识别，目标是让机器人理解物理规律约束、主动识别人的动作与表情等非语言指令；小脑侧是实时推理、跨本体迁移与自学习进化，指向多任务泛化、高可靠执行与超精密操作。制造端给的是一条条硬指标：打造 3 至 5 种国际一流整机平台，整机额定负载达到自重 40% 以上，平均无故障工作时间超过 2000 小时，核心运动部件与末端执行器年故障率低于 10%，设计使用寿命超过 5 年，连续作业工况电池续航 4 小时以上，高自由度灵巧手单只成本降至万元以内。</p>
+
+<p>治理与资本安排同步给足。方案提出构建「一机一码」全过程管理体系，覆盖研发、生产、报废、回收全周期；建立整机企业上市「一对一」服务机制；在整机、关键零部件、具身智能模型与数据采集等领域培育不少于 200 家创新型企业，推动在京高校与科研院所建立 100 个机器人研究团队，并明确反对「内卷式」竞争。这些指标不是凭空定的：工信部 10 月 19 日披露，2026 年上半年国内人形机器人整机产品突破 400 款、产量超 4 万台，预计全年突破 10 万台；中国信通院 10 月报告则给出另一面——上半年公开披露的中标项目中教育科研机构占约 55.5%、政府及公共平台约 20.6%、工业及技术型企业约 21.1%，相当比例设备月均开机天数不足 10 天，整机价格可能只占总拥有成本的 40% 到 60%。</p>
+
+<p>对 RISC-V 这条线，这份方案的价值在于把「需求侧」从愿景变成了采购参数。20 万台／年的整机产能、60% 的关键零部件本地配套率、万元以内的灵巧手，这三条合起来指向的是关节控制与本体算力两级芯片的成本与可靠性：关节侧要的是硬实时、低功耗与确定性网络，本体侧要的是能跑 VLA 推理的算力与内存带宽，且都要在 2000 小时无故障的约束下量产。国内 RISC-V 供给目前能对上这两级的，是进迭时空的 K3 系列（本体算力）、算能的 SG 与 BM 系列（服务器与边缘）、芯来的 N1000／NI1000（实时核与向量矩阵核）以及 MIPS 的 Atlas M8500（关节级实时核，11-09 已报道其 Actus 平台）。5 万 PFlops 的专用集群则落在训练与数据侧，与 PPU、DCU 这类加速卡直接相关。需要说明的是，方案本身没有点名任何指令集或供应商，上述对应关系是供给侧现状的对照，不是政策指定。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://awtmt.com/articles/3785725">华尔街见闻：北京具身智能三年方案发布</a>、<a href="https://m.sohu.com/a/1100274218_115865">北京商报：北京机器人产业方案出炉</a></p>
+
+<h2 id="一开源社区与软件生态">一、开源社区与软件生态</h2>
+
+<h3 id="revyos-内核单窗口-101-笔k3-显示与-usb3-落地eic7700-风扇与热区sg2044-srd3-双板入树11-11">RevyOS 内核单窗口 101 笔：K3 显示与 USB3 落地、EIC7700 风扇与热区、SG2044 SRD3 双板入树（11-11）</h3>
+
+<p>revyos/linux 仓库的 revyos/7.3.y 分支在本窗口内落地 101 笔提交，按时间分成三个批次。最大的一批在 11-11 13:06（北京时间）前后，主体是平台特性与 FROMLIST 回补：SpacemiT 侧加入 K3 的 GPU 节点与显示电源域、K3 Pico ITX 的 Type-C Port A、USB3 PHY 与 FUSB301 自主控制器、PCIe 在 PHY 初始化后再拉 PERST#、UFS 的 WriteBooster 支持，并关掉 K3 上 amdgpu 的动态 PCIe 速率切换；ESWIN 侧为 EIC7700 补上 hwmon 风扇控制器、PWM、热区节点与 CPU／设备调频，最高频定在 1.4GHz；SiFive HiFive Premier P550 补齐 USB、SATA、PCIe、eMMC 与 SD；T-Head 侧让 Lichee Pi 4A 在交接时保持 USB 供电、为 Milk-V Meles 打开 USB。</p>
+
+<p>芯片平台之外还有一层通用改动。一批 RISC-V 页表访问器相关的 FROMLIST 补丁被整体回补：让页表访问一律走访问器函数、允许访问器非幂等、修正写页表时的内存类型、把 N 与 MT 位在 ptdump 里按使能状态显示、为汇编暴露全部页表位、给 alternative 增加三参数宏与可替换链接寄存器，另外修了 DMA_DIRECT_REMAP 的选择逻辑。KVM 侧把全部计数器暴露给 VS-mode 以兼容 bootloader，并用 XLINUXENVCFG 这个 cpufeature 守护 SENVCFG 访问。</p>
+
+<p>第三批是 14:52 的 defconfig 收口：在昨日报告的六笔基础上扩写为完整矩阵——K1、K3、DP1000、EIC7700、TH1520、SG2042／SG2044 逐个开启，另加 Picoheart errata、common options 与 debian_defconfig，并补上 linuxboot 配置、交叉与原生两套 CI 构建，以及「用大版本号作包名」等打包侧 HACK。三批加起来，这一天的重点不是某个新功能，而是把此前散落在各分支的板级支持收成一套能编译、能出包的组合。</p>
+
+<p>值得单独看一眼的是 SG2044 的板卡线：SRD3-10-LB 与 SRD3-12 两块板的设备树同时入树，SRD3-12 还带一个 large-BAR 变体，并新增第二条 C2C1 x4 PCIe 口、eFUSE 控制器，PCIe 窗口按 EDK2 的实现对齐。对做 RISC-V 服务器整机的团队，板级描述与固件口径一致比多一个驱动更重要——不一致的窗口划分会在多卡场景下直接表现为设备枚举不全。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/revyos/linux">revyos/linux</a></p>
+
+<h3 id="openruyi-36-笔opentelemetry-与四个-python-认证包安全更新opencl-三包入树内核升至-7346186311-11">openRuyi 36 笔：OpenTelemetry 与四个 Python 认证包安全更新，OpenCL 三包入树，内核升至 7.3.4／6.18.63（11-11）</h3>
+
+<p>openRuyi 主仓本窗口 36 笔，两条供应链同时收口。第一条是可观测性：python-opentelemetry 全家升到 1.45.2，其中 api 包显式标注 security-fixes，semantic-conventions 升到 0.66b2，并新增 exporter-otlp-common 与 exporter-http-transport 两个子包，等于把 OTLP 导出的可选路径补齐。第二条是认证：python-pyjwt 2.15.1、python-oauthlib 4.0.1、python-joserfc 1.8.0、python-authlib 1.9.3 四个包同日以 security-fixes 名义更新。两件事都属于「不上头条但决定能不能上线」的类别。</p>
+
+<p>内核侧同日两次升版：linux 升到 7.3.4、linux-lts 升到 6.18.63，都伴随 patchset 与 config 刷新。配套的 kernel-team-tools 仓库把标签推到 v7.3.4-2 与 v6.18.63-3，并把 manifest 里的 7.0.14-9／10、7.2.15-4 一并登记，同时把 XTHEADVECTOR 与 XLINUXMEMALIAS 两个选项限制在 rva20 平台——这是一处容易被忽略但影响面很大的改动：向量与内存别名选项在更高基线平台上默认不再打开，避免不同 RVA 基线之间的行为漂移。</p>
+
+<p>新增软件包方面，OpenCL 三个包同日入树：opencl-headers、opencl-icd-loader 与 clinfo；另有 fwupd、qemu-rustsbi 以及一批 Rust 依赖（rust-libc 0.2.185、memchr 2.7.6、hashbrown 0.17.1、clap-verbosity-flag 3、rustc-literal-escaper 0.0.7）。qemu-rustsbi 值得记一笔——Rust 写的 SBI 参考实现进入发行版仓库，意味着 RISC-V 固件侧的多语言实现开始在打包层面被认真对待；clinfo 则让「这台机器上的 OpenCL 设备到底有没有枚举到」变成一个可以直接验证的命令。</p>
+
+<p>其余为常规维护：cmake 打开 ccmake、htop 3.5.3、nano 9.3、openldap 2.7.2（恢复测试并安全初始化 slapd）、cyrus-sasl 修 GCC 15 兼容并注明补丁来源、openjdk 17／21／25 刷新 CA 增强补丁、clang-wrap 升到 20261111，以及把 go-github 的 discordgo 分叉成独立包并声明与原包的冲突。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/openRuyi-Project/openRuyi">openRuyi-Project/openRuyi</a>、<a href="https://github.com/openRuyi-Project/kernel-team-tools">kernel-team-tools</a></p>
+
+<h3 id="乐鑫-esp-riscv-trace-020risc-v-指令级-trace-补上-decodeprofilestatshistory-四条命令11-11">乐鑫 esp-riscv-trace 0.2.0：RISC-V 指令级 trace 补上 decode／profile／stats／history 四条命令（11-11）</h3>
+
+<p>乐鑫把 esp-riscv-trace 推到 0.2.0。这个工具做的事是解码乐鑫 RISC-V 芯片上抓到的硬件指令 trace：读 OpenOCD 产生的 .esptrace 抓包，或读 esp-coredump 生成的、带 trace 备注的 core ELF，重建程序执行流，把每个 PC 解析到函数与源码行，然后输出文本转储、热点表、崩溃前的调用历史，或可直接喂给火焰图的调用栈；连续性丢失的位置标为 gap 而不是猜测填补。0.2.0 新增的四条命令把这套能力从「能抓」推到「能分析」：decode 列出执行过的指令，profile 写出火焰图栈，stats 按源码行统计指令数，history 连同 open_capture 接口一起开放多份抓包的合并与回看。</p>
+
+<p>支持的芯片列表覆盖 ESP32-C5、C6、C61、H2、H21、H4、P4 与 S31，包格式分 Processor Trace 1.0 与 Efficient Trace 2.0 两代。使用方式是在 ESP-IDF 里打开 trace 配置，用 OpenOCD 的 esp riscv_trace start／stop 抓包，panic 后固件会在调试器停机前先停 trace，避免最后一段丢失。</p>
+
+<p>这件事的分量在「RISC-V 端侧的调试可见性」。过去在几十美分的 RISC-V MCU 上做性能分析，基本靠打点和计数；指令级 trace 长期是高档调试器的功能。乐鑫把它做成 pip 可装的 Python 工具，并对外开放读取抓包的接口，等于把「这段代码到底执行了多少条指令、热点在哪一行」变成常规手段。对在 RISC-V 上做推理算子与实时控制的团队，这类工具的边际价值往往高于再提一次主频。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/espressif/esp-riscv-trace">espressif/esp-riscv-trace</a></p>
+
+<h3 id="ch32rv-clangch32-arduino-核改用-risc-v-only-clang-与-lld只编-riscv-后端11-11">ch32rv-clang：CH32 Arduino 核改用 RISC-V-only clang 与 lld，只编 RISCV 后端（11-11）</h3>
+
+<p>社区组织 CH32 RISC-V User Group 发布了 ch32rv-clang：从上游 LLVM 发行版构建、只保留 RISCV 后端的 clang 与 lld，按宿主系统各打一个压缩包，供 ArduinoCore-CH32RV 通过 Arduino 开发板管理器安装。这一版刻意做减法——压缩包里没有 C 库、没有编译器运行时，暂时仍链 xPack GNU RISC-V Embedded GCC 提供的 newlib-nano 与 libgcc；换来的是体积与安装路径的简化：一个根目录、bin 下 12 个工具（Linux 与 macOS 上是单一 multicall 二进制加软链，Windows 上是各自的可执行文件），解压即用。</p>
+
+<p>指令集侧支持 WCH 青稞的 XW 压缩指令，对应 LLVM 19 及以后的 Xwchc 扩展（-march 里带 _xwchc）。哪些核具备 XW 由核心的设备表管理——这一点写得相当明确：QingKe V3A、V4A 这类没有 XW 的核上，一旦执行到第一条此类指令程序就停住，所以不能凭芯片型号猜。预编译覆盖五个宿主：x86_64 与 aarch64 的 Linux、x86_64 与 aarch64 的 macOS、以及 Windows MSVC。版本号按「LLVM 版本-构建号」标注，如 v23.1.5-1，一个标签触发全部宿主的构建并发布带 .sha256 的产物；构建脚本 MIT，归档内的 LLVM 为 Apache 2.0 with LLVM Exceptions。</p>
+
+<p>对这条产品线，换编译器不是目的，降低上手门槛才是。CH32V003 这类十美分级别的 RISC-V MCU 过去在 Arduino 生态里依赖 GCC 工具链，版本与安装步骤都比较脆；把 LLVM 的 tar 包接进开发板管理器后，「装不上工具链」这个最常见的劝退点被消掉了一半。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://blog.adafruit.com/2026/11/11/a-risc-v-only-clang-lld-for-the-ch32-arduino-core/">Adafruit：A RISC-V-only clang + lld for the CH32 Arduino core</a>、<a href="https://github.com/ch32-riscv-ug/ch32rv-clang">ch32-riscv-ug/ch32rv-clang</a></p>
+
+<h3 id="nemu-四笔smblockctl-加-pf-刷新位rvv-零长访存置脏-vsame-矩阵快路径11-11">NEMU 四笔：SMBLOCKCTL 加 PF 刷新位、RVV 零长访存置脏 VS、AME 矩阵快路径（11-11）</h3>
+
+<p>NEMU 在本窗口落地四笔。功能侧，SMBLOCKCTL 增加了 PF 刷新使能位（#1285），把这一控制位从保留位变成可配置行为；RVV 侧修了零长度 gather、slide 与 mask 类操作未置脏 VS 的问题（#1286）——向量状态脏位漏标在虚拟化场景下会让宿主误判上下文是否需要保存，属于典型的「只在特定指令组合下才暴露」的缺陷。MMU 侧修了第二页非规范地址时应当报告下一页基址的问题。</p>
+
+<p>性能侧一笔更值得注意：共享 ref 中启用矩阵 load／store 的快路径（#1284）。AME 是香山系的矩阵扩展，这一年里 NEMU 对它的支持从指令语义补齐走到访存路径优化，说明矩阵单元在模拟器里已经跑得够多、性能成了瓶颈。同日 difftest 侧也有两笔配合动作：nightly 工作流去掉 Firtool 发行版的 latest 标签（#1040），以及把 MMA 的 CPU 校验向量化并复用已解码操作数（#1038）。</p>
+
+<p>把这几笔连起来看，验证基础设施的重心正在从「功能对不对」转向「跑得够不够快」。矩阵扩展带来的状态量与时序复杂度，让纯软件参考模型的吞吐成为回归时长的决定因素；性能快路径与校验向量化是同一个方向上的两个动作。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/OpenXiangShan/NEMU">OpenXiangShan/NEMU</a>、<a href="https://github.com/OpenXiangShan/difftest">OpenXiangShan/difftest</a></p>
+
+<h3 id="openruyi-project-新建-ruyi-deck面向仓库与发布的运维台11-11">openRuyi-Project 新建 ruyi-deck：面向仓库与发布的运维台（11-11）</h3>
+
+<p>openRuyi-Project 在窗口内新建仓库 ruyi-deck，提交信息只有一句 Init repo，README 给了一行定位：The Operations Deck for openRuyi Repositories and Releases，许可证为木兰宽松许可证第二版。从命名与描述看，这是一个把「仓库与发布的操作面」从主仓里拆出来的独立组件，面向的是构建、发布与仓库状态管理这类运维动作。</p>
+
+<p>这条消息本身很小，但位置关键。openRuyi 主仓这一年里承担了太多角色：既是 SPECS 打包仓，又是配置与补丁的存放地，还在往里加测试与 CI。当发布节奏加快到需要按周出标签（kernel-team-tools 里 7.3.4-2、6.18.63-3 这类标签的密度可作参照），把运维逻辑独立成组件是必然的一步。对下游发行版与镜像站，后续要看的是这个仓会不会把「发布产物、签名、渠道」三件事的定义固定下来。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/openRuyi-Project/ruyi-deck">openRuyi-Project/ruyi-deck</a></p>
+
+<h2 id="二产品与生态动态">二、产品与生态动态</h2>
+
+<h3 id="平头哥分拆从传闻走到公告阿里-11-10-晚间公告拟分拆赴港港交所确认可拆分11-11">平头哥分拆从传闻走到公告：阿里 11-10 晚间公告拟分拆赴港，港交所确认可拆分（11-11）</h3>
+
+<p>阿里巴巴 11 月 10 日晚间发布公告，拟分拆全资子公司平头哥赴港交所主板独立上市，港交所已确认阿里可以进行这次分拆；平头哥早在 9 月 11 日就以保密形式递交了 A1 上市申请。公告留下的空白同样重要：发售规模、阿里持股比例的减少幅度都未确定，因最高适用百分比率低于 5%，这次分拆甚至不构成阿里的须予披露交易——用一笔对自身报表几乎不重大的交易，把最硬的一块科技资产送到公开市场门口。</p>
+
+<p>定价区间仍是分歧最大的一项。此前报道的募资规模为 20 亿至 30 亿美元；估值上，一名专业投资机构人士给出 200 亿至 300 亿美元，摩根大通今年 1 月的粗略对标测算为 250 亿至 620 亿美元。作为参照，港股已上市的天数智芯、壁仞科技总市值均超过 500 亿港元。业务侧的支撑数据是：截至 2026 年 4 月，真武系列 AI 芯片累计出货 56 万片，服务超过 650 家企业客户，覆盖 20 多个行业，外部商业化客户占比超过 60%，金融领域部署规模突破 10 万卡、覆盖 150 多家金融机构；真武 810E（PPU）配 96GB HBM2e、700GB/s 片间带宽、功耗 400W 以下，9 月发布的 V900 内存 216GB、片间带宽 1200GB/s，支持 FP8 与 FP4，最多可连 50 万颗组成集群，计划 2027 年第一季度量产。</p>
+
+<p>与 RISC-V 的关系需要再说一次，因为这个口径已经被媒体重复了三轮：本次上市主体是平头哥，产品重心是 PPU（AI 加速卡）与倚天（Arm 服务器 CPU）；玄铁 RISC-V 处理器 IP 已于 2024 年从平头哥分拆、转属达摩院，只做 RISC-V 处理器。媒体在盘点平头哥产品矩阵时常把「玄铁 RISC-V IP 累计出货突破 60 亿颗」一并计入，那是集团层面的历史沿革口径，不等于上市资产包含 RISC-V IP 业务。本刊 11-10 与 11-11 两期已作同样区分，本期只记公告与定价区间这两项新增事实。</p>
+
+<p>真正决定估值的不是叙事而是招股书里的两个切分：百亿级年化营收中，来自阿里云供货与集团外直接采购各占多少；部署在阿里云万卡集群里的芯片，按市场公允价结算还是内部调配。前者决定市场按「独立芯片公司」还是「阿里云成本中心」定价，后者决定剥离母体后的毛利率成色。小比例发行、分拆后仍保持控股的做法，本质是先要一个公开市场的定价锚，把后续资本运作的空间留住。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://m.36kr.com/p/4065139957192322">36 氪：烧了 1900 亿之后，阿里把平头哥推向市场</a>、<a href="https://finance.eastmoney.com/a/202611113928531365.html">东方财富转载时代周报</a></p>
+
+<h2 id="三国内团队深挖">三、国内团队深挖</h2>
+
+<h3 id="香山昆明湖-v3tlb-一次重构-18-笔权限检查与-ptw-旁路收敛到单一出口11-11">香山昆明湖 V3：TLB 一次重构 18 笔，权限检查与 PTW 旁路收敛到单一出口（11-11）</h3>
+
+<p>香山 XiangShan 的 kunminghu-v3 分支在本窗口落地 21 笔，其中 18 笔是同一天、同一时间戳的 refactor(TLB) 系列。这 18 笔没有一笔改行为，全部是结构治理：给 TLB 读结果与 PTW 旁路结果字段命名、共享动态 VPN 索引选择、把 S0 地址准备与前置检查抽成独立步骤、复用 TLB 存储查询与响应接口、把权限与 PBMT 检查抽到 TLB 源内、在 pre-fault 覆盖之前先赋权限结果、按端口聚合访问检查信息、复用权限 bundle 并去掉未用的 G-stage 有效位。</p>
+
+<p>减法同样彻底：删除未使用的 blocking TLB 支持、TLB 存储脚手架、saveLevel 配置、partialStaticPMP 参数与 L1 侧辅助函数；把 TLB refill 的连接收敛成一次，把翻译阶段的选择集中到一处，并简化 TLBFA 的命中响应选择。另有三笔非 TLB 提交：修 MissQueue 里 CMOUnit 的通道选择（#6907）、重组 ROB 的 bundle 组织并厘清 IO 分组（#6881）、给 CI 的 EMU Basics 加上 ISA 冒烟测试（#6805）。</p>
+
+<p>一次 18 笔的纯重构，通常意味着这个模块已经稳定到可以「只动结构不动行为」——功能还在快速变化的模块做不了这种动作，因为重构与修 bug 会混在一起无法二分。TLB 与 PTW 属于访存路径上最难调试的一段，把权限检查与旁路结果收敛到单一出口之后，后续加 Svnapot、Svpbmt 一类扩展时改动面会小很多。CI 那边加 ISA 冒烟测试是同一逻辑的另一半：结构可以动，前提是回归面足够密。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/OpenXiangShan/XiangShan">OpenXiangShan/XiangShan</a></p>
+
+<h3 id="进迭时空-llamacppf16-gemm-主循环改双缓冲attention-初始化与-asr-调度修复11-11">进迭时空 llama.cpp：F16 GEMM 主循环改双缓冲，attention 初始化与 ASR 调度修复（11-11）</h3>
+
+<p>spacemit-com 的 llama.cpp 仓库（mtmd-backend 分支）落地两笔。第一笔在 ggml-spacemit 后端把 F16 GEMM 的主循环改成双缓冲（#62）：矩阵乘的每一次迭代都在等上一块数据搬完，双缓冲让下一块的加载与当前块的计算重叠，属于典型的访存受限场景优化。第二笔修 attention 的初始化，并改进 ASR 路径的调度（#63）——后者说明这条后端不只服务文本生成，语音识别也在同一套运行时上跑。</p>
+
+<p>两笔的性质不同但都指向同一件事：K 系列芯片上的推理性能已经进入「抠主循环」的阶段。前几个月的提交集中在把算子接对、把量化路径补齐；现在开始处理流水线级的重叠与调度。对使用这套后端的团队，F16 主路径的双缓冲意味着非量化模型的吞吐会有可见变化，而 attention 初始化的修复更影响正确性——初始化不当在多轮对话与长上下文里往往表现为答案漂移而不是崩溃，更难定位。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/spacemit-com/llama.cpp">spacemit-com/llama.cpp</a></p>
+
+<h3 id="进迭-ai-sdk-与-model-zoo-vision推理线程改按-tcm-核预算分配11-11">进迭 ai-sdk 与 model-zoo-vision：推理线程改按 TCM 核预算分配（11-11）</h3>
+
+<p>进迭的 ai-sdk 与 model-zoo-vision 两仓同日更新。ai-sdk 合并了新增 file2md 组件的改动（#12），并同步 avatar 与 vision 两个子模块；model-zoo-vision 的关键一笔是把推理执行提供者的线程数改为按 TCM 核预算分配（#117）——此前线程数大概按 CPU 核数或固定值给，现在由紧耦合存储的预算反推可用线程，避免推理线程与实时任务抢同一块片上内存。</p>
+
+<p>这个改动看起来是参数调整，实际是端侧部署的常见坑：TCM 是有限的、按核划分的资源，推理线程开多了会挤占实时控制或显示通路的片上空间，症状是偶发卡顿而非报错。把线程数绑定到 TCM 预算，等于把这个隐性约束写进配置层。</p>
+
+<p>file2md 组件的加入则透露 SDK 的方向：把文档转 Markdown 这类「AI 应用前置处理」也收进统一组件，而不是让每个应用自己接一遍解析器。对做端侧文档问答与多模态应用的团队，这类组件的价值在于减少重复集成。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/spacemit-com/ai-sdk">spacemit-com/ai-sdk</a>、<a href="https://github.com/spacemit-com/model-zoo-vision">spacemit-com/model-zoo-vision</a></p>
+
+<h3 id="算能-19-仓周更cviruntime-打出-20261112-周版本sdk-全家桶同批对齐11-11">算能 19 仓周更：cviruntime 打出 2026.11.12 周版本，SDK 全家桶同批对齐（11-11）</h3>
+
+<p>算能（sophgo）在窗口末尾的七分钟里对 19 个仓库同时推送：sophpi、cviruntime、cvikernel、osal、SensorSupportList、rt-thread、u-boot-2021.10、ramdisk、osdrv、opensbi、linux_5.10、ive、isp-tool-daemon、isp_tuning、fsbl、cvi_rtsp、cvi_alios_open、cvi_mpi 与 build。cviruntime 的提交信息直接写着 weekly rls 2026.11.12，说明这是一次按周对齐的发布列车，而不是 19 个独立的功能提交。</p>
+
+<p>这种「全家桶同批」的模式在算能已经持续了很久，对下游的价值是版本可组合：bootloader（fsbl）、固件（opensbi）、内核（linux_5.10）、运行时（cviruntime）、算子库（cvikernel）、多媒体（cvi_mpi、ive、cvi_rtsp）与构建系统（build）在同一天对齐到同一版本号，客户拿到的 SDK 不会出现运行时与算子库版本错配。代价是单仓的提交历史被发布节奏抹平，外部很难从提交里看出具体改了什么——想了解细节只能看 release note。</p>
+
+<p>对做边缘 AI 整机的团队，这条值得记的是节奏本身：周更意味着问题反馈到修复的周期以周计，选型时要把这个周期算进项目排期，而不是按开源社区的「随时可提 PR」来预期。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/sophgo/cviruntime">sophgo 组织仓库</a></p>
+
+<h3 id="芯来工具指南gdb-实时变量观察写入-202610-变更说明11-11">芯来工具指南：GDB 实时变量观察写入 2026.10 变更说明（11-11）</h3>
+
+<p>芯来的 nuclei-tool-guide 仓库落地两笔，都是文档侧：在 2026.10 变更说明里加入 GDB 的实时变量观察（live watch）功能，并补充非 stop 模式下的使用说明（#90）。所谓 live watch，是在目标不停机的情况下周期性读取变量值并刷新，用于观察计数器、状态机与传感器读数这类持续变化的量——传统做法是打断点停下再读，对实时控制回路干扰很大。</p>
+
+<p>这条单独列出来，是因为调试体验长期是 RISC-V MCU 生态的短板：编译器与调试器都有，但「顺手」的程度与成熟商用工具链仍有差距。芯来把这类功能写进逐月变更说明，说明工具链团队在按可感知的节奏补可用性，而不是只在发布新核时更新版本号。</p>
+
+<p>对使用 Nuclei 核做产品的团队，这类更新的实际意义是调试阶段的时间成本。非 stop 模式下的变量观察一旦稳定，很多原本要靠串口打印判断的问题可以直接在 GDB 里看。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/Nuclei-Software/nuclei-tool-guide">Nuclei-Software/nuclei-tool-guide</a></p>
+
+<h3 id="矽速-slogicweb-14-笔逻辑分析仪前端补行为设置与缓存治理11-11">矽速 SLogicWeb 14 笔：逻辑分析仪前端补行为设置与缓存治理（11-11）</h3>
+
+<p>矽速的 SLogicWeb 仓库在窗口内落地 14 笔，全部围绕逻辑分析仪的 Web 前端。功能侧新增「行为」设置分区与对应的国际化标签，加入开发者用的清缓存动作、应用数据清理与已保存数据重置三条路径；稳定性侧修了一组与 Loop 采集相关的问题：显示扫描按 Loop 的 sink 节流、Loop 窗口用替换而不是整段追加、慢信号与延迟扫描下保持触发状态、sink 落后时保证板卡持续供数、消费端滞后按治理而非等整段积压。</p>
+
+<p>这组提交的技术核心是「长时间采集不丢数」。逻辑分析仪的价值在于抓到偶发时序问题，而偶发问题的前提往往是连续采集几十分钟甚至几小时；一旦前端渲染跟不上采样率，浏览器侧就会出现丢帧或内存暴涨。把窗口改为替换、把扫描节流到消费速度、把背压从前端传到设备侧，是这类工具必须迈过的一道坎。</p>
+
+<p>同一窗口内，矽速的 TangMega-138K-example 也合入两笔 PCIe 相关改动：在 REFCLK 稳定后重放 SerDes 启动寄存器，并补充 138K 控制台的 DDR3 说明。前者是典型的「上电时序不确定导致链路起不来」的修法，属 FPGA 侧的硬件适配经验。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/sipeed/SLogicWeb">sipeed/SLogicWeb</a>、<a href="https://github.com/sipeed/TangMega-138K-example">sipeed/TangMega-138K-example</a></p>
+
+<h2 id="四具身智能与机器人专章">四、具身智能与机器人专章</h2>
+
+<h3 id="进迭-supermimic-从-linglong-扩到-g1待机加四个可选动作与通用动作目录同批落地11-11">进迭 SuperMimic 从 LingLong 扩到 G1：待机加四个可选动作与通用动作目录同批落地（11-11）</h3>
+
+<p>spacemit-robotics 的两仓同日落地 SuperMimic 的扩展：humanoid_unitree_g1 加入 SuperMimic 动作模式（#16），配置了待机状态与四个可选动作，共用一套 CPU 推理调度，并补上每个动作的取消时序、算子绑定、音频提示、资源准备与使用文档；humanoid_common 同步支持 SuperMimic 的动作目录（#31）。两条提交时间相差一分钟，属同一次协同。</p>
+
+<p>时间线值得对一下：11 月 5 日 humanoid_linglong 的 #22 首次把 LingLong 的 SuperMimic 站立策略接进配置体系，当时是一台机型、一个策略。六天后同一能力扩到 G1 并下沉到 common 层的动作目录，说明它正在从「单机型的策略配置」变成「跨机型的可配置特性」——动作目录一旦在 common 层定义，新增机型只需要提供动作实现与绑定，不必再复制一套调度。</p>
+
+<p>对做整机集成的团队，这类工作的意义在于把「演示」变成「产品特性」：待机、动作选择、取消时序、音频提示、资源准备这五项凑齐，才是一台机器人交付给客户时动作库该有的样子。北京同日印发的三年行动方案把整机年产能与无故障时间写进考核，动作库的可配置性与故障可复位性正是产线节拍与售后成本的一部分。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://github.com/spacemit-robotics/humanoid_unitree_g1">spacemit-robotics/humanoid_unitree_g1</a>、<a href="https://github.com/spacemit-robotics/humanoid_common">spacemit-robotics/humanoid_common</a></p>
+
+<h2 id="五总结与趋势观察">五、总结与趋势观察</h2>
+
+<p><strong>一、政策把具身智能的需求侧量化，RISC-V 的机会在关节与本体两级。</strong> 北京这份方案给出的 20 万台／年整机产能、60% 关键零部件本地配套率与万元以内灵巧手，本质是把「用什么芯片、什么成本、什么可靠性」写成了采购参数。关节侧要硬实时与确定性网络，本体侧要能跑 VLA 的算力与带宽，两级都不是靠单颗大芯片解决。国内 RISC-V 供给在这两级都已经有可对照的产品，接下来的竞争点不是峰值算力，而是能不能在 2000 小时无故障的约束下把成本压到整机厂愿意换料。</p>
+
+<p><strong>二、发行版这一天的关键词仍是「可交付」，但做法从补丁转向矩阵。</strong> RevyOS 一日 101 笔，重心是把 K3、EIC7700、SG2044、TH1520 与 P550 的板级支持收成 defconfig 矩阵并接上交叉／原生两套 CI；openRuyi 一日 36 笔，把可观测性与认证两条供应链同时收口，并把内核升到 7.3.4／6.18.63。两家做的都不是新功能，而是「别人能不能编译出来、敢不敢放到生产」。</p>
+
+<p><strong>三、验证与可观测性成为工具链竞争的新前线。</strong> NEMU 给 AME 矩阵访存加快路径、difftest 把 MMA 校验向量化、香山给 CI 加 ISA 冒烟测试、乐鑫把指令级 trace 做成 pip 可装的四条命令——四个动作指向同一个判断：核与扩展复杂到一定程度后，瓶颈从「设计对不对」转向「能不能快速看清它在做什么」。这条线上投入不足的团队，会在集成阶段付出成倍的时间。</p>
+
+<p><strong>四、香山的 18 笔纯重构说明高性能核进入结构治理期。</strong> 能对一个模块做「只动结构不动行为」的批量重构，前提是回归面足够密、行为已稳定。TLB 与 PTW 是访存路径上最难调试的一段，把权限检查与旁路结果收敛到单一出口，是在为后续扩展留接口。这类工作不出现在任何性能数字里，但决定下一代核加特性时的改动成本。</p>
+
+<p><strong>五、资本侧的定价锚摆上台面，但资产边界仍待披露。</strong> 阿里公告拟分拆平头哥赴港、港交所确认可拆分，估值区间从 200 亿至 300 亿美元到 250 亿至 620 亿美元不等。对做 RISC-V 的公司，这件事的参考价值不在估值数字，而在招股书将如何切分外部收入与关联交易——同一套标准很快会被用来衡量所有国产算力芯片公司，包括还在亏损期的 RISC-V 服务器与 IP 厂商。</p>
+
+<h2 id="附录">附录</h2>
+
+<h3 id="信源核查表">信源核查表</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News 聚合（中英文 24 组查询，24 小时窗口）</td>
+      <td>窗口内实质新增 3 条：北京具身智能机器人三年行动方案、平头哥分拆公告的定价解读、MIPS Actus 中文转载；第三条 11-09 已收录，不重复计条。ESP32-S31 跑完整 Linux、Qwenputer、英飞凌 AURIX RC1 三条均为旧闻二次传播，已在此前各期收录。股市行情、基金净值与体育博彩类稿件整批剔除</td>
+    </tr>
+    <tr>
+      <td>Hacker News / Phoronix / CNX Software / LinuxGizmos / RISC-V International</td>
+      <td>窗口内无 RISC-V 相关新增；HN 最近命中为 11-09 的 Tang Nano 9K 上的 RISC-V 计算机项目，已过期；Phoronix、CNX、LinuxGizmos 当期内容与 RISC-V 无关；riscv.org 官网当期主推 2027 年 2 月旧金山峰会注册</td>
+    </tr>
+    <tr>
+      <td>GitHub 组织与重点仓库核查（30 余组织与仓库）</td>
+      <td>窗口内推送 12 个组织：espressif 42 仓、sophgo 19 仓、spacemit-com 8 仓、openRuyi-Project 8 仓、openhwfoundation 6 仓、sipeed 4 仓、spacemit-robotics 2 仓、Nuclei-Software 1 仓、revyos 1 仓；香山侧 XiangShan／NEMU／difftest 三仓有提交，XSCache 与 GEM5 无；radxa-linkr、达摩院玄铁（XUANTIE-RV）与奕斯伟（eswincomputing）零推送</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 巡检</td>
+      <td>无变化：首页 What’s New、Upcoming、委员会成员，以及跨架构与 RISC-V 两个频道下 SPEC CPU2006／2017／2026 六张榜单均无新增记录或分数变动，正文不占位</td>
+    </tr>
+    <tr>
+      <td>RISC-V 会员官网巡检（391 家）</td>
+      <td>抓取成功 323 家，报内容变化 8 家：MIT、KTH、雅典大学、LNCC、PES、openEuler 社区为首页轮换或公告更新，PerfXLab 为连接超时页、QuantumShift 为安全校验页，均无实质产品动态，不收录；68 家抓取失败（含中科院软件所、腾讯、Ingenic、MediaTek、DENSO），失败不阻塞</td>
+    </tr>
+    <tr>
+      <td>openRuyi 官网新闻页与主仓</td>
+      <td>新闻页最新仍为 2026-10 的两篇（生态基础设施、Ruyi Firmware）与 2026.09 版本发布，窗口内无新版本；主仓 36 笔提交已按日志收录，kernel-team-tools 的标签推进并入同一条</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完整信源清单">完整信源清单</h3>
+
+<ul>
+  <li><strong>[1]</strong> 华尔街见闻：北京具身智能三年方案发布，20 万台年产能与 50 个标杆场景 — <a href="https://awtmt.com/articles/3785725">https://awtmt.com/articles/3785725</a></li>
+  <li><strong>[2]</strong> 北京商报：北京机器人产业方案出炉（搜狐转载） — <a href="https://m.sohu.com/a/1100274218_115865">https://m.sohu.com/a/1100274218_115865</a></li>
+  <li><strong>[3]</strong> revyos/linux 仓库 — <a href="https://github.com/revyos/linux">https://github.com/revyos/linux</a></li>
+  <li><strong>[4]</strong> openRuyi-Project/openRuyi 主仓 — <a href="https://github.com/openRuyi-Project/openRuyi">https://github.com/openRuyi-Project/openRuyi</a></li>
+  <li><strong>[5]</strong> openRuyi-Project/kernel-team-tools — <a href="https://github.com/openRuyi-Project/kernel-team-tools">https://github.com/openRuyi-Project/kernel-team-tools</a></li>
+  <li><strong>[6]</strong> espressif/esp-riscv-trace — <a href="https://github.com/espressif/esp-riscv-trace">https://github.com/espressif/esp-riscv-trace</a></li>
+  <li><strong>[7]</strong> Adafruit：A RISC-V-only clang + lld for the CH32 Arduino core — <a href="https://blog.adafruit.com/2026/11/11/a-risc-v-only-clang-lld-for-the-ch32-arduino-core/">https://blog.adafruit.com/2026/11/11/a-risc-v-only-clang-lld-for-the-ch32-arduino-core/</a></li>
+  <li><strong>[8]</strong> ch32-riscv-ug/ch32rv-clang — <a href="https://github.com/ch32-riscv-ug/ch32rv-clang">https://github.com/ch32-riscv-ug/ch32rv-clang</a></li>
+  <li><strong>[9]</strong> OpenXiangShan/NEMU — <a href="https://github.com/OpenXiangShan/NEMU">https://github.com/OpenXiangShan/NEMU</a></li>
+  <li><strong>[10]</strong> OpenXiangShan/difftest — <a href="https://github.com/OpenXiangShan/difftest">https://github.com/OpenXiangShan/difftest</a></li>
+  <li><strong>[11]</strong> openRuyi-Project/ruyi-deck — <a href="https://github.com/openRuyi-Project/ruyi-deck">https://github.com/openRuyi-Project/ruyi-deck</a></li>
+  <li><strong>[12]</strong> 36 氪：烧了 1900 亿之后，阿里把平头哥推向市场 — <a href="https://m.36kr.com/p/4065139957192322">https://m.36kr.com/p/4065139957192322</a></li>
+  <li><strong>[13]</strong> 东方财富转载时代周报：平头哥独立冲刺港股 IPO — <a href="https://finance.eastmoney.com/a/202611113928531365.html">https://finance.eastmoney.com/a/202611113928531365.html</a></li>
+  <li><strong>[14]</strong> OpenXiangShan/XiangShan 仓库 — <a href="https://github.com/OpenXiangShan/XiangShan">https://github.com/OpenXiangShan/XiangShan</a></li>
+  <li><strong>[15]</strong> spacemit-com/llama.cpp — <a href="https://github.com/spacemit-com/llama.cpp">https://github.com/spacemit-com/llama.cpp</a></li>
+  <li><strong>[16]</strong> spacemit-com/ai-sdk — <a href="https://github.com/spacemit-com/ai-sdk">https://github.com/spacemit-com/ai-sdk</a></li>
+  <li><strong>[17]</strong> spacemit-com/model-zoo-vision — <a href="https://github.com/spacemit-com/model-zoo-vision">https://github.com/spacemit-com/model-zoo-vision</a></li>
+  <li><strong>[18]</strong> sophgo/cviruntime — <a href="https://github.com/sophgo/cviruntime">https://github.com/sophgo/cviruntime</a></li>
+  <li><strong>[19]</strong> Nuclei-Software/nuclei-tool-guide — <a href="https://github.com/Nuclei-Software/nuclei-tool-guide">https://github.com/Nuclei-Software/nuclei-tool-guide</a></li>
+  <li><strong>[20]</strong> sipeed/SLogicWeb — <a href="https://github.com/sipeed/SLogicWeb">https://github.com/sipeed/SLogicWeb</a></li>
+  <li><strong>[21]</strong> sipeed/TangMega-138K-example — <a href="https://github.com/sipeed/TangMega-138K-example">https://github.com/sipeed/TangMega-138K-example</a></li>
+  <li><strong>[22]</strong> spacemit-robotics/humanoid_unitree_g1 — <a href="https://github.com/spacemit-robotics/humanoid_unitree_g1">https://github.com/spacemit-robotics/humanoid_unitree_g1</a></li>
+  <li><strong>[23]</strong> spacemit-robotics/humanoid_common — <a href="https://github.com/spacemit-robotics/humanoid_common">https://github.com/spacemit-robotics/humanoid_common</a></li>
+</ul>
+
+<p><strong>局限性说明</strong>：本期为 24 小时窗口，覆盖 11 月 11 日 05:00 至 11 月 12 日 05:00。新闻侧的有效增量集中在北京具身智能三年行动方案与平头哥分拆公告的定价解读两条，其余为旧闻二次传播，已按去重规则剔除；MIPS Actus 的中文转载出现于 11-11，但平台本身 11-09 已作为条目收录，本期不重复。GitHub 侧以发行版与板级支持为主：revyos/linux 101 笔、openRuyi 36 笔、香山 21 笔，另有算能 19 仓与乐鑫 42 仓的批量推送，后两者属发布列车与上游同步，未逐条拆分。riscv100.top 本期无变化，未生成留档。会员官网巡检 391 家中 68 家抓取失败（含中科院软件所、腾讯、Ingenic、MediaTek、DENSO 等），判定为内容变化的 8 家中 2 家实为超时与安全校验页。中文侧「玄铁」「算能」「芯来」「奕斯伟」等查询仍以股市行情稿为主，已按标题语义剔除。</p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ch/post.html#news-list" class="btn btn-main news-list-link">返回新闻列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>联系我们</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>邮箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市宝山区高逸路88号1幢1层108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>链接</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-4 col-md-4 ">
+          <h4>关注我们</h4>
+          <img src="/assets/img/contact/qrcode_wechat_public_account_100px.webp" class="img-fluid text-left"
+            alt="weixin_public_qrcode">
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

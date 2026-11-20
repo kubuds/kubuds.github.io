@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/en/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1113.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1113.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1113.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1113.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1113.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Daily Intelligence Report (2026-11-13) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Daily Intelligence Report (2026-11-13)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Daily Intelligence Report (2026-11-13)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-13</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Research window</strong>: 2026-11-12 08:00 ~ 2026-11-13 08:00 (Beijing time, 24 hours)</p>
+
+<p><strong>Sources</strong>: RT-Thread official news API and official website news page, GitHub main repository commits / PR / Issue / releases / tags, RT-Thread org repository push list (verified by push order), Google News Chinese and English queries (via proxy, including three-day window and bare query comparison), HN Algolia, club.rt-thread.org forum</p>
+
+<hr />
+
+<h2 id="index-of-this-issue">Index of This Issue</h2>
+
+<ul>
+  <li>I. Three CVEs merged: random numbers, wireless frames, and rt-link
+    <ul>
+      <li>Random numbers: seed changed from a fixed value to tick and hardware source (11-12)</li>
+      <li>Wireless management: negative length rejected before allocation (11-12)</li>
+      <li>rt-link: this fix targets transmit-side framing (11-12)</li>
+    </ul>
+  </li>
+  <li>II. Three more merged in the same batch: libdl, memory pool, NFS
+    <ul>
+      <li>libdl: three architecture relocators closed out simultaneously (11-12)</li>
+      <li>Memory pool: the sentinel convention behind the false alarm (11-12)</li>
+      <li>NFS: clamp the server-provided length to the minimum of the three (11-12)</li>
+    </ul>
+  </li>
+  <li>III. Second batch of ten: one each for M0 and M23 on the same topic
+    <ul>
+      <li>HardFault stack selection: an old assembly-level defect patched on two ports (11-12)</li>
+      <li>MSP should not be restored when VTOR is zero (11-12)</li>
+      <li>mb/mq FIFO inversion: queue head bypassed and overtaken (11-12)</li>
+      <li>Four small changes: fdt depth, musl console, serial timing, sdio thread stack (11-12)</li>
+    </ul>
+  </li>
+  <li>IV. Features and compatibility: STM32 input capture, YMODEM delay
+    <ul>
+      <li>STM32 input capture: four channels on one timer (11-12)</li>
+      <li>YMODEM: forty milliseconds added between ACK and C (11-12)</li>
+    </ul>
+  </li>
+  <li>V. Official statements and community activity
+    <ul>
+      <li>RT-Smart toolchain: same issue proposed twice, closed twice (11-13)</li>
+      <li>Official news API shows no additions for the fifth consecutive issue (11-13)</li>
+      <li>Google News three-day window yields no substantive hits (11-13)</li>
+    </ul>
+  </li>
+  <li>VI. Summary and trend observations
+    <ul>
+      <li>The second phase previewed yesterday was delivered the same day</li>
+      <li>Verification basis for the six merges: all marked as not board-tested</li>
+      <li>Three CVE proposals still in the queue</li>
+      <li>Review queue: 163 proposals, 358 issues</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="i-three-cve-fixes-merged-random-numbers-wireless-frames-and-rt-link">I. Three CVE Fixes Merged: Random Numbers, Wireless Frames, and rt-link</h2>
+
+<h3 id="11-random-numbers-seed-changed-from-a-fixed-value-to-tick-and-a-hardware-source-11-12">1.1 Random Numbers: Seed Changed from a Fixed Value to tick and a Hardware Source (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 15:51 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12022">PR #12022</a></p>
+
+<p><code class="highlighter-rouge">rt_random</code> had always been a predictable linear congruential generator, with a fixed default seed, so the sequence it produced was identical on every boot. Code that used it as a cryptographic random number source was effectively writing the key into the boot image. The PR description ties the risk directly to CVE-2024-25389 and the older issue #8283, and the merge makes three changes: mixing <code class="highlighter-rouge">rt_tick_get()</code> into the seed on first read; XORing hardware output into the return value when a hardware cryptographic random source is enabled; and stating clearly in Kconfig and code comments that this is not a cryptographically secure random number generator.</p>
+
+<p>The change is small: two files, 70 lines added, 2 lines removed, and apart from <code class="highlighter-rouge">rt_random.c</code> only 6 lines of explanatory text in Kconfig. It was merged by Rbb666, and the author is the same account that has been submitting audit checklists all week. The significance of this change is not in the amount of code but in the fact that it acknowledges one thing: writing “not a CSPRNG” into the configuration interface is more reliable than quietly swapping the algorithm.</p>
+
+<h3 id="12-wireless-management-negative-length-rejected-before-allocation-11-12">1.2 Wireless Management: Negative Length Rejected Before Allocation (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 15:47 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12020">PR #12020</a></p>
+
+<p>The length parameter of <code class="highlighter-rouge">rt_wlan_send_to_thread()</code> is a signed integer, so an expression such as <code class="highlighter-rouge">sizeof(header) + len</code> wraps around to a huge unsigned value when len is negative; the subsequent allocation and zeroing then proceed using that value, and the heap is overwritten past its bounds. The fix puts the check first: <code class="highlighter-rouge">len &lt; 0</code> returns a parameter error immediately, and only after confirming the value is non-negative is it converted to an unsigned type for the length calculation.</p>
+
+<p>One file, 9 lines added, 3 lines removed, corresponding to CVE-2024-25388 and issue #8285. The PR body deliberately includes the sentence “all other wireless management behavior is unchanged”; in a security fix this sentence is necessary: the closer a change is to a common path, the more its impact surface must be spelled out.</p>
+
+<h3 id="13-rt-link-this-time-the-fix-is-on-the-transmit-side-framing-11-12">1.3 rt-link: This Time the Fix Is on the Transmit-Side Framing (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 10:23 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12018">PR #12018</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/8289">Bug #8289</a></p>
+
+<p>The previous issue covered long-frame reassembly on the rt-link receive side (issue #12030 and PR #12031); what was merged today is the transmit side of the same module: the final frame length is not validated before framing, so an oversized payload writes straight through the static transmit buffer. The fix checks the data length and frame length before copying, and rejects anything out of bounds.</p>
+
+<p>One file, 23 lines added, 3 lines removed, corresponding to CVE-2024-25395. Looking at the two days together, the problems on rt-link’s transmit and receive paths take the same form: the length in the frame header is treated as trusted input, yet it comes precisely from the link peer. The receive side was found through an issue, the transmit side was dug out through the CVE list, and the two threads converged in the same month.</p>
+
+<h2 id="ii-the-other-three-merged-in-the-same-batch-libdl-memory-pool-nfs">II. The Other Three Merged in the Same Batch: libdl, Memory Pool, NFS</h2>
+
+<h3 id="21-libdl-three-architecture-relocators-fixed-together-11-12">2.1 libdl: Three Architecture Relocators Fixed Together (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 14:35 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12016">PR #12016</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11898">Issue #11898</a></p>
+
+<p>When computing the relocation write target, the dynamic module loader used “module memory base + offset - virtual start address” without validating the resulting range. A crafted module file could make the offset underflow or overflow, writing directly into kernel memory during the relocation phase. The fix adds a target-range validation function that uses overflow-safe arithmetic to confirm the write range falls within module memory, then wires it into the ARM, RISC-V, and x86 relocators. It also adds bounds checks for ELF section header indices, symbol table indices, and relocatable object file sections, aborting on load failure and freeing already-allocated section memory.</p>
+
+<p>This is the largest change in the batch: five files, 205 lines added, 37 removed. Three architectures changed at once indicates the problem lies in the shared loading path, not in any single port. Corresponds to Issue #11898 from October 18.</p>
+
+<h3 id="22-memory-pool-the-sentinel-convention-behind-a-false-alarm-11-12">2.2 Memory Pool: The Sentinel Convention Behind a False Alarm (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 10:14 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12014">PR #12014</a></p>
+
+<p>This fix addresses not a vulnerability but a misjudgment that causes real downtime. When freeing “the last block, whose next points to the heap-tail sentinel,” the validation logic required the next entry’s memory pool pointer to equal the current pool. But older versions and vendor-customized small memory pools keep only the used bit in the sentinel, leaving the pointer null—so the assertion fires and the system halts.</p>
+
+<p>The fix explicitly accepts the case where “next equals the heap-tail offset,” while keeping the same-pool check for everything else. In the description, the author explicitly rejects the simpler alternative of checking prev, on the grounds that prev points to the previous block and is 0 for the first block, which would loosen the validation overall. A memory test case is included that simulates a sentinel with only the used bit set and verifies full-block coalescing.</p>
+
+<p>Corresponds to the older Issue #10632 from 2025. Such issues never appear on any CVE list, but they may cause more field reboots than vulnerabilities do.</p>
+
+<h3 id="23-nfs-clamping-the-server-supplied-length-to-the-minimum-of-three-11-12">2.3 NFS: Clamping the Server-Supplied Length to the Minimum of Three (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 09:35 (merge time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12012">PR #12012</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11917">Issue #11917</a></p>
+
+<p>The NFS read path used the byte count returned by the server directly as the memory copy length, accounting for neither the requested amount nor the decoded data length. The fix clamps each copy to the minimum of “server count, request count, decoded length,” advances the buffer and offset by the actual bytes copied, and breaks out of the loop on a response that makes no progress, avoiding a busy loop.</p>
+
+<p>Two other spots in the same function were fixed as well: the write path advances by actual bytes on short writes; and when an RPC failure occurs after a partial read succeeds, it returns the bytes already read instead of zeroing the accumulated value and making the caller believe zero bytes were read. Three files, 67 lines added, 15 removed, with the read and write upper bounds unified under the same maximum transfer unit definition. Corresponds to Issue #11917 from October 18; review checked each item on the 11th and approved.</p>
+
+<h2 id="iii-second-batch-of-ten-commits-one-each-for-m0-and-m23-on-the-same-issues">III. Second Batch of Ten Commits: One Each for M0 and M23 on the Same Issues</h2>
+
+<h3 id="31-hardfault-stack-selection-old-assembly-layer-defect-fixed-on-two-ports-11-12">3.1 HardFault Stack Selection: Old Assembly-Layer Defect Fixed on Two Ports (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 13:26 and 14:19 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12043">Proposal #12043</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12049">Proposal #12049</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/3584">Defect #3584</a></p>
+
+<p>The hardware exception entry on Cortex-M0 and M23 unconditionally takes the stack frame from the process stack pointer. For a hardware exception triggered inside an interrupt service routine, the stack frame is actually pushed onto the main stack pointer, so the backtrace shows the wrong context. The fix selects between the main stack and the process stack based on the relevant bit in the exception return value, aligning with the existing approach in the M3 port.</p>
+
+<p>Each proposal modifies three assembly files (GCC, RVDS, and IAR toolchains), adding 21 lines and deleting 3. Defect #3584 is a long-standing issue from years ago; this time the same author completes it on both ports, clearing historical debt port by port.</p>
+
+<h3 id="32-do-not-restore-msp-when-vtor-is-zero-11-12">3.2 Do Not Restore MSP When VTOR Is Zero (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 13:29 and 14:30 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12044">Proposal #12044</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12050">Proposal #12050</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/4728">Defect #4728</a></p>
+
+<p>On the first context switch, the code reads the top of stack through the vector table offset register to restore the main stack pointer. On cores without this register, or when the read value is zero, this effectively writes zero to the main stack pointer, and the next push lands at address zero. The fix skips the restore when the read value is zero and keeps the original behavior when non-zero.</p>
+
+<p>Same paired structure as the previous item: one for M0 and one for M23, each modifying three assembly paths. Together the two add 18 lines; defect #4728 is likewise an old issue.</p>
+
+<h3 id="33-fifo-inversion-in-mbmq-head-of-queue-bypassed-11-12">3.3 FIFO Inversion in mb/mq: Head-of-Queue Bypassed (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 13:56 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12045">Proposal #12045</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/4940">Defect #4940</a></p>
+
+<p>Under the FIFO flag, mailboxes and message queues wake only the head waiter, but the data remains in the shared queue. A higher-priority thread can then take the message in non-blocking mode, leaving the woken waiter with nothing; it can only re-queue at the tail, reversing the first-come-first-served order. The fix performs resource reservation and handoff on the FIFO path—”dequeue only after acquisition”—returning the reservation on timeout or signal interruption; priority mode behavior is unchanged.</p>
+
+<p>One file, 435 lines added, 12 deleted: the largest of this batch of ten and the only one that directly touches kernel scheduling semantics. Defect #4940 is another old debt. If merged, this will change the actual behavior of mailboxes and message queues under high-priority preemption and deserves a separate mention in the next release notes.</p>
+
+<h3 id="34-four-small-fixes-fdt-depth-musl-console-uart-timing-sdio-thread-stack-11-12">3.4 Four Small Fixes: fdt Depth, musl Console, UART Timing, sdio Thread Stack (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 13:23 to 14:14 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12048">Proposal #12048</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12047">Proposal #12047</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12042">Proposal #12042</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12046">Proposal #12046</a></p>
+
+<p>The device tree expansion function descends into child nodes using a fixed-size stack but has no runtime depth limit; the existing depth pre-check only takes effect in debug builds, so release builds can still overflow the stack (#11879): add a limit check before pushing, failing and returning when exceeded.</p>
+
+<p>Under the musl library configuration, when the kernel sets up the console it calls the user-space file-open interface; after trapping into the syscall table the number is mismatched and the console cannot be opened (#11716): switch to the kernel filesystem’s strong-symbol path without touching the syscall table, so the user-space binary interface is unaffected. This commit deletes more lines than it adds—a rewrite back to the correct layer.</p>
+
+<p>Under the Smart configuration, the UART is registered as a terminal device before the work queue is created, which can hang at startup (#11718): when the work queue is not ready, put the UART on a pending queue and complete registration during component initialization. The sdio interrupt thread’s default stack size originally followed the idle thread, and when the idle thread stack is set to 512 this path easily overflows (#11694): change it to an independent default of 2048.</p>
+
+<p>All four are marked as statically verified, not board-tested. They extend the same audit line, only shifting from “out-of-bounds writes” to “initialization timing” and “default configuration.”</p>
+
+<h2 id="iv-features-and-compatibility-stm32-input-capture-ymodem-delay">IV. Features and Compatibility: STM32 Input Capture, YMODEM Delay</h2>
+
+<h3 id="41-stm32-input-capture-four-channels-per-timer-11-12">4.1 STM32 Input Capture: Four Channels per Timer (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 19:32 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12052">Proposal #12052</a></p>
+
+<p>The existing STM32 input capture driver registers devices per physical timer, so only one capture channel can be selected per timer; the remaining idle channels on the same chip go unused, and there is no channel-pair-based PWM input or dual-edge capture mode. The proposal extends the driver so that one physical timer can register multiple independent edge-capture devices (timers 1 through 4 each selectable on channels 1 through 4), with exclusive PWM input or dual-edge mode selected per timer.</p>
+
+<p>Five files, 1529 lines added, 290 deleted. Among a week of audit proposals, this is the only functional extension, contributed by a community contributor rather than the audit line. Structural driver changes usually require board-level verification, so the review cycle will be longer than for safety fixes.</p>
+
+<h3 id="42-ymodem-forty-milliseconds-between-ack-and-c-11-12">4.2 YMODEM: Forty Milliseconds Between ACK and C (11-12)</h3>
+
+<p><strong>Date</strong>: 2026-11-12 17:41 (proposal time)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12051">Proposal #12051</a></p>
+
+<p>After receiving the second end-of-transmission character, the YMODEM receiver sends two bytes back to back: the acknowledgment and the character C. When sent back to back, if the sender’s UART driver timeout setting or interrupt handling is not robust enough, one of them gets swallowed (only the acknowledgment is read, the character C is missed), and the sender declares the transfer failed. The fix inserts a 40 ms delay between the two sends.</p>
+
+<p>One file, 7 lines added. This kind of fix does not change protocol semantics; it merely leaves a gap for unreliable UART links—field experience written back into code.</p>
+
+<h2 id="v-official-statements-and-community-activities">V. Official Statements and Community Activities</h2>
+
+<h3 id="51-rt-smart-toolchain-same-issue-proposed-twice-closed-twice-11-13">5.1 RT-Smart Toolchain: Same Issue Proposed Twice, Closed Twice (11-13)</h3>
+
+<p><strong>Date</strong>: 2026-11-10 to 2026-11-13 (issue and closure times)　<strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/12025">Issue #12025</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12041">PR #12041</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12028">PR #12028</a></p>
+
+<p>The issue itself is a compilation problem: after enabling Smart and vDSO on a QEMU virtual machine, building the user-space library with the newlib toolchain leaves four clock constants undefined. The maintainer reproduced it on November 10 and proposed a fix, then self-corrected three hours later, concluding: “For Smart, the toolchain must use a special compiler with a modified musl library; the standard newlib toolchain is not supported, and this issue should not be handled.” The first PR was closed the same day.</p>
+
+<p>Early this morning, the same author submitted a second PR adding a compatibility header that supplies fallback values for the missing constants matching the Linux interface numbers (monotonic raw 4, realtime coarse 5, monotonic coarse 6, boottime 7), and stated that the clock-to-index mapping was unchanged. This PR was closed at 06:04 Beijing time today, and the issue was closed as completed at the same time, with a single comment: this issue is being closed for now; some relationship documentation needs to be provided later.</p>
+
+<p>Two PRs, two closures, and the outcome shifted from “fix the code” to “document it.” For developers using Smart, this is more useful than the fix itself: choosing the wrong toolchain will stall you at the compilation stage, and the official documentation does not currently make this relationship clear.</p>
+
+<h3 id="52-official-news-feed-fifth-consecutive-period-with-no-new-items-11-13">5.2 Official News Feed: Fifth Consecutive Period With No New Items (11-13)</h3>
+
+<p><strong>Date</strong>: 2026-11-13 (verification time)　<strong>Source</strong>: <a href="https://www.rt-thread.org/news.html">RT-Thread official news list</a></p>
+
+<p>The feed still returns the same five articles from November 6, the latest timestamped 11-06 15:54: elexcon full-stack capabilities, the Vinaro industrial PLC salon, Southeast Asian university industry-education integration, the Lingang automotive software ecosystem salon, and the CIIF AI car Workshop. All of these were already covered in the 11-09 edition (covering the 72-hour weekend window), and there have been no new items for five consecutive periods since 11-10.</p>
+
+<p>The news list on the official site is client-rendered, so individual items cannot be scraped; the feed is the authoritative source. External communications have now been in a regular-meeting lull for a full week.</p>
+
+<h3 id="53-google-news-no-substantive-hits-in-the-three-day-window-11-13">5.3 Google News: No Substantive Hits in the Three-Day Window (11-13)</h3>
+
+<p><strong>Date</strong>: 2026-11-13 (verification time)　<strong>Source</strong>: <a href="https://news.google.com/">Google News search</a></p>
+
+<p>An exact Chinese query returned two results in the three-day window, both general roundups from tech sites, on Android platform evolution and full-stack smart home development respectively, which mention RT-Thread in passing and do not constitute reportable events. Two other Chinese queries were noise: “睿擎” returned three automotive buying-guide articles (a Granvia vs. Sienna comparison, with “睿擎” appearing in a trim-level name), and “睿赛德” returned zero hits. One English query returned a listicle about an open-source coffee equipment project, a false match.</p>
+
+<p>The GitHub organization side is equally quiet: among repositories sorted by push time, only the main repository had commits in the window; the package index repository last pushed on November 9, and the environment tooling repository earlier still. No new version tags; the latest stable release remains 5.3.0 from September 10.</p>
+
+<h2 id="vi-summary-and-trend-observations">VI. Summary and Trend Observations</h2>
+
+<h3 id="61-yesterdays-forecast-for-phase-two-materialized-the-same-day">6.1 Yesterday’s Forecast for Phase Two Materialized the Same Day</h3>
+
+<p>The previous edition’s assessment was that “the audit is shifting from the CVE list to the project’s own issues,” and today’s facts connect the two: the batch of PRs opened on November 9 and 10 was merged in six commits during the daytime of November 12, three of them carrying CVE numbers (random number, wireless management, rt-link send side), and the other three covering dynamic module relocation, memory pool assertions, and NFS read length.</p>
+
+<p>Merge times ran from 09:35 to 15:51 Beijing time, completed within six hours. The same person merged all of them, indicating that this line of work has entered a stable review channel and is no longer scattered community submissions.</p>
+
+<h3 id="62-verification-standard-for-the-six-merges-all-marked-as-not-board-tested">6.2 Verification Standard for the Six Merges: All Marked as Not Board-Tested</h3>
+
+<p>The verification sections of all six are almost identical in phrasing: static review, no board run, no attack samples constructed. The only one with automated test cases is the memory pool commit, which includes over forty lines of tests; for the NFS commit, one reviewer checked the implementation item by item and gave a conclusion.</p>
+
+<p>This is both the source of efficiency and the source of risk. Static review can catch arithmetic errors in lengths and indices, but not timing and concurrency. Proposals that change kernel semantics, such as “fetch first, then dequeue,” still need board-level and stress-test evidence before they can be trusted.</p>
+
+<h3 id="63-three-cve-proposals-still-in-the-queue">6.3 Three CVE Proposals Still in the Queue</h3>
+
+<p>The other three CVE-numbered PRs from the same batch saw no activity today: command-line file operation path construction (CVE-2024-25390), variable export table population (CVE-2024-25392), and YMODEM path copy (CVE-2024-25394). Their shape is similar to the six already merged—unbounded copies and capacity limits—and the lack of review may simply be scheduling.</p>
+
+<p>Several other non-CVE PRs remain in the queue: Smart’s inter-process object ownership validation (#12015, a semantic overhaul spanning multiple files), the ESP32-C3 chip revision field (#12013), and DHCP expired lease reclamation (#12024).</p>
+
+<h3 id="64-review-queue-163-prs-358-issues">6.4 Review Queue: 163 PRs, 358 Issues</h3>
+
+<p>Compared with the previous edition, PRs are up 5 and issues down 7. The drop in issues corresponds to several items closed today (including old issues closed alongside merged PRs and the Smart toolchain issue), while the increase in PRs comes mainly from the ten opened today.</p>
+
+<p>Single-account concentration is worth noting: the six merged today and the ten newly opened (including one closed the same day) come from the same author, and the merges were done by the same maintainer. One audit line advanced by one person and gated by one person is efficient, but it also means the pace of this line depends entirely on these two people’s time.</p>
+
+<h2 id="appendix-source-verification-table">Appendix: Source Verification Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Verification Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread official news API</td>
+      <td>Five items, latest 11-06 15:54, fifth consecutive issue with zero new additions</td>
+    </tr>
+    <tr>
+      <td>Official news page</td>
+      <td>List is client-rendered; API is authoritative and consistent with it</td>
+    </tr>
+    <tr>
+      <td>GitHub main repo commits</td>
+      <td>Six merges within the window, verified by committer time</td>
+    </tr>
+    <tr>
+      <td>GitHub PRs and Issues</td>
+      <td>6 merged, 10 new proposals, 2 proposals closed, 1 issue closed; 163 proposals and 358 issues pending review</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org repositories</td>
+      <td>Verified by push order; only the main repo had pushes within the window</td>
+    </tr>
+    <tr>
+      <td>packages repo</td>
+      <td>No pushes; last at 11-09 10:27</td>
+    </tr>
+    <tr>
+      <td>releases and tags</td>
+      <td>No new additions; latest remains v5.3.0 (09-10)</td>
+    </tr>
+    <tr>
+      <td>Google News Chinese</td>
+      <td>Two generic tech pieces and three auto-buying-guide noise items in the three-day window; bare query normal</td>
+    </tr>
+    <tr>
+      <td>Google News English</td>
+      <td>One item, an open-source coffee equipment project, excluded</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>All five candidates were literal “thread” mismatches, excluded</td>
+    </tr>
+    <tr>
+      <td>club.rt-thread.org forum</td>
+      <td>List API returned category not found; no valid entries obtained from the forum this issue</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="full-source-list">Full Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> Proposal #12022 (random number seed hardening) — <a href="https://github.com/RT-Thread/rt-thread/pull/12022">https://github.com/RT-Thread/rt-thread/pull/12022</a></li>
+  <li><strong>[2]</strong> Proposal #12020 (wireless management negative length) — <a href="https://github.com/RT-Thread/rt-thread/pull/12020">https://github.com/RT-Thread/rt-thread/pull/12020</a></li>
+  <li><strong>[3]</strong> Proposal #12018 (rt-link oversized frame) — <a href="https://github.com/RT-Thread/rt-thread/pull/12018">https://github.com/RT-Thread/rt-thread/pull/12018</a></li>
+  <li><strong>[4]</strong> Bug #8289 (rt-link frame assembly length) — <a href="https://github.com/RT-Thread/rt-thread/issues/8289">https://github.com/RT-Thread/rt-thread/issues/8289</a></li>
+  <li><strong>[5]</strong> Proposal #12016 (libdl relocation out-of-bounds) — <a href="https://github.com/RT-Thread/rt-thread/pull/12016">https://github.com/RT-Thread/rt-thread/pull/12016</a></li>
+  <li><strong>[6]</strong> Bug #11898 (dynamic module relocation write target) — <a href="https://github.com/RT-Thread/rt-thread/issues/11898">https://github.com/RT-Thread/rt-thread/issues/11898</a></li>
+  <li><strong>[7]</strong> Proposal #12014 (memory pool assertion false positive) — <a href="https://github.com/RT-Thread/rt-thread/pull/12014">https://github.com/RT-Thread/rt-thread/pull/12014</a></li>
+  <li><strong>[8]</strong> Proposal #12012 (NFS read length convergence) — <a href="https://github.com/RT-Thread/rt-thread/pull/12012">https://github.com/RT-Thread/rt-thread/pull/12012</a></li>
+  <li><strong>[9]</strong> Bug #11917 (NFS trusting server count) — <a href="https://github.com/RT-Thread/rt-thread/issues/11917">https://github.com/RT-Thread/rt-thread/issues/11917</a></li>
+  <li><strong>[10]</strong> Proposal #12043 (M0 HardFault stack selection) — <a href="https://github.com/RT-Thread/rt-thread/pull/12043">https://github.com/RT-Thread/rt-thread/pull/12043</a></li>
+  <li><strong>[11]</strong> Proposal #12049 (M23 HardFault stack selection) — <a href="https://github.com/RT-Thread/rt-thread/pull/12049">https://github.com/RT-Thread/rt-thread/pull/12049</a></li>
+  <li><strong>[12]</strong> Bug #3584 (HardFault unconditionally reads process stack) — <a href="https://github.com/RT-Thread/rt-thread/issues/3584">https://github.com/RT-Thread/rt-thread/issues/3584</a></li>
+  <li><strong>[13]</strong> Proposal #12044 (M0 VTOR is zero) — <a href="https://github.com/RT-Thread/rt-thread/pull/12044">https://github.com/RT-Thread/rt-thread/pull/12044</a></li>
+  <li><strong>[14]</strong> Proposal #12050 (M23 VTOR is zero) — <a href="https://github.com/RT-Thread/rt-thread/pull/12050">https://github.com/RT-Thread/rt-thread/pull/12050</a></li>
+  <li><strong>[15]</strong> Bug #4728 (VTOR restores main stack pointer) — <a href="https://github.com/RT-Thread/rt-thread/issues/4728">https://github.com/RT-Thread/rt-thread/issues/4728</a></li>
+  <li><strong>[16]</strong> Proposal #12045 (mb/mq FIFO handoff) — <a href="https://github.com/RT-Thread/rt-thread/pull/12045">https://github.com/RT-Thread/rt-thread/pull/12045</a></li>
+  <li><strong>[17]</strong> Bug #4940 (FIFO order reversal) — <a href="https://github.com/RT-Thread/rt-thread/issues/4940">https://github.com/RT-Thread/rt-thread/issues/4940</a></li>
+  <li><strong>[18]</strong> Proposal #12048 (device tree expansion depth limit) — <a href="https://github.com/RT-Thread/rt-thread/pull/12048">https://github.com/RT-Thread/rt-thread/pull/12048</a></li>
+  <li><strong>[19]</strong> Proposal #12047 (console open path under musl) — <a href="https://github.com/RT-Thread/rt-thread/pull/12047">https://github.com/RT-Thread/rt-thread/pull/12047</a></li>
+  <li><strong>[20]</strong> Proposal #12042 (Smart serial terminal registration timing) — <a href="https://github.com/RT-Thread/rt-thread/pull/12042">https://github.com/RT-Thread/rt-thread/pull/12042</a></li>
+  <li><strong>[21]</strong> Proposal #12046 (sdio interrupt thread stack default) — <a href="https://github.com/RT-Thread/rt-thread/pull/12046">https://github.com/RT-Thread/rt-thread/pull/12046</a></li>
+  <li><strong>[22]</strong> Proposal #12052 (STM32 input capture multi-channel) — <a href="https://github.com/RT-Thread/rt-thread/pull/12052">https://github.com/RT-Thread/rt-thread/pull/12052</a></li>
+  <li><strong>[23]</strong> Proposal #12051 (YMODEM two-byte interval) — <a href="https://github.com/RT-Thread/rt-thread/pull/12051">https://github.com/RT-Thread/rt-thread/pull/12051</a></li>
+  <li><strong>[24]</strong> Bug #12025 (vDSO clock constants under Smart) — <a href="https://github.com/RT-Thread/rt-thread/issues/12025">https://github.com/RT-Thread/rt-thread/issues/12025</a></li>
+  <li><strong>[25]</strong> Proposal #12041 (vDSO clock constant compatibility header, closed) — <a href="https://github.com/RT-Thread/rt-thread/pull/12041">https://github.com/RT-Thread/rt-thread/pull/12041</a></li>
+  <li><strong>[26]</strong> Proposal #12028 (first vDSO fix, closed) — <a href="https://github.com/RT-Thread/rt-thread/pull/12028">https://github.com/RT-Thread/rt-thread/pull/12028</a></li>
+  <li><strong>[27]</strong> Proposal #12017 (command-line path construction, pending review) — <a href="https://github.com/RT-Thread/rt-thread/pull/12017">https://github.com/RT-Thread/rt-thread/pull/12017</a></li>
+  <li><strong>[28]</strong> Proposal #12019 (variable export table capacity, pending review) — <a href="https://github.com/RT-Thread/rt-thread/pull/12019">https://github.com/RT-Thread/rt-thread/pull/12019</a></li>
+  <li><strong>[29]</strong> Proposal #12021 (YMODEM path copy, pending review) — <a href="https://github.com/RT-Thread/rt-thread/pull/12021">https://github.com/RT-Thread/rt-thread/pull/12021</a></li>
+  <li><strong>[30]</strong> Proposal #12015 (Smart inter-process object ownership) — <a href="https://github.com/RT-Thread/rt-thread/pull/12015">https://github.com/RT-Thread/rt-thread/pull/12015</a></li>
+  <li><strong>[31]</strong> Main repo commit a5a9242e (random number seed) — <a href="https://github.com/RT-Thread/rt-thread/commit/a5a9242e">https://github.com/RT-Thread/rt-thread/commit/a5a9242e</a></li>
+  <li><strong>[32]</strong> Main repo commit 611d7c07 (rt-link frame assembly) — <a href="https://github.com/RT-Thread/rt-thread/commit/611d7c07">https://github.com/RT-Thread/rt-thread/commit/611d7c07</a></li>
+  <li><strong>[33]</strong> Main repo commit df2e0bff (libdl relocation) — <a href="https://github.com/RT-Thread/rt-thread/commit/df2e0bff">https://github.com/RT-Thread/rt-thread/commit/df2e0bff</a></li>
+  <li><strong>[34]</strong> RT-Thread official news list — <a href="https://www.rt-thread.org/news.html">https://www.rt-thread.org/news.html</a></li>
+  <li><strong>[35]</strong> RT-Thread org repository list — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[36]</strong> releases — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[37]</strong> Proposal list — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[38]</strong> Issue list — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+  <li><strong>[39]</strong> Main repo commit history — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

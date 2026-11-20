@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ja/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ja/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 周报" href="/rss/ja/rt-thread/weekly.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ja/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ja/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ja/">ホーム</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">サービス <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/service/simulator.html">シミュレータ</a></li>
+              <li><a class="dropdown-item" href="/ja/service/os.html">オペレーティングシステム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/toolchain.html">ツールチェーン</a></li>
+              <li><a class="dropdown-item" href="/ja/service/chip.html">組み込みチップ</a></li>
+
+              <li><a class="dropdown-item" href="/ja/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ja/service/aisys.html">AI システム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/consultation.html">コンサルティング</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">ソリューション <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">コミュニティ <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ja/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ja/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ja/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ja/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ja/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ja/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/post.html" style="white-space: nowrap;">ニュースとイベント</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/about.html" style="white-space: nowrap;">会社概要</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ja/career.html">採用情報</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              日本語 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/weekly/2026/W46.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/weekly/2026/W46.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/weekly/2026/W46.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/weekly/2026/W46.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/weekly/2026/W46.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread ウィークリーレポート (2026-11-09 ~ 2026-11-13) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ja/">ホーム</a></li>
+                                <li class="breadcrumb-item"><a href="/ja/post.html#news-list" class="news-list-link">ニュースとイベント</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread ウィークリーレポート (2026-11-09 ~ 2026-11-13)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread ウィークリーレポート (2026-11-09 ~ 2026-11-13)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-13</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>レポート期間</strong>：2026年11月9日（月）から11月13日（金）までの5営業日、5期分のデイリーレポート。加えて公開日（11月14日）にメインリポジトリのマージ真値、組織リポジトリへのプッシュ、公式ニュースインターフェースとメディアコラムの補足調査を実施し、11-13 08:00から11-14 09:00までの収尾変動をカバー</p>
+
+<p><strong>素材情報源</strong>：本誌のRT-Thread動態デイリーレポート5期（11-09、11-10、11-11、11-12、11-13）。合計有効ウィンドウは11-06 08:00から11-13 08:00まで（月曜日分は週末をまたぐ72時間ウィンドウ）。公開日調査はGitHubメインリポジトリのコミット・マージ検索、releasesとtags、組織リポジトリへのプッシュリスト、公式ニュースインターフェースと電子工程専輯コラムの実測に基づく</p>
+
+<p><strong>編纂説明</strong>：カーネルとバージョン、セキュリティと監査、エコシステムとベンダー適合、公式・コミュニティ活動、業界応用の5次元をカバー。本文の事実と日付は各期デイリーレポート原文から逐条取得し、公開日追記項目は調査方法を個別に明記</p>
+
+<hr />
+
+<h2 id="1-今週の要聞">1. 今週の要聞</h2>
+
+<ul>
+  <li>
+    <p><strong>11-13の1日で22件をマージ、今週の監査とテストの2ラインが一気に収束（11-13）</strong>：公開日調査によると、11月13日北京時間09:27から18:48の間にメインリポジトリへ22件の提案が連続マージされ、今週唯一のピークかつ11-05の1日31件以降の最高単日量となった。このバッチには今週もキューに残っていた3件のCVE修正（FinSHパス結合 #12017、var_exportエクスポート表 #12019、YMODEMパスコピー #12021）、再提出されたlegacy USB記述子検証 #12036、rt-link長フレーム再組立 #12031、GPTエントリ表 #12034、CFIセクタ表 #12038、シリアルioctl封送 #12037、tty空LWPガード #12039、そして継続監視されていたRISC-V FPUコンテキスト修正 #12006が含まれる。11-09から11-12の14件を加えると、今週月曜から金曜まで計36件をマージ。月曜ウィンドウがカバーする週末の6件（11-07が1件、11-08が5件）を合算すると、前回ウィークリーレポートの調査基準点以降は計42件となる。</p>
+  </li>
+  <li>
+    <p><strong>2024年のCVE6件がすべて着地：11-10に提出、11-12と11-13の2バッチでマージ完了（11-10 ~ 11-13）</strong>：11月10日未明の5時間余りで、同一報告者がモジュール別に11件の境界チェックを提出。うち6件は2024年に開示されたCVEに直接対応し、番号は隣接、修正手法は同構——FinSHのパス結合（CVE-2024-25390）、WLAN送信長（CVE-2024-25388）、rt_random弱シード（CVE-2024-25389）、var_exportエクスポート表（CVE-2024-25392）、rt-link送信組フレーム（CVE-2024-25395）、YMODEMパスコピー（CVE-2024-25394）。11-12に3件（乱数、無線管理、rt-link送信側）をマージし、11-13に残り3件をマージ。6件の共通点は提案説明に記されている：従来は<code class="highlighter-rouge">RT_ASSERT</code>を最後の境界としていたが、アサートは本番設定ではしばしば無効化される。</p>
+  </li>
+  <li>
+    <p><strong>RISC-V FPUコンテキストスイッチ缺陷が5日半で閉ループ、fs0からfs11とfcsrをスイッチフレームへ（11-07 ~ 11-13）</strong>：報告者boa-zがArtInChip D213（C906、Mモード）の移植時にスレッドスイッチ後のfs1不一致を発見し、公式qemu-virt64-riscv（QEMU 10.0.13、OpenSBI 1.6、RV64D、単一hart）で再現。2点を確定：自発スイッチは整数callee-savedレジスタのみ保存し、浮動小数点を使う2スレッドがfs0からfs11を相互上書き（期待値0x3ff0000100000000、実測値0x3ff0000000000000）。タイマプリエンプションはf0からf31を保存したがfcsrを保存せず、丸めモードと例外フラグが黙って変更されていた。メンテナは4時間後に#12006を提示し、fs0からfs11とfcsrをスイッチフレームに補い16バイト整列を保証、11-13 09:37にマージ。報告からマージまで5日10時間。</p>
+  </li>
+  <li>
+    <p><strong>RISC-V割り込みコントローラの2経路が同週で整合：APLICとPLICはいずれも「先処理・後完了」へ（11-10 ~ 11-11）</strong>：11-10にマージされた#11966はAPLICのEOI経路を変更——まず<code class="highlighter-rouge">in_clrip</code>内でデバイスが依然割り込みを保持しているか判断し、その後<code class="highlighter-rouge">setipnum_le</code>を書くか決定。QEMU 8.2.2でAIA有効後にカウントプログラムが<code class="highlighter-rouge">RISC-V test: 0</code>のみ出力して停止する問題を解決。11-11にマージされた#12011はPLICの順序を変更——先に<code class="highlighter-rouge">handler_irq()</code>を派遣してからclaimを書き、「処理関数が自身の割り込み源をマスクした」情形に対し完了前後で一時的にイネーブルレジスタをセット。2件は異なる作者による独立提出で、缺陷はいずれも「完了動作と割り込み源の実際状態の乖離」。</p>
+  </li>
+  <li>
+    <p><strong>WCH 青稞クイック割り込みをカーネル能力で統一、27ファイルで正味337行削除（11-09）</strong>：11-09 11:12にマージされた #12004 は <code class="highlighter-rouge">CONFIG_WCH_USING_FAST_IRQ</code> 設定項目を新設し、統一された割り込み属性マクロでチップシリーズごとにクイック割り込みまたは通常割り込みを選択、ペリフェラルドライバとBSPの割り込みハンドラを個別に調整、CH32V203のスタートアップファイルを新用法に変更した。検証ボードは ch32v208w-r0 と ch32v307v-r1。削除行数（1424）が追加行数（1087）を上回り、コピー＆ペーストを1セットのマクロに収束させたものとなった。同日10:27にソフトウェアパッケージリポジトリがCH32V2/V3 SDKを更新（#2052）、両リポジトリが同日前後に着地した。</p>
+  </li>
+  <li>
+    <p><strong>utest 多輪実行が稼働3日目でリークを検出：アトミックテストケースが每輪25 KB漏れ（11-11 ~ 11-13）</strong>：11-09にマージされた #11983 により、テストフレームワークが連続して複数輪を実行し、輪ごとに空きメモリとスレッドテーブルをサンプリングするようになった。11-11の #12033 はこれに基づいて <code class="highlighter-rouge">core.atomic</code> を処理した。<code class="highlighter-rouge">test_atomic_add()</code> は每輪ごとにセマフォ1つと動的スレッド3つを新規作成し、いずれも回収しない。qemu-vexpress-a9、3輪スイッチ下では使用済みヒープが63608 → 88848 → 114088バイトとなり、每輪25240ずつ増加、<code class="highlighter-rouge">ps</code> は残留 t1/t2/t3 が各3つ、状態は close を示した。修正後は3輪とも38368で一定、残留は0。11-13にマージ。</p>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><strong>公式ニュースインターフェースが静かに満一週間、WeChat公式アカウント側はSTM32四都市巡回とTC397X Safety OSを補完（11-11、11-13）</strong>：公式ニュースインターフェースは11-06 15:54の5本のバッチ以降新規追加がなく、11-10から11-13まで連続4期のデイリーレポート、加えてリリース日核查で計5期がゼロ新規。同期間、WeChat公式アカウントのコラムはなお更新中：11-11 11:47にSTM32セミナー巡回（11-12蘇州、11-19北京、12-03成都、12-10深圳、RT-Threadが現場に出展）を投稿；11-13 13:30に《Infineon AURIX TC397X 六核プラットフォーム</td>
+          <td>SafetyOS——「動作できる」から「制御された動作」へ》を投稿し、四層保護と六核起動パスの完全な記述を示した。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="2-カーネルとバージョン動向">2. カーネルとバージョン動向</h2>
+
+<h3 id="バージョンとメインライン">バージョンとメインライン</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-14　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/releases">メインリポジトリ releases ページ</a>、<a href="https://github.com/RT-Thread/rt-thread/tags">tags ページ</a></p>
+
+<ul>
+  <li><strong>正式バージョン</strong>：週内に releases と tags の両側とも新規追加はなく、終点は依然として09-10リリースの v5.3.0 で、リリースから既に2ヶ月。リリース日核查のインターフェース結果も一致：最新3件の release は v5.3.0（2026-09-10）、v5.2.2（2025-10-31）、v5.2.1（2025-05-30）。</li>
+  <li><strong>メインラインバージョンの扱い</strong>：主干は自ら5.4.0開発態と報告。11-10デイリーレポートが引用した欠陥 #12010 のバージョン欄は5.4.0と明記、11-11デイリーレポートが引用した欠陥 #12026 は「自報 v5.4.0-dev」と記載、両所一致；本レポートは一律「5.4.0開発態、リリース版は v5.3.0 で停止」と表現し、バージョンマクロでリリース事実を代替しない。</li>
+  <li><strong>リズムの特徴</strong>：今週のマージは高度に後方集中——月曜5件、火曜2件、水曜1件、木曜6件、金曜22件。前半4日はレビューとパッチ準備期間、金曜1日で監査、テスト基盤、アーキテクチャ修正の3ラインの成品を一斉にリリースした。</li>
+</ul>
+
+<h3 id="今週のマージ一覧">今週のマージ一覧</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/commits/master">メインリポジトリ master コミットフロー</a></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>日付</th>
+      <th>件数</th>
+      <th>主要項目</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>11-09</td>
+      <td>5</td>
+      <td>WCH 高速割り込み（#12004）、ESP32-C3 リンクスクリプトへのアスタリスク追加（#12009）、CherryUSB EHCI キャッシュフラッシュ（#12008）、utest 複数回実行（#11983）、Bouffalo ADC チャネル検証（#12003）</td>
+    </tr>
+    <tr>
+      <td>11-10</td>
+      <td>2</td>
+      <td>ESP32-S3 ビルドスクリプト（#11844）、RISC-V APLIC MSI 再トリガ（#11966）</td>
+    </tr>
+    <tr>
+      <td>11-11</td>
+      <td>1</td>
+      <td>RISC-V PLIC 完了順序（#12011）</td>
+    </tr>
+    <tr>
+      <td>11-12</td>
+      <td>6</td>
+      <td>NFS 読み取り長の収束（#12012）、メモリプールセンチネルアサーション（#12014）、rt-link 送信側フレーム長（#12018）、libdl 再配置境界（#12016）、WLAN 負長（#12020）、乱数シードの強化（#12022）</td>
+    </tr>
+    <tr>
+      <td>11-13</td>
+      <td>22</td>
+      <td>リリース日確認の追録、以下参照：FPU コンテキスト（#12006）、CVE 3件（#12017／#12019／#12021）、legacy USB（#12036）、rt-link 長フレーム（#12031）、GPT エントリテーブル（#12034）、CFI セクタテーブル（#12038）、シリアル ioctl（#12037）、tty 空 LWP（#12039）、M0／M23 の2題各2件（#12043／#12049／#12044／#12050）、K230 PWM 読み戻し（#12032）、utest アトミックテストケース（#12033）、dlmodule リグレッション（#11989）、OFW procfs（#12000）、ESP32-C3 バージョンフィールド（#12013）、sdio スレッドスタック（#12046）、fdt 深度（#12048）、musl コンソール（#12047）</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>週末接続の6件は今週の集計に含めない</strong>：月曜デイリーレポートの72時間枠内には、11-07 21:39 にマージされた非 SMART CPU 時間計測（#12001）と、11-08 にマージされた5件（picolibc プロトタイプ #11999、POSIX timer 境界 #11997、timerfd fd タイプ #11996、SPI 仮想ループバック #11979、GIC 書式指定子 #11914）も収録されている。これら6件は前回ウィークリーレポートの確認基準点（11-07 18:50）以降、今週月曜以前に発生しており、日付に従い月曜号の本文に分類されるが、今週月曜から金曜の36件を集計する際には含めない。前回基準点から起算すると合計42件となる。</li>
+  <li><strong>金曜バッチの構成</strong>：22件のうち、セキュリティと境界検証が10件（FinSH、var_export、YMODEM、legacy USB、rt-link、GPT、CFI、シリアル ioctl、tty 空 LWP、fdt 深度）、カーネルとアーキテクチャが7件（FPU コンテキスト、M0 と M23 の HardFault と VTOR の計4件、musl コンソール、sdio スタック）、テストとツールが3件（dlmodule リグレッション、utest アトミック、OFW procfs）、ペリフェラルと BSP が2件（K230 PWM、ESP32-C3 バージョンフィールド）。</li>
+</ul>
+
+<h3 id="カーネルと-risc-v-割り込み">カーネルと RISC-V 割り込み</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pulls">メインリポジトリ提案リスト</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/12005">欠陥 #12005</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/12010">欠陥 #12010</a></p>
+
+<ul>
+  <li><strong>RISC-V FPU コンテキスト（#12006）</strong>：切り替えフレームに fs0 から fs11 および fcsr を追加し、trap フレームに fcsr のアクセスを補い、切り替えフレームサイズを切り上げて 16 バイト境界を保証し、割り込み切り替えで構築されるフレームで fcsr を初期化する。付随して <code class="highlighter-rouge">context_ext.h</code> と <code class="highlighter-rouge">stack.h</code> にオフセットとレイアウトのマクロを追加。11-13 のマージ前まで審査待ちとされており、本調査期間内で唯一浮動小数点状態の一貫性に直接関わるカーネル修正である。</li>
+  <li><strong>APLIC と PLIC の完了パス修正 2 件</strong>：APLIC（#11966）は 14 行、PLIC（#12011）は 35 行で、後者は完了の前後に一時的にイネーブルレジスタをセットする必要があり、Linux の SiFive PLIC ドライバを参照している。11-12 のデイリーレポートでは 2 件を並べて評述した。一方は「setipnum_le を書くべきでないときに書いた」、もう一方は「先に処理すべきときに先に完了した」である。</li>
+  <li><strong>M0 と M23 の同一題目が各 2 件（#12043／#12049、#12044／#12050）</strong>：HardFault 入口で例外戻り値の該当ビットに基づきメインスタックとプロセススタックを選択し、M3 移植の既存手法に合わせる（欠陥 #3584）。初回コンテキスト切り替え時に VTOR の読み出しがゼロならメインスタックポインタの復元をスキップし、MSP をゼロに書くことを避ける（欠陥 #4728）。2 件の提案はそれぞれ GCC、RVDS、IAR の 3 セットのアセンブリパスを変更する。</li>
+  <li><strong>mb／mq の FIFO 反転は依然審査中（#12045）</strong>：メールボックスとメッセージキューは先入れ先出しフラグの下で先頭の待機者のみを起床させ、データは依然として公共キューに残るため、高優先度スレッドが非ブロッキングで取り去ると元の待機者は空振りに終わり、キューの末尾に再登録するしかない。修正法は「先に取ってからデキュー」するリソース予約と引き渡しで、+435/-12 は本バッチ 10 件の中で最大のものであり、唯一カーネルのスケジューリングセマンティクスを直接変更するもので、まだマージされていない。</li>
+  <li><strong>非 SMART の CPU 時間計上（#12001、11-07 マージ）</strong>：<code class="highlighter-rouge">RT_USING_SMART</code> でユーザー態時間計上の分岐を包むだけの 2 行の変更で、すべての非 Smart プロジェクトの CPU 使用率の読み取りに影響する。月曜日の調査期間内の週末接続項目に属する。</li>
+</ul>
+
+<h3 id="セキュリティと監査">セキュリティと監査</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues">メインリポジトリ欠陥リスト</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12015">提案 #12015</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12016">提案 #12016</a></p>
+
+<ul>
+  <li><strong>信頼境界が本段階の主線</strong>：11-10 の最も重い2件の変更はいずれも「先に外部を信頼し、後に型を判定する」構造を改めるもの——<code class="highlighter-rouge">dlmodule</code> は再配置の書き込み先を計算する際に「モジュールメモリ基底アドレス + オフセット − 仮想開始アドレス」を用い範囲を検証しないため、細工された <code class="highlighter-rouge">.mo</code> が再配置段階でカーネルメモリに書き込める（#12016、5ファイル +205/-37、マージ済み）；LWP IPC システムコールはユーザーが渡した生のオブジェクトポインタをそのまま <code class="highlighter-rouge">rt_sem_*</code>、mutex、event、mailbox、mq、timer に渡すため、偽オブジェクトで任意のカーネル読み書きが生じる（#12015、3ファイル +284/-44、<strong>審査中</strong>）。</li>
+  <li><strong>ネットワークとファイルシステム側</strong>：NFS 読み取りパスはサーバーが返す count をそのまま memcpy の長さとして扱うため、異常または悪意あるサーバーが呼び出し元バッファを越えて書き込める。修正は「サーバー側カウント、リクエスト側カウント、デコード済み長」の三者最小に収束させ、XDR 上限を 1024 バイトに厳格化する（#12012、11-12 マージ済み）；9PFS の <code class="highlighter-rouge">getdents</code> は 16 ビットの <code class="highlighter-rouge">name_len</code> を切り詰めて 8 ビットの <code class="highlighter-rouge">d_namlen</code> に書き込み、256 以上の値が回り込んで検査を回避する（#12035、<strong>審査中</strong>）。</li>
+  <li><strong>設定定数と期限</strong>：DHCP サーバーの <code class="highlighter-rouge">lease_end</code> は書き込まれた後まったく読み取られず、リースは永久に失効しない；<code class="highlighter-rouge">DHCP_DEFAULT_LIVE_TIME</code>（0x80510100）は <code class="highlighter-rouge">PP_HTONL()</code> を経てワイヤ上で約68年となり、「日単位で回収」という意味と合わないため、併せて 86400 秒に変更（#12024、審査中）。メモリプールの1件は誤警報を直すものの実際の停止を引き起こす：解放「最後のブロックで next が heap_end センチネルを指す」ものが誤ってアサートを発火させる（#12014、11-12 マージ済み、2025年の旧欠陥 #10632 に対応）。</li>
+  <li><strong>ptyfs リークと legacy USB の攻防</strong>：pts 登録解除パスは登録時に確保した <code class="highlighter-rouge">struct ptyfs_file</code> を解放せず、<code class="highlighter-rouge">/dev/pts/*</code> の <code class="highlighter-rouge">open()</code>／<code class="highlighter-rouge">close()</code> を繰り返すことで一般ユーザーが継続的に触发できる（#12023、11-10 報告）。メンテナは12時間後に #12029 を提示（審査中）。legacy USB ホストスタックはデバイスが返す <code class="highlighter-rouge">bLength</code> を完全なディスクリプタの読み取り長として扱い、境界外書き込みが生じる（#12026）；メンテナは #12027 で長さ検証を行った後、「legacy コードであり、継続的な修正は行わない」としてクローズ；11-12 未明に別の報告者が #12036 を再提起（5ファイル +71/-13、hub ディスクリプタと <code class="highlighter-rouge">wMaxPacketSize</code> をカバー）、11-13 09:47 にマージ済み。</li>
+  <li><strong>vDSO クロック定数：二度の提案、二度のクローズ</strong>：newlib ツールチェーンで RT-Smart vDSO ユーザーコードをコンパイルすると4つのクロック定数が未定義（#12025）。最初のマクロ補完提案 #12028 は当日クローズ；第二の互換ヘッダ提案 #12041 は 11-13 06:04 にクローズされ、議題は完了状態でクローズ、コメントは「一旦クローズし、後続でいくつか関係説明を示す必要がある」。着地点はコード変更からドキュメント補完へ：Smart のツールチェーンは musl ライブラリを修正した専用コンパイラを使用しなければならない。</li>
+  <li><strong>検証方針は一貫して保守的</strong>：今週マージされたセキュリティ提案の绝大多数は「静的確認、ボード未実行、PoC 未構築」と注記され、唯一自動テストケースを伴うのはメモリプールの1件（四十数行のテスト）、NFS の1件はレビューで実装を逐条確認。11-13 のバッチも同様であり、release に入る前は検証済みの防御と見なすべきではない。</li>
+</ul>
+
+<h3 id="レビューキューの観察">レビューキューの観察</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-14　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pulls">メインリポジトリ提案一覧</a>、<a href="https://github.com/RT-Thread/rt-thread/issues">議題一覧</a></p>
+
+<ul>
+  <li><strong>キューは当初増加後に減少</strong>：デイリーレポート基準の審査待ち提案数は順に142（11-09）、140（11-10）、149（11-11）、158（11-12）、163（11-13）、議題数は363、362、365、365、358。11-13に1日で22件がマージされた後、リリース日API検索でのオープン提案は140件、オープン議題は342件となり、「163から22を減算」した推算とほぼ一致した。</li>
+  <li><strong>依然として残るリスク項目</strong>：端末ttyのioctlユーザポインタ検証（#11937、v5.1.0以降すべてのRT-Smartボードに影響、任意のカーネル読み書きレベル）は2週連続でリスク首位に位置し、依然として修正されていない。ivshmemウィンドウ検証（#11993）はフォールバックスイッチがデフォルト無効の形態で停止している。LWPオブジェクト帰属検証（#12015）と9PFS（#12035）、pin legacy割り込み（#12040）、DHCPリース（#12024）、ptyfs登録解除（#12029）はいずれも審査中である。</li>
+  <li><strong>大規模提案</strong>：STM32入力キャプチャのマルチチャネル改造（#12052）は5ファイル +1529/-290で、1つの物理タイマーを「キャプチャチャネルを1つしか選択できない」状態から、複数の独立したエッジキャプチャデバイスを登録可能な状態へ拡張し、タイマーごとに排他的なパルス幅変調入力または両エッジモードを選択する。11-12 19:32に提出された。CANドライバ再構築は#12053として11-13 14:44にキューへ再投入された。YMODEMの2バイト間隔40ミリ秒の#12051は依然として審査中である。</li>
+  <li><strong>アーキテクチャ移植の前提条件が解除</strong>：ルネサスRH850 G4KHの#11998は依然としてドラフト表記だが、それが明確に待っていたpicolibc <code class="highlighter-rouge">ctime.c</code>の修正（#11999）は11-08にマージされ、utest CIのブロックが解消された。これによりRH850はARMとRISC-Vに次ぐ3番目のlibcpu抽象検証ターゲットとなった。</li>
+</ul>
+
+<hr />
+
+<h2 id="3-エコシステムとベンダー適合">3. エコシステムとベンダー適合</h2>
+
+<h3 id="ベンダーbspとドライバ">ベンダーBSPとドライバ</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12004">提案 #12004</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11844">提案 #11844</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12052">提案 #12052</a></p>
+
+<ul>
+  <li><strong>WCH（沁恒）</strong>：高速割り込みをQingKeコアの機能に基づいて統一的に設定（#12004、11-09マージ）、27ファイル、+1087/-1424、検証ボードch32v208w-r0とch32v307v-r1。CH32V208のPMコンポーネント対応（#12007）は前のコミットに依存しており、まだ審査中。ソフトウェアパッケージ側ではCH32V2/V3 SDKを同時更新（#2052、4ファイル+18）。WCHは国産RISC-V MCU出荷量最大のメーカーの一つであり、割り込み設定と電源管理は低消費電力シーンの可用性を直接左右する。</li>
+  <li><strong>Espressif</strong>：ESP32-C3リンクスクリプトに欠落していたアスタリスクを1つ補完（#12009、1行変更）——<code class="highlighter-rouge">esp_ringbuf</code>のIRAMルールが<code class="highlighter-rouge">*esp_ringbuf?(...)</code>と書かれていたためどのターゲットファイルにもマッチせず、ringbuf.oの0x1fa4バイトが孤児セクションに落ち、<code class="highlighter-rouge">.flash.text</code>の終了位置が64KB境界から不足するとrodataとコードが同一ページに配置されてしまう。ESP32-C3 v1.xチップがプリコンパイル済みイメージで拒否される問題は、ESP-IDFの完全なバージョン範囲に合わせて<code class="highlighter-rouge">min_rev=0</code>、<code class="highlighter-rouge">min_rev_full=3</code>、<code class="highlighter-rouge">max_rev_full=199</code>に変更（#12013、11-13 16:42マージ）。ESP32-S3は「中途半端な着地」となった：#11844はタイトルにインクルードパス修正とあるが、本文には新規ディレクトリ追加とあり、実際にマージされたのは<code class="highlighter-rouge">libcpu/xtensa/esp32s3/SConscript</code>の25行1ファイルのみで、<code class="highlighter-rouge">bsp/ESP</code>配下には依然としてESP32_C3、ESP32_C6、libraries、toolsの4項目しかなく、スクリプトが参照するBSPパスは当面解決できない。</li>
+  <li><strong>Canaan</strong>：K230のPWM読み戻しで補償値を高レベルカウントとして扱っていた——書き込みは<code class="highlighter-rouge">period_count - high_count</code>であるのに、読み戻しではそのまま<code class="highlighter-rouge">high_count</code>として使用し、25%設定で75%が読み戻された（#12032）。修正方法は<code class="highlighter-rouge">pwmcmp0</code>の読み取りを1回共有し、チャネル間で負値の場合はパルス幅0を返す。01Studio CanMV K230上でGPIO52/PWM4を用いて実測し、チャネル間読み戻しは50000と4294942296ナノ秒から50000と0ナノ秒に変化。11-13マージ。</li>
+  <li><strong>Bouffalo</strong>：ADCドライバが呼び出し元から渡されたチャネル番号をそのままDMAバッファのインデックス計算に使用しており、負数、範囲外、未設定チャネルでは無効なサンプリングスロットを読み取ってしまう。修正では範囲と設定リストの検証を追加し、<code class="highlighter-rouge">rt_int8_t</code>の全256値を網羅（#12003、11-09マージ、ホスト側検証のみ）。</li>
+  <li><strong>STMicroelectronics（STM32）</strong>：今週は新規マージなしだが、コミュニティが既存の入力キャプチャドライバに構造的拡張を提案（#12052、レビューキュー参照）。先週マージされたSTM32F1／H7の入力キャプチャは「1タイマー1チャネル」の補完であり、このコミットでは同一タイマーの4チャネル独立キャプチャと両エッジモードをさらにサポートする。</li>
+  <li><strong>Renesas</strong>：RH850 G4KHポート提案は依然としてドラフトで、48ファイル、+3916行。TRAP0スレッド切り替え、ネスト割り込み、FPUコンテキスト、qemu-rh850-u2cボードレベルを含み、QEMU上でkernel_basic 22/22が通過、ハードフロートとソフトフロートの両ビルドがCIマトリクスに含まれている。</li>
+</ul>
+
+<h3 id="ソフトウェアパッケージとツールチェーン">ソフトウェアパッケージとツールチェーン</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/packages/pull/2052">ソフトウェアパッケージ提案 #2052</a>、<a href="https://github.com/RT-Thread/packages/pull/2053">ソフトウェアパッケージ提案 #2053</a>、<a href="https://github.com/RT-Thread/smart-build">smart-buildコミット</a></p>
+
+<ul>
+  <li><strong>パッケージインデックスは今週2件のみ</strong>：11-09にCH32V2/V3 SDK同期（#2052、4ファイル+18）がマージされ、メインリポジトリの高速割り込みと「ドライバ変更がパッケージインデックスに依存する」ペアのマージを形成。11-08提出のAerolynq Wi-Fi／Bluetoothホストドライバ（#2053）はまだ審査中で、Infineonの組み合わせモジュールを用いたボード向け、インターフェースはSDIOとHCI UART、著者は専有ドライバと明記。</li>
+  <li><strong>リポジトリ間の連携</strong>：#12000でOFWデバイスツリーをprocfs経由で公開し、同じ週に<code class="highlighter-rouge">smart-build</code>リポジトリで「enable OFW procfs for QEMU virt」（11-07提出）を追加、11-13にPR #51をマージ、QEMU virtのビルド設定でこの項目が有効化された。メインリポジトリの機能とビルドリポジトリ設定の連動はRT-Threadではあまり見られず、特筆に値する。</li>
+  <li><strong>ツールチェーン</strong>：Envリポジトリは11-06の「変更ファイルのみフォーマット」コマンドで停止、sdkは11-05で停止、<code class="highlighter-rouge">vscode-rt-smart</code>、<code class="highlighter-rouge">pkgs-test</code>、<code class="highlighter-rouge">toolchains-ci</code>、<code class="highlighter-rouge">rtthread-skills</code>は全週プッシュなし。Smartツールチェーンの方針は今週むしろ明確になった——メンテナはvDSO提案を2回クローズし、「Smartはmuslライブラリを修正した専用コンパイラを使用する必要があり、通常のnewlibツールチェーンはサポートしない」と位置づけた。</li>
+</ul>
+
+<h3 id="検証説明">検証説明</h3>
+
+<ul>
+  <li><strong>組織レベルのプッシュ</strong>：35の組織リポジトリをプッシュ時間順に照合し、調査期間内にプッシュがあったのは3つのリポジトリのみ——<code class="highlighter-rouge">rt-thread</code>（11-13 18:48）、<code class="highlighter-rouge">smart-build</code>（11-13 14:14）、<code class="highlighter-rouge">packages</code>（11-09 10:27）。<code class="highlighter-rouge">env</code>の最終プッシュは11-06、<code class="highlighter-rouge">sdk</code>は11-05。</li>
+  <li><strong>リリースページ</strong>：releasesとtagsは全週で新規追加なし、最新は依然として09-10のv5.3.0。本レポートでは5.4.0のバージョンマクロをリリースイベントとして扱わない。</li>
+  <li><strong>集計基準の差異</strong>：デイリーレポートの審査待ち件数は提案／イシュー一覧ページから取得し、リリース日の140件と342件は検索インターフェースから取得したもので、両者は「クローズ済みだが未アーカイブ」の項目における集計方法が異なる。本文ではそれぞれ出所を明記しており、混用はしていない。</li>
+</ul>
+
+<hr />
+
+<h2 id="4-公式コミュニティイベント">4. 公式・コミュニティイベント</h2>
+
+<h3 id="公式チャネル">公式チャネル</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-14　<strong>情報源</strong>：<a href="https://www.rt-thread.org/news.html">RT-Thread 公式ニュース一覧</a></p>
+
+<ul>
+  <li><strong>公式ニュースインターフェースは5期連続で新規ゼロ</strong>：インターフェースが返すのは依然として11月6日の5本（elexconフルスタック能力、Vinaro産業用PLCサロン、東南アジア大学産教融合、臨港自動車ソフトウェアエコシステムサロン、工博會AIカーWorkshop）で、最新の時刻は11-06 15:54。この5本は11-09号で全て収録済みであり、11-10、11-11、11-12、11-13およびリリース日の照合でも新規追加はなかった。公式サイトのニュースページ一覧はクライアントサイドレンダリングのため項目を取得できず、インターフェースを基準とする。</li>
+  <li><strong>対外発信は二本立て</strong>：WeChat公式アカウントと電子工程専輯コラムは今週少なくとも3本——11-09組み込みコンテストランキング、11-11 STM32セミナーツアー、11-13 TC397X Safety OS。公式サイトのインターフェースとWeChat公式アカウントは同じパイプラインではなく、これが今週最も顕著なチャネル差異である。</li>
+  <li><strong>ナラティブの基準</strong>：11-06に追加配信された7本は9月以来のイベントを一本の線にまとめ、搭載台数は統一して25億台、開発者30万人、ソフトウェアパッケージダウンロード1700万回と記載。今週の新製品記事2本は着地点をさらに「機能安全＋エッジ側インテリジェンス」に絞り込み、11-06の那群のAIOSハイブリッドデプロイのナラティブと接続している。</li>
+</ul>
+
+<h3 id="会議イベント">会議・イベント</h3>
+
+<p><strong>日付</strong>：2026-11-11 ~ 2026-12-10　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a538406.html">電子工程専輯：STM32セミナー</a>、<a href="https://www.stmcu.com.cn/summitontour2026">ST公式イベントページ</a></p>
+
+<ul>
+  <li><strong>2026 STM32セミナー4都市巡回</strong>：11月12日蘇州、11月19日北京、12月3日成都、12月10日深圳。ST公式イベントページが示す規模は2回のサミットと5つのフォーラム、8回のインタラクティブ講演、35項目以上の技術デモ、25社のパートナーで、展示エリアはロボット、グラフィックアプリケーション、スマートロック、ワイヤレスオーディオ、エッジAIをカバーする。RT-Threadは最新製品を携えて会場に出展。記事には転送抽選も併記され、3名に各1枚のNUCLEO-G031K8を贈呈、締切は12月10日。初回の蘇州は11-12当日となる。</li>
+  <li><strong>TC397X Safety OSの製品化表現（11-13 13:30）</strong>：記事は「通常のRTOSはまず如何に動作するかを解決し、Safety OSはさらに故障下で如何に制御された動作を実現するかを解決する」と立論し、4層の保護を示す——ハードウェアMPUが各スレッドにプライベートマッピングを確立し、切り替え時にアクセスウィンドウも同期して切り替える。ユーザーモードとシステムコール機構により非信頼アプリケーションを制限された権限で実行させる。OSAアプリケーションコンテナはコード、データ、スレッド、MPUマッピング、ライフサイクルを独立ユニットにまとめ、故障経路は「不正アクセス → MPU遮断 → Protection Trap → 故障トレースバック → 故障アプリケーションスレッドグループの終了」となり、診断はCPU、Trap Class、TIN、コールチェーン、アプリケーション名、スレッド名まで落とし込める。ソフトウェアセンチネル検査とMPUスタック保護を併用する。</li>
+  <li><strong>6コア機能の具体的な実現経路</strong>：CPU0がクロック、Port、DMA、GPT、グローバルRTOSの初期化を完了し、残りのコアは待機後に自コアの起動へ進む。各コアはそれぞれスケジューラ、tick、システムスレッド、MPUを初期化する。GPSRコア間割り込みでリモートスケジューリングリクエストを送信し、ハードウェアアトミック操作とticket spinlockで共有状態を保護し、各コア1 kHz tickとする。プラットフォーム側はInfineon TC397 SSWを使用して6コア起動を完了し、MCAL経由でMCU、Port、DMA、GPT、STM、DIO、UARTを初期化し、miniBsw／EcuMでPre-OSフローを構成し、GCCとTASKINGの2種類のリンク配置をサポートし、Wdg、SMU、CRC、E2E、DEM、DET向けの統合方向を予め用意する。</li>
+  <li><strong>検証と認証の口径</strong>：全コードはMISRA Cに準拠し、100%のMC/DCカバレッジテストを完了。安全メカニズムの説明、テストエビデンス、プロセス文書、認証関連資料を提供可能で、ISO 26262 ASIL、IEC 61508 SIL、EN 50128 SILをカバーする。記事は同時にTC3評価キットの購入入口と期間限定価格を示しているが、これは製品プロモーションであり、本レポートはその機能安全表現のみを記録し、販促情報は引用しない。</li>
+  <li><strong>前週の産業イベントは既に記録済み</strong>：烏鎮サミット「新光」リスト（11-02）、第6回RISC-V中国サミット（10-18から10-20、車載ソフトウェアは既に車両搭載テスト済み）、臨港自動車ソフトウェアサロン（09-16）はいずれも11-06の追加配信稿で収録済みであり、本周期では重複して述べない。</li>
+</ul>
+
+<h3 id="コミュニティ作品とコンテスト">コミュニティ作品とコンテスト</h3>
+
+<p><strong>日付</strong>：2026-11-09　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a537945.html">2026 RT-Thread 組込みコンテストランキング発表</a></p>
+
+<ul>
+  <li><strong>コンテスト終了、特等賞は端末側Agent</strong>：11-09 17:30に最終ランキングを発表。賞金構成は特等賞3000元、一等賞2000元、二等賞1000元、三等賞500元、優秀賞は開発ボードギフトパックで、いずれも証明書付き。特等賞はEdgi-Talkプラットフォーム上の「端末側Agentカーネルに基づくマルチセンシングデバイス情報融合モニタリングシステム」：分散センシング収集、MQTTメッセージ集約、端末側マルチソース融合と異常判定、LVGLローカルダッシュボードとパラメータ設定により、Agentの意思決定环节をクラウドではなくデバイス側に置く。</li>
+  <li><strong>一等賞2席はいずれもモータ</strong>：NS800-PD-FOCはNS800RT7P65D上で高圧直流ポート、低圧直流ポート、三相ブラシレスモータのマルチポート電力変換を行う。もう1席はデュアルコアセンサーレスFOCとCANopenで、同ボードでRT-Thread 5.3.1のAMPモードを使い制御コアと通信コアを分離し、24Vブラシレスモータ向けとする。二等賞のFeatherTalkはInfineon PSoC Edge E84デュアルコア上でタッチ、オーディオ、Bluetooth、USBオーディオ、ファイルシステム、ワイヤレスネットワーク、ローカルAIを統合する。</li>
+  <li><strong>RISC-Vボードの受賞リストにおける位置</strong>：明確にRISC-V上で動作するのは2件——三等賞のマルチスレーブデバイス監視は玄鉄D121をマスタとし、RS485ポーリング、TFカード記録、ESP8266クラウド接続、ミニプログラムによるリモート閲覧を行う。優秀賞のポータブル産業用デバッガはArtInChip D12xとLVGL v9を使い、Modbus-RTUポーリング、現場デバイススキャン、シリアル送受信、アナログオシロ、PWM信号源をハンドヘルド端末に組み込む。いずれも産業現場ツールでありデモ品ではない。</li>
+  <li><strong>コミュニティ側の新規リポジトリ</strong>：今週記録した4プロジェクトはいずれも公式方針を代表するものではなく、エコシステム観察としてのみ扱う——boa-z/rt-carplayはRT-Thread上でモジュール式CarPlay受信フレームワークを実装。AerolynqはInfineon組み合わせモジュール向けにWi-FiとBluetoothのホストドライバを補完。Mambo-dog-Riscvはデスクトップ四足ロボット犬をSTM32F103からCH32V303へ移行し、完全オフライン音声制御を維持。ra8d1-vision-sortingはRA8D1とRA6M5でエッジAI視覚選別を行う。</li>
+</ul>
+
+<hr />
+
+<h2 id="5-産業応用とビジネス動向">5. 産業応用とビジネス動向</h2>
+
+<h3 id="産業制御と現場ツール">産業制御と現場ツール</h3>
+
+<p><strong>日付</strong>：2026-11-09　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a537945.html">大会結果原文</a></p>
+
+<ul>
+  <li><strong>受賞作品の共通点は概念デモを行わないこと</strong>：優秀賞10席のうち工業とコンシューマが各半分を占める——富瀚 MC6321 スマートドアロックと MC632X デュアルカメラ尾行防止入退室管理、NXP MCXA346 上で小型ニューラルネットワークを用いてFOCを補償（低速定常尾段の速度誤差平均を約4.26%低減）、GD32H759IM のUSBサブスクリーンとOV2640カメラの2in1、ArtInChip D12x のポータブル産業用デバッガ、ART-Pi2 のマスタスレーブ分散モータサーボ。その一つひとつが明確な現場課題に対応している。</li>
+  <li><strong>デバッグ系ツールのダウンサイジング</strong>：三等賞の ART-Pi2 USB列挙可視化・ディスクリプタ規則診断器は、ホスト要求、デバイス応答、規則判定を再確認可能なセッション証拠として組織化する。ポータブル産業用デバッガは「デバッグをノートPCの背負から現場へ」を電源投入即利用可能にする。こうしたツールはエコシステムに長らく欠けていたが、今年は一度に2件出現した。</li>
+</ul>
+
+<h3 id="モータ制御と端側インテリジェンス">モータ制御と端側インテリジェンス</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a537945.html">大会結果原文</a></p>
+
+<ul>
+  <li><strong>デュアルコアAMPが競技作品に登場</strong>：一等賞のデュアルコアセンサーレスFOCはRT-Thread 5.3.1のAMPモードを用い、制御コアと通信コアを分離し、24Vブラシレスモータ向けとする。同一のNS800RT7P65D開発ボード上の別の一席は、高圧直流ポート、低圧直流ポート、三相ブラシレスモータのマルチポート電力変換を行う。こうした構造は従来ベンダーのデモに多く見られたが、今回は完全な作品形態として登場した。</li>
+  <li><strong>端側Agentと端側AIの2つの着地点</strong>：特等奖はマルチソース融合と異常研判をデバイス側に置き、SENTINELデュアルカメラ無人店舗セキュリティはローカルストレージ、クラウド非使用、イベント自動レポート化を強調する。公式が今年繰り返し語る「推論のダウンサイジング、制御はリアルタイム側に留める」と同方向であり、違いは作品が再現可能なハードウェアとコードを提示している点で、方案図ではない。</li>
+  <li><strong>評価とオーバーヘッド意識</strong>：TC397X Safety OSのプロジェクトにはカーネル態とユーザ態の2套の性能測試フレームワークが統合され、IPC、割り込み、スケジューリング、リモートスケジューリング、並列スケジューリング、メモリ管理、アプリケーション切り替えをカバーし、安全機構有効化後の実オーバーヘッドを評価する。機能安全製品が「保護有効化後にどれだけ遅くなるか」を対外指標とするようになったのは今年明白になったシグナルである。</li>
+</ul>
+
+<h3 id="ビジネス動向">ビジネス動向</h3>
+
+<p><strong>日付</strong>：2026-11-09 ~ 2026-11-13　<strong>情報源</strong>：<a href="https://www.eet-china.com/mp/a539041.html">電子工程専輯：TC397X Safety OS</a>、<a href="https://www.eet-china.com/mp/a538406.html">電子工程専輯：STM32セミナー</a></p>
+
+<ul>
+  <li><strong>今週は新規注文、融資、顧客導入類の報道はなし</strong>。商業化シグナルは2点に集中する。第一に、Safety OSが「MISRA C全量 + 100% MC/DC + 3套の機能安全標準」を納品可能な認証配套として書き上げ、TC3評価キットを入口製品とする。第二に、STM32セミナーの4都市巡回がRT-ThreadをSTのパートナー展示エリアに置くもので、エコシステムポジションの維持であり新規顧客獲得ではない。</li>
+  <li><strong>競技は依然として需要の前置チャネル</strong>：組込み大会の受賞リストでは、モータ、産業ツール、端側ビジョンの3類作品が大半を占め、睿擎産業プラットフォーム、程翧車制御、AIOSハイブリッドデプロイの3製品ラインの着地点と重なる。競技作品は注文を生まないが、ベンダー需要がコミュニティに入る最短経路である。</li>
+</ul>
+
+<hr />
+
+<h2 id="6-トレンド觀察">6. トレンド觀察</h2>
+
+<ul>
+  <li><strong>監査ラインは「バッチ提出」から「バッチ約束履行」へと進み、そのリズムは二人に依存している</strong>：11-10は1日で11件、11-12の未明に7件、11-12と11-13の2日間で28件をマージし、うち11-13は単日22件。デイリーレポートに記録された構造は非常に明確で、提案の多くは同一アカウントから出され、マージの多くは同一のメンテナによって完了している。効率は高いが、このラインのスループットは完全にこの二人の時間に依存しており、どちらか一端が止まればキューは再び積み上がる（11-11から11-13にかけて提案数が149から163に増えたことがその証拠である）。</li>
+  <li><strong>攻撃面は統一的に「外部入力を先に判定してからコピーする」に収束したが、検証は依然として静的である</strong>：6件の2024年CVEと自社課題の2バッチで、修正方法はほぼすべて長さやインデックスの判定を動作の前へ移動するものだった。代償として、これらの修正はすべて「未書き込み・未PoC構築」と标注され、唯一自動化テストケースを伴うのはメモリプールとutest関連の2件のみである。下流のディストリビューションにとって、これらのパッチはreleaseに入る前までは「審読済み」としか見なせず、「検証済み」とは見なせない。</li>
+  <li><strong>RISC-Vの比重は今週明らかに上昇した</strong>：FPUコンテキスト（fs0からfs11およびfcsr）、APLICのEOIタイミング、PLICの完了順序の3件が1週間以内にクローズし、同時にM0とM23のHardFaultスタック選択、VTORゼロの2件も補完された。しかしRISC-Vの3件の欠陥はすべて同一の報告者がArtInChip D213のMモード、デバイスモデルを有効にしないシナリオで発見したものであり、非DMパスには常駐CIがなく、これは構造的な欠落であって個人の勤勉さで補えるものではない。</li>
+  <li><strong>テスト基盤が「帳簿をつけ始めた」</strong>：utestの複数回実行はオンライン3日目にして<code class="highlighter-rouge">core.atomic</code>の毎回25 KBのリークを捕捉し、dlmodule回帰はQEMU CIに入り、QEMU仮想デバイスリスト（#11972）が要求するフレームワークごとのチェックがテストケースになりつつある。このラインの価値は当週にあるのではなく、「Zバージョンをリリースできるか」に照合可能な証拠チェーンを与えたことにある。</li>
+  <li><strong>バージョンリズムは依然として動かず、リリース日よりリリース前提条件の方が見る価値がある</strong>：v5.3.0は09-10で停止し、2か月間tagなし。メインラインの動きは欠陥とテストに集中しており、バージョン番号ではない。先週登場したバージョン管理プロセス（#11956）とQEMUテストリスト（#11972）は依然として2つの綱領的文書であり、今週は新たなレビュー結論はない。次の段階の観察点は、リストがQEMU上で実際に走り通せるかどうかであり、5.4.0がいつリリースされるかではない。</li>
+  <li><strong>対外発信の二本柱化、製品ナラティブは機能安全へ傾斜</strong>：公式サイトのインターフェースは1週間静かに経過し、微信公衆号側は連続して大会、STM32ツアー、TC397X Safety OSを発信した。後者の文言は記録に値する：「偶然正しく動作する」から「明確な境界内で制御された動作」へと、安全を認証リストから実行時の4層保護へと翻訳した。これは11-06の「25億台導入、30万人開発者」という規模の口径よりも、製品の現在の重心をよく説明している。</li>
+</ul>
+
+<hr />
+
+<h2 id="附録素材と検証">附録：素材と検証</h2>
+
+<h3 id="素材リスト">素材リスト</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>号</th>
+      <th>日付</th>
+      <th>有効期間</th>
+      <th>収録項目（小見出し単位）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>第1号</td>
+      <td>2026-11-09（月）</td>
+      <td>11-06 08:00 から 11-09 08:00（72時間）</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>第2号</td>
+      <td>2026-11-10（火）</td>
+      <td>11-09 08:00 から 11-10 08:00（24時間）</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>第3号</td>
+      <td>2026-11-11（水）</td>
+      <td>11-10 08:00 から 11-11 08:00（24時間）</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>第4号</td>
+      <td>2026-11-12（木）</td>
+      <td>11-11 08:00 から 11-12 08:00（24時間）</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>第5号</td>
+      <td>2026-11-13（金）</td>
+      <td>11-12 08:00 から 11-13 08:00（24時間）</td>
+      <td>15</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>5号分のデイリーレポートは揃っており、欠落日はなく、合計77件の小見出し級項目；月曜号は週末をまたぐ72時間の期間であり、起点は前号の締め切り時点を踏襲している。</li>
+  <li>ウィークリーレポート本文は5号分のデイリーレポートに基づき同テーマの項目を統合しており、項目数は上表と一致しないが、これは正常な名寄せである；セキュリティ類の欠陥は「信頼境界」「設定とアカウント期間」「メンテナンスポリシー」の3族に統合し、個別には展開しない。</li>
+</ul>
+
+<h3 id="検証説明-1">検証説明</h3>
+
+<ul>
+  <li><strong>リリース日検証（11-13 08:00 から 11-14 09:00）</strong>：メインリポジトリのマージ真値、releases と tags、組織リポジトリのプッシュ、公式ニュースインターフェース、Google News とメディアコラムを項目ごとに実測。検証の結果、11-13 には 22 件のマージがあり、すべて金曜日デイリーレポートの締め切り（08:00）以降に発生していることが判明——FPU コンテキスト #12006（09:37）、CVE 3 件（#12017 09:32、#12019 09:32、#12021 09:46）、legacy USB #12036（09:47）、rt-link 長フレーム #12031（09:38）、GPT #12034（09:46）、CFI #12038（09:38）、シリアル ioctl #12037（09:47）、tty 空 LWP #12039（09:38）、M0／M23 の 4 件（09:30 から 18:48）、K230 PWM #12032（09:36）、utest アトミック #12033（09:37）、dlmodule 回帰 #11989（09:31）、OFW procfs #12000（09:37）、ESP32-C3 バージョンフィールド #12013（16:42）、sdio スタック #12046（09:27）、fdt 深度 #12048（09:28）、musl コンソール #12047（09:36）を含む。これらの項目はすでに第1章の要聞と第2章のマージ一覧に統合済み。</li>
+  <li><strong>リリース日のキューとプッシュ</strong>：オープン提案 140 件、オープン議題 342 件。組織リポジトリは 11-07 以降、<code class="highlighter-rouge">rt-thread</code>、<code class="highlighter-rouge">smart-build</code>、<code class="highlighter-rouge">packages</code> の 3 リポジトリのみプッシュあり。releases と tags は v5.3.0 で停止。</li>
+  <li><strong>リリース日のニュース検証</strong>：公式ニュースインターフェースの最新は依然として 11-06 15:54 の 5 本であり、5 期連続で新規ゼロ。Google News の 3 日間ウィンドウでは 1 件新規、すなわち 11-13 13:30 の TC397X Safety OS 記事（本文はコラムページから取得、タイトル・公開時間・要点は照合済み）。他に CSDN の汎用技術記事 2 件（11-12）は本文中で RT-Thread に付随的に言及するのみで、事象を構成しない。「睿擎派／睿赛德」の 7 日間クエリは有効ヒットゼロ。</li>
+  <li><strong>未収録項目</strong>：zlgopen/awtk の通常コミット（汎用 GUI、RT-Thread との特段の関連なし）、スターが 1 桁で実質的な説明のない新建リポジトリ、11-13 TC397X 記事内のプロモーション価格と購入リンク（宣伝内容）。</li>
+  <li><strong>チャネル制限</strong>：フォーラム club.rt-thread.org は週を通じて WAF ブロックページまたは「カテゴリが存在しません」を返し、投稿は検証できず。電子工程専輯サイトは一部時点で直結タイムアウトし、本文は検索サービスとコラムページから取得、タイトルと時間はクロスチェック済み。GitHub 匿名 API のレート制限は今週の複数回の収集で上限に達し、組織レベルの検証はプッシュリストとコミット検索で補完。</li>
+  <li><strong>集計基準</strong>：月曜から金曜のマージ 36 件（月曜ウィンドウ内の週末分が別途 6 件、前回締め切り以降の合計 42 件）、新規提案議題は ptyfs、legacy USB、vDSO、rt-link 長フレーム、PLIC 次序の 5 件に集中。マージ数は北京時間による日別実測、バージョン基準は「5.4.0 開発態、releases と tags は v5.3.0 で停止」。</li>
+</ul>
+
+<h3 id="完全情報源リスト">完全情報源リスト</h3>
+
+<ul>
+  <li><strong>[1]</strong> メインリポジトリのコミット履歴 — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> メインリポジトリの releases ページ — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[3]</strong> メインリポジトリの tags ページ — <a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[4]</strong> メインリポジトリのプルリクエスト一覧 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[5]</strong> メインリポジトリのイシュー一覧 — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+  <li><strong>[6]</strong> RT-Thread 組織のリポジトリ一覧 — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[7]</strong> プルリクエスト #11983（utest の複数回実行とリソースサンプリング） — <a href="https://github.com/RT-Thread/rt-thread/pull/11983">https://github.com/RT-Thread/rt-thread/pull/11983</a></li>
+  <li><strong>[8]</strong> プルリクエスト #11989（dlmodule の QEMU 回帰カバレッジ） — <a href="https://github.com/RT-Thread/rt-thread/pull/11989">https://github.com/RT-Thread/rt-thread/pull/11989</a></li>
+  <li><strong>[9]</strong> プルリクエスト #11998（ルネサス RH850 G4KH の移植） — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[10]</strong> プルリクエスト #11999（picolibc プロトタイプの整列） — <a href="https://github.com/RT-Thread/rt-thread/pull/11999">https://github.com/RT-Thread/rt-thread/pull/11999</a></li>
+  <li><strong>[11]</strong> プルリクエスト #12000（OFW ツリーを procfs 経由で公開） — <a href="https://github.com/RT-Thread/rt-thread/pull/12000">https://github.com/RT-Thread/rt-thread/pull/12000</a></li>
+  <li><strong>[12]</strong> プルリクエスト #12001（非 SMART CPU 時間のアカウンティング） — <a href="https://github.com/RT-Thread/rt-thread/pull/12001">https://github.com/RT-Thread/rt-thread/pull/12001</a></li>
+  <li><strong>[13]</strong> プルリクエスト #12003（Bouffalo ADC チャネルの検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/12003">https://github.com/RT-Thread/rt-thread/pull/12003</a></li>
+  <li><strong>[14]</strong> 不具合 #11949（Bouffalo ADC の範囲外アクセス） — <a href="https://github.com/RT-Thread/rt-thread/issues/11949">https://github.com/RT-Thread/rt-thread/issues/11949</a></li>
+  <li><strong>[15]</strong> プルリクエスト #12004（WCH の高速割り込み設定） — <a href="https://github.com/RT-Thread/rt-thread/pull/12004">https://github.com/RT-Thread/rt-thread/pull/12004</a></li>
+  <li><strong>[16]</strong> プルリクエスト #12006（RISC-V FPU コンテキスト） — <a href="https://github.com/RT-Thread/rt-thread/pull/12006">https://github.com/RT-Thread/rt-thread/pull/12006</a></li>
+  <li><strong>[17]</strong> 不具合 #12005（RISC-V FPU 状態の喪失） — <a href="https://github.com/RT-Thread/rt-thread/issues/12005">https://github.com/RT-Thread/rt-thread/issues/12005</a></li>
+  <li><strong>[18]</strong> プルリクエスト #12007（CH32V208 の低消費電力） — <a href="https://github.com/RT-Thread/rt-thread/pull/12007">https://github.com/RT-Thread/rt-thread/pull/12007</a></li>
+  <li><strong>[19]</strong> プルリクエスト #12008（CherryUSB EHCI のキャッシュフラッシュ） — <a href="https://github.com/RT-Thread/rt-thread/pull/12008">https://github.com/RT-Thread/rt-thread/pull/12008</a></li>
+  <li><strong>[20]</strong> 不具合 #11749（EHCI の列挙失敗） — <a href="https://github.com/RT-Thread/rt-thread/issues/11749">https://github.com/RT-Thread/rt-thread/issues/11749</a></li>
+  <li><strong>[21]</strong> プルリクエスト #12009（ESP32-C3 リンカスクリプトの IRAM 規則） — <a href="https://github.com/RT-Thread/rt-thread/pull/12009">https://github.com/RT-Thread/rt-thread/pull/12009</a></li>
+  <li><strong>[22]</strong> 不具合 #12010（PLIC の完了がディスパッチより早い） — <a href="https://github.com/RT-Thread/rt-thread/issues/12010">https://github.com/RT-Thread/rt-thread/issues/12010</a></li>
+  <li><strong>[23]</strong> プルリクエスト #12011（PLIC 完了順序の修正） — <a href="https://github.com/RT-Thread/rt-thread/pull/12011">https://github.com/RT-Thread/rt-thread/pull/12011</a></li>
+  <li><strong>[24]</strong> プルリクエスト #12012（NFS 読み取り長の収束） — <a href="https://github.com/RT-Thread/rt-thread/pull/12012">https://github.com/RT-Thread/rt-thread/pull/12012</a></li>
+  <li><strong>[25]</strong> 不具合 #11917（NFS がサーバ側のカウントを信頼） — <a href="https://github.com/RT-Thread/rt-thread/issues/11917">https://github.com/RT-Thread/rt-thread/issues/11917</a></li>
+  <li>
+    <p><strong>[26]</strong> プルリクエスト #12013（ESP3</p>
+  </li>
+  <li><strong>[27]</strong> 不具合 #11991（ESP32-C3 v1.x が拒否される） — <a href="https://github.com/RT-Thread/rt-thread/issues/11991">https://github.com/RT-Thread/rt-thread/issues/11991</a></li>
+  <li><strong>[28]</strong> 提案 #12014（メモリプールのセンチネルアサーション） — <a href="https://github.com/RT-Thread/rt-thread/pull/12014">https://github.com/RT-Thread/rt-thread/pull/12014</a></li>
+  <li><strong>[29]</strong> 不具合 #10632（smem 解放時の誤アサーション） — <a href="https://github.com/RT-Thread/rt-thread/issues/10632">https://github.com/RT-Thread/rt-thread/issues/10632</a></li>
+  <li><strong>[30]</strong> 提案 #12015（LWP IPC の所有者検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/12015">https://github.com/RT-Thread/rt-thread/pull/12015</a></li>
+  <li><strong>[31]</strong> 不具合 #11960（RT-Smart mailbox の疑似オブジェクト） — <a href="https://github.com/RT-Thread/rt-thread/issues/11960">https://github.com/RT-Thread/rt-thread/issues/11960</a></li>
+  <li><strong>[32]</strong> 提案 #12016（libdl のリロケーション境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12016">https://github.com/RT-Thread/rt-thread/pull/12016</a></li>
+  <li><strong>[33]</strong> 不具合 #11898（dlmodule のリロケーション検証なし） — <a href="https://github.com/RT-Thread/rt-thread/issues/11898">https://github.com/RT-Thread/rt-thread/issues/11898</a></li>
+  <li><strong>[34]</strong> 提案 #12017（FinSH のパス結合） — <a href="https://github.com/RT-Thread/rt-thread/pull/12017">https://github.com/RT-Thread/rt-thread/pull/12017</a></li>
+  <li><strong>[35]</strong> 不具合 #8286（FinSH のパスオーバーフロー） — <a href="https://github.com/RT-Thread/rt-thread/issues/8286">https://github.com/RT-Thread/rt-thread/issues/8286</a></li>
+  <li><strong>[36]</strong> 提案 #12018（rt-link 送信側のフレーム長） — <a href="https://github.com/RT-Thread/rt-thread/pull/12018">https://github.com/RT-Thread/rt-thread/pull/12018</a></li>
+  <li><strong>[37]</strong> 不具合 #8289（rt-link のフレーム組立長） — <a href="https://github.com/RT-Thread/rt-thread/issues/8289">https://github.com/RT-Thread/rt-thread/issues/8289</a></li>
+  <li><strong>[38]</strong> 提案 #12019（var_export エクスポートテーブル容量） — <a href="https://github.com/RT-Thread/rt-thread/pull/12019">https://github.com/RT-Thread/rt-thread/pull/12019</a></li>
+  <li><strong>[39]</strong> 不具合 #8290（var_export エクスポートテーブルの範囲外アクセス） — <a href="https://github.com/RT-Thread/rt-thread/issues/8290">https://github.com/RT-Thread/rt-thread/issues/8290</a></li>
+  <li><strong>[40]</strong> 提案 #12020（WLAN 送信の負の長さ） — <a href="https://github.com/RT-Thread/rt-thread/pull/12020">https://github.com/RT-Thread/rt-thread/pull/12020</a></li>
+  <li><strong>[41]</strong> 不具合 #8285（WLAN の負の長さ） — <a href="https://github.com/RT-Thread/rt-thread/issues/8285">https://github.com/RT-Thread/rt-thread/issues/8285</a></li>
+  <li><strong>[42]</strong> 提案 #12021（YMODEM のパスコピー） — <a href="https://github.com/RT-Thread/rt-thread/pull/12021">https://github.com/RT-Thread/rt-thread/pull/12021</a></li>
+  <li><strong>[43]</strong> 不具合 #8291（YMODEM のパスコピー） — <a href="https://github.com/RT-Thread/rt-thread/issues/8291">https://github.com/RT-Thread/rt-thread/issues/8291</a></li>
+  <li><strong>[44]</strong> 提案 #12022（乱数シードの強化） — <a href="https://github.com/RT-Thread/rt-thread/pull/12022">https://github.com/RT-Thread/rt-thread/pull/12022</a></li>
+  <li><strong>[45]</strong> 不具合 #8283（rt_random の弱い乱数） — <a href="https://github.com/RT-Thread/rt-thread/issues/8283">https://github.com/RT-Thread/rt-thread/issues/8283</a></li>
+  <li><strong>[46]</strong> 不具合 #12023（ptyfs のハンドルリーク） — <a href="https://github.com/RT-Thread/rt-thread/issues/12023">https://github.com/RT-Thread/rt-thread/issues/12023</a></li>
+  <li><strong>[47]</strong> 提案 #12029（ptyfs の登録解除時解放） — <a href="https://github.com/RT-Thread/rt-thread/pull/12029">https://github.com/RT-Thread/rt-thread/pull/12029</a></li>
+  <li><strong>[48]</strong> 提案 #12024（DHCP リースの回収） — <a href="https://github.com/RT-Thread/rt-thread/pull/12024">https://github.com/RT-Thread/rt-thread/pull/12024</a></li>
+  <li><strong>[49]</strong> 不具合 #12025（Smart 環境下の vDSO クロック定数） — <a href="https://github.com/RT-Thread/rt-thread/issues/12025">https://github.com/RT-Thread/rt-thread/issues/12025</a></li>
+  <li><strong>[50]</strong> 提案 #12028（vDSO 補助マクロ、クローズ済み） — &lt;https://github.com/RT-Thread/rt-thread/</li>
+</ul>
+
+<p>pull/12028&gt;</p>
+<ul>
+  <li><strong>[51]</strong> 提案 #12041（vDSO 互換ヘッダ、クローズ済み） — <a href="https://github.com/RT-Thread/rt-thread/pull/12041">https://github.com/RT-Thread/rt-thread/pull/12041</a></li>
+  <li><strong>[52]</strong> 欠陥 #12026（legacy USB bLength 境界外） — <a href="https://github.com/RT-Thread/rt-thread/issues/12026">https://github.com/RT-Thread/rt-thread/issues/12026</a></li>
+  <li><strong>[53]</strong> 提案 #12027（USB ディスクリプタ検証、クローズ済み） — <a href="https://github.com/RT-Thread/rt-thread/pull/12027">https://github.com/RT-Thread/rt-thread/pull/12027</a></li>
+  <li><strong>[54]</strong> 提案 #12036（legacy USB ディスクリプタ長検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/12036">https://github.com/RT-Thread/rt-thread/pull/12036</a></li>
+  <li><strong>[55]</strong> 欠陥 #11288（legacy USB bNumInterfaces） — <a href="https://github.com/RT-Thread/rt-thread/issues/11288">https://github.com/RT-Thread/rt-thread/issues/11288</a></li>
+  <li><strong>[56]</strong> 提案 #11844（ESP32-S3 ビルドスクリプト） — <a href="https://github.com/RT-Thread/rt-thread/pull/11844">https://github.com/RT-Thread/rt-thread/pull/11844</a></li>
+  <li><strong>[57]</strong> bsp/ESP ディレクトリ — <a href="https://github.com/RT-Thread/rt-thread/tree/master/bsp/ESP">https://github.com/RT-Thread/rt-thread/tree/master/bsp/ESP</a></li>
+  <li><strong>[58]</strong> 欠陥 #12030（rt-link 長フレーム再組立ヒープオーバーフロー） — <a href="https://github.com/RT-Thread/rt-thread/issues/12030">https://github.com/RT-Thread/rt-thread/issues/12030</a></li>
+  <li><strong>[59]</strong> 提案 #12031（rt-link 長フレーム境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12031">https://github.com/RT-Thread/rt-thread/pull/12031</a></li>
+  <li><strong>[60]</strong> 提案 #12032（K230 PWM 読み戻し） — <a href="https://github.com/RT-Thread/rt-thread/pull/12032">https://github.com/RT-Thread/rt-thread/pull/12032</a></li>
+  <li><strong>[61]</strong> 提案 #12033（utest アトミックテストケースリーク） — <a href="https://github.com/RT-Thread/rt-thread/pull/12033">https://github.com/RT-Thread/rt-thread/pull/12033</a></li>
+  <li><strong>[62]</strong> 提案 #12034（GPT エントリテーブルオーバーフロー） — <a href="https://github.com/RT-Thread/rt-thread/pull/12034">https://github.com/RT-Thread/rt-thread/pull/12034</a></li>
+  <li><strong>[63]</strong> 欠陥 #11260（GPT 割当整数オーバーフロー） — <a href="https://github.com/RT-Thread/rt-thread/issues/11260">https://github.com/RT-Thread/rt-thread/issues/11260</a></li>
+  <li><strong>[64]</strong> 提案 #12035（9PFS getdents 境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12035">https://github.com/RT-Thread/rt-thread/pull/12035</a></li>
+  <li><strong>[65]</strong> 欠陥 #11289（9PFS 長信頼） — <a href="https://github.com/RT-Thread/rt-thread/issues/11289">https://github.com/RT-Thread/rt-thread/issues/11289</a></li>
+  <li><strong>[66]</strong> 提案 #12037（シリアル ioctl ユーザ空間マーシャリング） — <a href="https://github.com/RT-Thread/rt-thread/pull/12037">https://github.com/RT-Thread/rt-thread/pull/12037</a></li>
+  <li><strong>[67]</strong> 欠陥 #11429（RT-Smart serial ioctl 生ポインタ） — <a href="https://github.com/RT-Thread/rt-thread/issues/11429">https://github.com/RT-Thread/rt-thread/issues/11429</a></li>
+  <li><strong>[68]</strong> 提案 #12038（CFI セクタテーブル境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/12038">https://github.com/RT-Thread/rt-thread/pull/12038</a></li>
+  <li><strong>[69]</strong> 欠陥 #11272（mtd-cfi 消去領域オフバイワン境界外） — <a href="https://github.com/RT-Thread/rt-thread/issues/11272">https://github.com/RT-Thread/rt-thread/issues/11272</a></li>
+  <li><strong>[70]</strong> 提案 #11558（CFI 配列境界初回修正） — <a href="https://github.com/RT-Thread/rt-thread/pull/11558">https://github.com/RT-Thread/rt-thread/pull/11558</a></li>
+  <li><strong>[71]</strong> 提案 #12039（tty 空 LWP ガード） — <a href="https://github.com/RT-Thread/rt-thread/pull/12039">https://github.com/RT-Thread/rt-thread/pull/12039</a></li>
+  <li><strong>[72]</strong> 欠陥 #11717（tty_wait_background ヌルポインタ） — <a href="https://github.com/RT-Thread/rt-thread/issues/11717">https://github.com/RT-Thread/rt-thread/issues/11717</a></li>
+  <li><strong>[73]</strong> 提案 #12040（pin legacy 割り込みクリティカルセクション） — <a href="https://github.com/RT-Thread/rt-thread/pull/12040">https://github.com/RT-Thread/rt-thread/pull/12040</a></li>
+  <li>
+    <p><strong>[74]</strong> 欠陥 #11784（pin_api_attach_irq 無保護公開） — &lt;https://github.com/RT-T</p>
+  </li>
+  <li><strong>[75]</strong> 提案 #12043（M0 HardFault スタック選択） — <a href="https://github.com/RT-Thread/rt-thread/pull/12043">https://github.com/RT-Thread/rt-thread/pull/12043</a></li>
+  <li><strong>[76]</strong> 提案 #12049（M23 HardFault スタック選択） — <a href="https://github.com/RT-Thread/rt-thread/pull/12049">https://github.com/RT-Thread/rt-thread/pull/12049</a></li>
+  <li><strong>[77]</strong> 欠陥 #3584（HardFault 無条件でプロセススタックを読み取り） — <a href="https://github.com/RT-Thread/rt-thread/issues/3584">https://github.com/RT-Thread/rt-thread/issues/3584</a></li>
+  <li><strong>[78]</strong> 提案 #12044（M0 VTOR がゼロ） — <a href="https://github.com/RT-Thread/rt-thread/pull/12044">https://github.com/RT-Thread/rt-thread/pull/12044</a></li>
+  <li><strong>[79]</strong> 提案 #12050（M23 VTOR がゼロ） — <a href="https://github.com/RT-Thread/rt-thread/pull/12050">https://github.com/RT-Thread/rt-thread/pull/12050</a></li>
+  <li><strong>[80]</strong> 欠陥 #4728（VTOR メインスタックポインタ復元） — <a href="https://github.com/RT-Thread/rt-thread/issues/4728">https://github.com/RT-Thread/rt-thread/issues/4728</a></li>
+  <li><strong>[81]</strong> 提案 #12045（mb/mq 先入れ先出し受け渡し） — <a href="https://github.com/RT-Thread/rt-thread/pull/12045">https://github.com/RT-Thread/rt-thread/pull/12045</a></li>
+  <li><strong>[82]</strong> 欠陥 #4940（先入れ先出し順序の反転） — <a href="https://github.com/RT-Thread/rt-thread/issues/4940">https://github.com/RT-Thread/rt-thread/issues/4940</a></li>
+  <li><strong>[83]</strong> 提案 #12046（sdio 割り込みスレッドスタック既定値） — <a href="https://github.com/RT-Thread/rt-thread/pull/12046">https://github.com/RT-Thread/rt-thread/pull/12046</a></li>
+  <li><strong>[84]</strong> 提案 #12047（musl でのコンソールオープンパス） — <a href="https://github.com/RT-Thread/rt-thread/pull/12047">https://github.com/RT-Thread/rt-thread/pull/12047</a></li>
+  <li><strong>[85]</strong> 提案 #12048（デバイスツリー展開深度上限） — <a href="https://github.com/RT-Thread/rt-thread/pull/12048">https://github.com/RT-Thread/rt-thread/pull/12048</a></li>
+  <li><strong>[86]</strong> 提案 #12051（YMODEM 2バイト間隔） — <a href="https://github.com/RT-Thread/rt-thread/pull/12051">https://github.com/RT-Thread/rt-thread/pull/12051</a></li>
+  <li><strong>[87]</strong> 提案 #12052（STM32 入力キャプチャマルチチャネル） — <a href="https://github.com/RT-Thread/rt-thread/pull/12052">https://github.com/RT-Thread/rt-thread/pull/12052</a></li>
+  <li><strong>[88]</strong> 提案 #12053（CAN フレームワーク再構築） — <a href="https://github.com/RT-Thread/rt-thread/pull/12053">https://github.com/RT-Thread/rt-thread/pull/12053</a></li>
+  <li><strong>[89]</strong> 欠陥 #11937（端末 tty ioctl ユーザポインタ） — <a href="https://github.com/RT-Thread/rt-thread/issues/11937">https://github.com/RT-Thread/rt-thread/issues/11937</a></li>
+  <li><strong>[90]</strong> 提案 #11993（ivshmem ウィンドウ検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/11993">https://github.com/RT-Thread/rt-thread/pull/11993</a></li>
+  <li><strong>[91]</strong> 提案 #11779（CAN ドライバライフサイクル再構築） — <a href="https://github.com/RT-Thread/rt-thread/pull/11779">https://github.com/RT-Thread/rt-thread/pull/11779</a></li>
+  <li><strong>[92]</strong> 議題 #11956（バージョン管理 CI とリリースフロー） — <a href="https://github.com/RT-Thread/rt-thread/issues/11956">https://github.com/RT-Thread/rt-thread/issues/11956</a></li>
+  <li><strong>[93]</strong> 議題 #11972（QEMU 仮想デバイスとカバレッジ一覧） — <a href="https://github.com/RT-Thread/rt-thread/issues/11972">https://github.com/RT-Thread/rt-thread/issues/11972</a></li>
+  <li><strong>[94]</strong> 提案 #11966（APLIC MSI 再トリガ） — <a href="https://github.com/RT-Thread/rt-thread/pull/11966">https://github.com/RT-Thread/rt-thread/pull/11966</a></li>
+  <li><strong>[95]</strong> 提案 #11979（SPI 仮想ループバックバス） — <a href="https://github.com/RT-Thread/rt-thread/pull/11979">https://github.com/RT-Thread/rt-thread/pull/11979</a></li>
+  <li><strong>[96]</strong> 提案 #11914（GIC フォーマット指定子修正） — <a href="https://github.com/RT-Thread/rt-thread/pull/11914">https://github.com/RT-Thread/rt-thread/pull/11914</a></li>
+  <li><strong>[97]</strong> 提案 #11996（timerfd fd タイプ検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/11996">https://github.com/RT-Thread/rt-thread/pull/11996</a></li>
+  <li><strong>[98]</strong> 欠陥 #11984（timerfd タイプ混同） — <a href="https://github.com/RT-Thread/rt-thread/issues/11984">https://github.com/RT-Thread/rt-thread/issues/11984</a></li>
+  <li><strong>[99]</strong> 提案 #1</li>
+</ul>
+
+<p>1997（POSIX timer id 境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/11997">https://github.com/RT-Thread/rt-thread/pull/11997</a></p>
+<ul>
+  <li><strong>[100]</strong> 欠陥 #11980（POSIX timer id 範囲外） — <a href="https://github.com/RT-Thread/rt-thread/issues/11980">https://github.com/RT-Thread/rt-thread/issues/11980</a></li>
+  <li><strong>[101]</strong> 提案 #11897（K230D と Smart の改善） — <a href="https://github.com/RT-Thread/rt-thread/pull/11897">https://github.com/RT-Thread/rt-thread/pull/11897</a></li>
+  <li><strong>[102]</strong> 提案 #11975（STM32F1／H7 入力キャプチャ） — <a href="https://github.com/RT-Thread/rt-thread/pull/11975">https://github.com/RT-Thread/rt-thread/pull/11975</a></li>
+  <li><strong>[103]</strong> ソフトウェアパッケージ提案 #2052（CH32V2／V3 SDK 同期） — <a href="https://github.com/RT-Thread/packages/pull/2052">https://github.com/RT-Thread/packages/pull/2052</a></li>
+  <li><strong>[104]</strong> ソフトウェアパッケージ提案 #2053（Aerolynq Wi-Fi／Bluetooth ホストドライバ） — <a href="https://github.com/RT-Thread/packages/pull/2053">https://github.com/RT-Thread/packages/pull/2053</a></li>
+  <li><strong>[105]</strong> smart-build コミット（QEMU virt で OFW procfs を有効化） — <a href="https://github.com/RT-Thread/smart-build">https://github.com/RT-Thread/smart-build</a></li>
+  <li><strong>[106]</strong> リポジトリ：rt-carplay — <a href="https://github.com/boa-z/rt-carplay">https://github.com/boa-z/rt-carplay</a></li>
+  <li><strong>[107]</strong> リポジトリ：Aerolynq Wi-Fi および Bluetooth ホストドライバ — <a href="https://github.com/Aerolynq/rtt-wifi-bt-host-driver">https://github.com/Aerolynq/rtt-wifi-bt-host-driver</a></li>
+  <li><strong>[108]</strong> リポジトリ：Mambo-dog-Riscv — <a href="https://github.com/FUJU-DEV/Mambo-dog-Riscv">https://github.com/FUJU-DEV/Mambo-dog-Riscv</a></li>
+  <li><strong>[109]</strong> リポジトリ：ra8d1-vision-sorting — <a href="https://github.com/Nano-gif/ra8d1-vision-sorting">https://github.com/Nano-gif/ra8d1-vision-sorting</a></li>
+  <li><strong>[110]</strong> リポジトリ：VoltDuo（蓄電デュアルコア学習ボード） — <a href="https://github.com/lyf-forever/VoltDuo">https://github.com/lyf-forever/VoltDuo</a></li>
+  <li><strong>[111]</strong> リポジトリ：coact（アクティブオブジェクトと階層状態マシンフレームワーク） — <a href="https://github.com/DeguiLiu/coact">https://github.com/DeguiLiu/coact</a></li>
+  <li><strong>[112]</strong> RT-Thread 公式ニュース一覧 — <a href="https://www.rt-thread.org/news.html">https://www.rt-thread.org/news.html</a></li>
+  <li><strong>[113]</strong> 公式ニュース：烏鎮サミット AIOS 基盤が新光に入選 — <a href="https://club.rt-thread.org/api/index/getContent?id=a6bba6ce21af077e">https://club.rt-thread.org/api/index/getContent?id=a6bba6ce21af077e</a></li>
+  <li><strong>[114]</strong> 公式ニュース：第6回 RISC-V 中国サミット — <a href="https://club.rt-thread.org/api/index/getContent?id=9d3c2387b1397f5b">https://club.rt-thread.org/api/index/getContent?id=9d3c2387b1397f5b</a></li>
+  <li><strong>[115]</strong> 公式ニュース：elexcon フルスタック能力 — <a href="https://club.rt-thread.org/api/index/getContent?id=77bff21d9dc53747">https://club.rt-thread.org/api/index/getContent?id=77bff21d9dc53747</a></li>
+  <li><strong>[116]</strong> 公式ニュース：Vinaro 産業用 PLC サロン — <a href="https://club.rt-thread.org/api/index/getContent?id=0647f5d849cef3b8">https://club.rt-thread.org/api/index/getContent?id=0647f5d849cef3b8</a></li>
+  <li><strong>[117]</strong> 公式ニュース：臨港自動車ソフトウェアサロン — <a href="https://club.rt-thread.org/api/index/getContent?id=9e04c3c5d5b97e50">https://club.rt-thread.org/api/index/getContent?id=9e04c3c5d5b97e50</a></li>
+  <li><strong>[118]</strong> 公式ニュース：工博會 AI カー Workshop — <a href="https://club.rt-thread.org/api/index/getContent?id=0a28f296db368a82">https://club.rt-thread.org/api/index/getContent?id=0a28f296db368a82</a></li>
+  <li><strong>[119]</strong> 公式ニュース：東南アジアの大学展開 — <a href="https://club.rt-thread.org/api/index/getContent?id=05a947bcfc7f1f05">https://club.rt-thread.org/api/index/getContent?id=05a947bcfc7f1f05</a></li>
+  <li><strong>[120]</strong> 電子工程専輯：2026 RT-Thread 組込みコンテストランキング発表 — <a href="https://www.eet-china.com/mp/a537945.html">https://www.eet-china.com/mp/a537945.html</a></li>
+  <li><strong>[121]</strong> 電子工程専輯：STM32 セミナー4都市巡回 — <a href="https://www.eet-china.com/mp/a538406.html">https://www.eet-china.com/mp/a538406.html</a></li>
+  <li><strong>[122]</strong> 電子工程専輯：Infineon AURIX TC397X 6コアプラットフォーム Safety OS — <a href="https://www.eet-china.com/mp/a539041.html">https://www.eet-china.com/mp/a539041.html</a></li>
+  <li><strong>[123]</strong> ST</li>
+</ul>
+
+<p>公式イベントページ（2026 STM32 セミナー） — <a href="https://www.stmcu.com.cn/summitontour2026">https://www.stmcu.com.cn/summitontour2026</a></p>
+<ul>
+  <li><strong>[124]</strong> Google News — <a href="https://news.google.com/">https://news.google.com/</a></li>
+</ul>
+
+<p><em>データソース：毎日のRT-Thread動態デイリーレポート（2026-11-09 から 2026-11-13 までの全5回）および本周期のリリース日検証。レポート期間は 2026-11-09 から 2026-11-13。次回ウィークリーレポート期間の推奨：2026-11-16 ~ 2026-11-20。</em></p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ja/post.html#news-list" class="btn btn-main news-list-link">戻る</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>お問い合わせ</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Eメール:</strong> contact@kubuds.cn<br>
+            <strong>住所:</strong> 中国上海市宝山区高逸路 88 号 1 棟 1 階 108 室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>リンク</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

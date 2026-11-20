@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ru/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ru/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ru/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ru/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ru/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ru/">Главная</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Услуги <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/service/simulator.html">Симулятор</a></li>
+              <li><a class="dropdown-item" href="/ru/service/os.html">Операционная система</a></li>
+              <li><a class="dropdown-item" href="/ru/service/toolchain.html">Инструментальная цепочка</a></li>
+              <li><a class="dropdown-item" href="/ru/service/chip.html">Встраиваемые чипы</a></li>
+
+              <li><a class="dropdown-item" href="/ru/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ru/service/aisys.html">AI-системы</a></li>
+              <li><a class="dropdown-item" href="/ru/service/consultation.html">Консалтинг</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Решения <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ru/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ru/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Сообщество <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ru/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ru/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ru/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ru/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ru/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ru/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/post.html" style="white-space: nowrap;">Новости и события</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ru/about.html" style="white-space: nowrap;">О нас</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ru/career.html">Вакансии</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              Русский <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1022.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1022.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1022.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1022.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1022.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>Ежедневный отчёт RT-Thread (2026-10-22) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ru/">Главная</a></li>
+                                <li class="breadcrumb-item"><a href="/ru/post.html#news-list" class="news-list-link">Новости и события</a>
+                                </li>
+                                <li class="breadcrumb-item active">Ежедневный отчёт RT-Thread (2026-10-22)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>Ежедневный отчёт RT-Thread (2026-10-22)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-22</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Окно мониторинга</strong>: 2026-10-21 08:00 ~ 2026-10-22 08:00 (пекинское время, 24 часа)</p>
+
+<p><strong>Источники</strong>: официальный новостной интерфейс RT-Thread, интерфейс статей форума сообщества, GitHub (коммиты / PR / Issue / Releases / tags основного репозитория, репозитории организации RT-Thread-packages, поиск по экосистеме topic:rt-thread), агрегатор Google News (несколько групп запросов на китайском и английском, через прокси), HN Algolia, проверка отраслевых СМИ и каналов производителей (подробнее см. список источников в приложении)</p>
+
+<hr />
+
+<h2 id="индекс-выпуска">Индекс выпуска</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>Динамика ядра и версий
+        <ul>
+          <li>Проведена дополнительная сверка предложения по планировщику временных слотов, висевшего три года: критерий совпадает с #11907, но «отложенная запись READY» на одноядерной системе приводит к повторному освобождению (10-21)</li>
+          <li>Исправление неинициализированных глобальных переменных динамических модулей: устранены четыре дефекта, включая непродвижение указателя выделения сегмента BSS (10-21)</li>
+          <li>После 10-19 в основной ветке нет новых коммитов, v5.4.0 по-прежнему имеет только макрос версии без артефактов релиза (10-22)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Безопасность и стабильность
+        <ul>
+          <li>В пути чтения NFS длина memcpy берётся из счётчика сервера: одного cat достаточно для перезаписи адреса возврата (10-22)</li>
+          <li>В обходе опций сервера DHCP raw-API отсутствует граница: максимум выхода за буфер 1500 байт составляет 4 байта (10-21)</li>
+          <li>Предложения по исправлению двух дефектов памяти предыдущего дня всё ещё на рассмотрении, в этом выпуске ничего не принято (10-21)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Официальные и общественные мероприятия
+        <ul>
+          <li>В официальном новостном интерфейсе нет новых поступлений, на форуме сообщества в окне мониторинга нет новых длинных статей (10-22)</li>
+          <li>Пресс-релиз RuiQing V1.8.4 и анонс прямой трансляции опубликованы в один день, обзоров в окне не обнаружено (10-21)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Экосистема и адаптация производителей
+        <ul>
+          <li>Принято в пакет ESP-IDF v6.1: для C3/C6 появился официальный переключатель замены FreeRTOS на RT-Thread (10-21)</li>
+          <li>Разблокировано而同批 предложение на стороне BSP: все тринадцать конфигураций C3 проходят, проверка на плате待验 (10-21)</li>
+          <li>OSPI и OctaFlash переходят на уровень компонентов: SFUD поддерживает режимы 1-1-1 и 8-8-8 (10-21)</li>
+          <li>Исправлен спецификатор формата в функции печати GIC для Cortex-A: передача %p не-указателя является неопределённым поведением (10-21)</li>
+          <li>RuiQing V1.8.4 и новая IDE: кодеры, MIPI RGB666, подтяжка GPIO, поддержка проектов GD32H7 (10-21)</li>
+          <li>Создан репозиторий примеров встраиваемого UI для GD32, остальные основные репозитории организации продолжают бездействовать (10-21)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Отраслевые применения
+        <ul>
+          <li>Исправления RuiQing V1.8.4 для промышленных площадок: аффинность прерываний EtherCAT, зависание netstat при telnet, скорость UART DMA (10-21)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>Итоги и наблюдения за трендами
+        <ul>
+          <li>Тренды выпуска</li>
+          <li>Ограничения и пояснения по дедупликации</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="1-динамика-ядра-и-версий">1. Динамика ядра и версий</h2>
+
+<h3 id="11-проведена-дополнительная-сверка-предложения-по-планировщику-временных-слотов-висевшего-три-года-критерий-совпадает-с-11907-но-отложенная-запись-ready-на-одноядерной-системе-приводит-к-повторному-освобождению-10-21">1.1 Проведена дополнительная сверка предложения по планировщику временных слотов, висевшего три года: критерий совпадает с #11907, но «отложенная запись READY» на одноядерной системе приводит к повторному освобождению (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 14:16 ~ 14:41 (время комментариев)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/6645">PR #6645</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11907">PR #11907</a></p>
+
+<p>Патч планировщика временных слотов, отправленный 2022-11-23 (#6645), долго находился в состоянии <code class="highlighter-rouge">Status: waiting for test</code>; участник сообщества Yunlk в течение окна мониторинга опубликовал три комментария подряд, вернув его в поле зрения рецензентов. Во-первых, изменения в <code class="highlighter-rouge">src/scheduler.c</code> в текущей основной ветке уже разделены на <code class="highlighter-rouge">scheduler_comm.c</code>, <code class="highlighter-rouge">scheduler_up.c</code>, <code class="highlighter-rouge">scheduler_mp.c</code>, исходный патч нельзя применить напрямую; в комментарии приведено поточечное соответствие изменений новым файлам. Во-вторых, ключевой критерий патча — только «всё ещё выполняется и вытеснен при неисчерпанном временном слоте» ставится в начало очереди, всё остальное — в конец — полностью совпадает с выводом, независимо полученным в #11907; два не знавших друг о друге пути сошлись к одному суждению, и автор назвал это само по себе косвенным подтверждением правильности направления. В-третьих, реальное расхождение — в способе реализации: данный патч удаляет перезапись записи <code class="highlighter-rouge">READY</code> при вставке в начало, заменяя её единой установкой флага при вставке в конец с очисткой YIELD, из-за чего во время вставки состояние потока остаётся <code class="highlighter-rouge">RUNNING</code>.</p>
+
+<p>После переноса по этой логике на однопутевой путь порядок пробуждения семафоров на QEMU vexpress-a9 исправлен с <code class="highlighter-rouge">BA</code> на <code class="highlighter-rouge">AB</code>, порядок загрузки — с <code class="highlighter-rouge">DC</code> на <code class="highlighter-rouge">CD</code>, трёхпоточное циклическое квантование работает нормально, но utest группы планирования стабильно падает: срабатывает утверждение в <code class="highlighter-rouge">rt_smem_free</code>, обратная трассировка <code class="highlighter-rouge">rt_free ← rt_defunct_execute ← idle_thread_entry</code>, то есть idle при переработке завершённого потока дважды освобождает один и тот же TCB, оба запуска воспроизводят это в одном и том же тест-кейсе. В изоляционном эксперименте возврат прежнего очищения YIELD в <code class="highlighter-rouge">rt_schedule()</code> не устранил падение, что показывает: проблема не в месте очищения, а в «отложенной записи READY». После дополнительной проверки SMP (двухъядерная конфигурация) дискриминант также оказался действителен, повторное освобождение наблюдается только на однопутевом пути; автор также исправил своё прежнее утверждение «SMP не тестировался». Вывод и рекомендация: дискриминант стоит сохранить, но продвигать на основе #11907 «сначала сохранить <code class="highlighter-rouge">stat_before</code>, затем проверять»; если #6645 продолжать, необходимо сначала проверить повторное освобождение на однопутевом пути.</p>
+
+<h3 id="12-исправление-неинициализированных-глобальных-переменных-в-динамических-модулях-четыре-дефекта-включая-отсутствие-продвижения-указателя-при-выделении-сегмента-bss-10-21">1.2 Исправление неинициализированных глобальных переменных в динамических модулях: четыре дефекта, включая отсутствие продвижения указателя при выделении сегмента BSS (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 21:09 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11915">PR #11915</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/5705">Issue #5705</a></p>
+
+<p>Участник usualtreee открыл исправление для #5705, зарегистрированного в марте 2022 года; проблема по-прежнему воспроизводится на текущей основной ветке <code class="highlighter-rouge">1c801efa</code>. Дефекты сосредоточены в пути загрузки перемещаемых модулей (ET_REL) <code class="highlighter-rouge">dlmodule_load_relocated_object()</code>, то есть в пути, используемом платами Cortex-M и другими с включённым <code class="highlighter-rouge">RT_USING_MODULE</code>: во-первых, после загрузки сегмента BSS (SHT_NOBITS) указатель выделения не продвигается, несколько сегментов NOBITS накладываются на одну и ту же область памяти; во-вторых, формула релокации символьных ссылок сегмента не содержит поправки на адрес компоновки сегмента; в-третьих, символы <code class="highlighter-rouge">SHN_COMMON</code> (неинициализированные глобальные переменные с tentative-определением) молча пропускаются, поскольку код читает <code class="highlighter-rouge">shdr[0xfff2]</code> для получения имени сегмента, получает мусорное значение и не находит совпадения; в-четвёртых, этот путь никогда не строит <code class="highlighter-rouge">module-&gt;symtab</code>, поэтому <code class="highlighter-rouge">dlsym()</code> для ET_REL-модулей всегда завершается неудачей.</p>
+
+<p>Исправление соответствует четырём пунктам: после загрузки сегмента BSS продвигать указатель на размер сегмента; релокацию сегментов rodata/bss/data унифицировать как «адрес загрузки сегмента − адрес компоновки сегмента + значение символа»; для SHN_COMMON отдельно выделять общий блок и вынести эту ветвь до сопоставления имени сегмента, чтобы избежать чтения за границей; собирать глобальные функциональные символы из <code class="highlighter-rouge">.symtab</code> для построения <code class="highlighter-rouge">module-&gt;symtab</code>. Изменения затрагивают два файла +147/-9, проверены на qemu-vexpress-a9 тремя тестовыми модулями: до исправления <code class="highlighter-rouge">dlsym</code> для ET_REL-модулей завершался неудачей, после исправления успешен, адреса двух неинициализированных глобальных переменных (<code class="highlighter-rouge">0x600d2008</code> и <code class="highlighter-rouge">0x600d2004</code>) не пересекаются, запись и чтение характеристических значений проходит, результаты для двух ET_DYN-модулей не изменились. Предложение прошло CLA и находится на рассмотрении группы components.</p>
+
+<h3 id="13-в-основной-ветке-после-10-19-нет-новых-коммитов-v540-по-прежнему-имеет-только-макрос-версии-без-артефактов-релиза-10-22">1.3 В основной ветке после 10-19 нет новых коммитов, v5.4.0 по-прежнему имеет только макрос версии без артефактов релиза (10-22)</h3>
+
+<p><strong>Дата</strong>: 2026-10-22 (время проверки)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">записи коммитов основного репозитория</a>, <a href="https://github.com/RT-Thread/rt-thread/releases">releases</a>, <a href="https://github.com/RT-Thread/rt-thread/tags">tags</a></p>
+
+<p>В окне мониторинга в основной ветке ноль коммитов и ноль слияний, последний — всё ещё <code class="highlighter-rouge">[bsp][spacemit/k1] first version</code> от 10-19 18:49; время пуша на странице организации также остановилось на 10-19, последняя активность остальных репозиториев — rtthread-skills и smart-build от 10-18, env и репозиторий спецификаций портирования от 10-17. Со стороны версий изменений нет: последний тег и артефакт релиза — по-прежнему v5.3.0 от 09-10, коммит «Bump version to v5.4.0» от 10-17 до сих пор имеет только макрос версии, без примечаний к релизу и бинарников. Фактическая активность кода в этом выпуске целиком приходится на рассматриваемые предложения, баг-репорты и репозитории пакетов на стороне RT-Thread-packages.</p>
+
+<h2 id="2-безопасность-и-стабильность">2. Безопасность и стабильность</h2>
+
+<h3 id="21-путь-чтения-nfs-использует-счётчик-сервера-в-качестве-длины-memcpy-одного-cat-достаточно-для-перезаписи-адреса-возврата-10-22">2.1 Путь чтения NFS использует счётчик сервера в качестве длины memcpy: одного cat достаточно для перезаписи адреса возврата (10-22)</h3>
+
+<p><strong>Дата</strong>: 2026-10-22 02:13 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11917">Issue #11917</a>, <a href="https://github.com/RT-Thread/rt-thread/blob/master/components/dfs/dfs_v1/filesystems/nfs/dfs_nfs.c">dfs_nfs.c</a></p>
+
+<p>Участник XueDugu открыл новую заявку на дефект клиента NFS — относится к напрямую эксплуатируемому повреждению памяти. <code class="highlighter-rouge">nfs_read()</code> ограничивает длину запроса 1024 байтами, но при копировании использует <code class="highlighter-rouge">READ3resok.count</code> из ответа сервера, не сравнивая его ни с длиной запроса вызывающей стороны, ни с длиной данных, декодированных из того же ответа; на стороне декодирования XDR в качестве верхней границы используется <code class="highlighter-rouge">xdr_bytes(..., ~0)</code>, поэтому проверка длины никогда не срабатывает. Два счётчика в протоколе независимы друг от друга, и вредоносный сервер вполне может на запрос в 80 байт ответить <code class="highlighter-rouge">count = 512</code> и 512 байтами данных.</p>
+
+<p>Последствия затрагивают встроенную команду <code class="highlighter-rouge">cat</code>: <code class="highlighter-rouge">dfs_file.c</code> принимает чтение в <code class="highlighter-rouge">char buffer[81]</code>, и однократный <code class="highlighter-rouge">cat</code> одного файла позволяет выйти за хвост буфера максимум примерно на 430 байт, перезаписав адрес возврата в стеке потока finsh. Дефект внесён коммитом <code class="highlighter-rouge">0fbfdec40d</code> от 2010-05-20, затронуты все версии начиная с v1.2.0, включая v5.3.0 и текущую основную ветку. Автор воспроизвёл его на QEMU vexpress-a9 и на реальной плате RP2350; клиент NFS сам формирует AUTH_SYS и работает по UDP без аутентификации, поэтому содержимым переполнения может управлять как смонтированный сервер, так и внедряющийся на пути. Заявка пока не принята в работу.</p>
+
+<h3 id="22-отсутствие-границ-при-обходе-опций-dhcp-сервера-raw-api-выход-за-1500-байтовый-буфер-максимум-на-4-байта-10-21">2.2 Отсутствие границ при обходе опций DHCP-сервера raw-API: выход за 1500-байтовый буфер максимум на 4 байта (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 15:49 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11913">Issue #11913</a>, <a href="https://github.com/RT-Thread/rt-thread/blob/master/components/net/lwip-dhcpd/dhcp_server_raw.c">dhcp_server_raw.c</a></p>
+
+<p>Другой исследователь, K-ANOY, сообщил о чтении за границами в DHCP-сервере raw-API. Функция поиска опций гарантирует лишь то, что возвращаемый указатель лежит внутри буфера; при обходе <code class="highlighter-rouge">buf[1]</code> не проверяется предварительно на <code class="highlighter-rouge">buf + 1 &lt; end</code>, поэтому заголовок опции, от которого в конце остался один байт, приводит к чтению на один байт за границей; вызывающая сторона затем читает фиксированную ширину (для запрошенного IP — 4 байта, для типа сообщения — 1 байт), и, разместив заголовок опции в хвосте, можно заставить <code class="highlighter-rouge">opt[2]..opt[5]</code> выйти за пределы 1500-байтового блока pbuf максимум на 4 байта. Расположенный в том же каталоге <code class="highlighter-rouge">dhcp_server.c</code> на основе сокетов как раз выполняет эти проверки — не выходит ли длина за границы, действительна ли объявленная длина, <code class="highlighter-rouge">length &lt; 4</code> и <code class="highlighter-rouge">length &lt; 1</code> — что доказывает от противного: версии raw не хватает именно этих барьеров.</p>
+
+<p>Условие срабатывания — всего лишь пакет от любого хоста в той же подсети на UDP/67 с усечённой областью опций, без аутентификации; автор выполнил логическое воспроизведение под ASan и отметил, что считанные значения используются только для сравнения и ветвления и напрямую не выводятся наружу. Заявка помечена тегами <code class="highlighter-rouge">bug</code> и <code class="highlighter-rouge">component: net</code>, пока не принята в работу.</p>
+
+<h3 id="23-предложения-по-исправлению-двух-дефектов-памяти-за-предыдущий-день-всё-ещё-на-рассмотрении-в-этом-выпуске-слияний-нет-10-21">2.3 Предложения по исправлению двух дефектов памяти за предыдущий день всё ещё на рассмотрении, в этом выпуске слияний нет (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 (время проверки)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11911">PR #11911</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11910">PR #11910</a></p>
+
+<p>Для обоих дефектов памяти, вошедших в предыдущий выпуск, в процессе находятся соответствующие исправления: предложение об ограничении длины имён каталогов в cromfs (#11911, подано тем же исследователем, соответствует заявке на дефект #11905) и исправление использования после освобождения при усечении tmpfs до нулевой длины (#11910, подано remukisama после воспроизведения на aarch64 в RT-Smart). В данном окне у обоих обновились только статус и комментарии, в основную ветку они не влиты; в этом выпуске технические подробности повторно не раскрываются.</p>
+
+<h2 id="3-официальные-и-общественные-мероприятия">3. Официальные и общественные мероприятия</h2>
+
+<h3 id="31-новых-записей-в-официальном-новостном-api-нет-в-окне-на-форуме-сообщества-нет-принципиально-новых-длинных-материалов-10-22">3.1 Новых записей в официальном новостном API нет, в окне на форуме сообщества нет принципиально новых длинных материалов (10-22)</h3>
+
+<p><strong>Дата</strong>: 2026-10-22 (время проверки)　<strong>Источник</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">Официальный новостной API RT-Thread</a>, <a href="https://club.rt-thread.org/api/index/getList?type=article">API статей форума сообщества</a></p>
+
+<p>Категория организации в официальном новостном API по-прежнему возвращает 25 архивных материалов, последняя запись датируется 2026-06-17 — обновления прекратились более четырёх месяцев назад; страница списка новостей на официальном сайте рендерится динамически на фронтенде, при выборке получается лишь пустая оболочка загрузки, поэтому за основу берутся данные API. Среди первых 25 записей API статей сообщества в окне нет принципиально новых длинных материалов; последнее обновление — 10-21 10:08, работа «двухплатный скоординированный интеллектуальный терминал», технические моменты которой уже вошли в предыдущий выпуск, в этом выпуске она обрабатывается как редакционное обновление; кроме того, объявление о конкурсе универсальной адаптации Edgi-X, опубликованное 10-19, выходит за пределы окна.</p>
+
+<h3 id="32-публикация-о-выпуске-ruiqing-v184-и-анонс-прямой-трансляции-вышли-в-один-день-обзоров-в-окне-не-появилось-10-21">3.2 Публикация о выпуске Ruiqing V1.8.4 и анонс прямой трансляции вышли в один день, обзоров в окне не появилось (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 11:50 (время публикации)　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a532671.html">EE Times China: выпуск платформы Ruiqing V1.8.4</a></p>
+
+<p>Пресс-релиз платформы Ruiqing V1.8.4 вышел в окне мониторинга; его содержание взаимно подтверждается с анонсом прямой трансляции предыдущего дня, перечень функций см. в 4.5, исправления стабильности для промышленных площадок — в 5.1. Пресс-релиз по-прежнему завершается фразой «сегодня в 20:00 прямая трансляция с разбором на реальном оборудовании», что указывает на то, что на момент публикации трансляция ещё не состоялась; в окне мониторинга не найдено ни обзора, ни описания записи этой трансляции, поэтому в данном выпуске оценка эффекта не приводится — фиксируется только факт выпуска версии и синхронного обновления IDE до V1.5.62.</p>
+
+<h2 id="4-экосистема-и-адаптация-производителей">4. Экосистема и адаптация производителей</h2>
+
+<h3 id="41-со-стороны-пакета-принят-esp-idf-v61-для-c3c6-появился-официальный-переключатель-замены-freertos-на-rt-thread-10-21">4.1 Со стороны пакета принят ESP-IDF v6.1: для C3/C6 появился официальный переключатель замены FreeRTOS на RT-Thread (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 15:23 (время слияния)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread-packages/esp-idf/pull/18">RT-Thread-packages/esp-idf PR #18</a></p>
+
+<p>Пакет esp-idf из RT-Thread-packages прошёл полное обновление с 5.1 до 6.1.0 и был слит; изменено более двадцати тысяч файлов. Относительно официального v6.1 это слияние несёт три структурных изменения со стороны RT-Thread: добавлен <code class="highlighter-rouge">components/rtthread/</code> (слой портирования для C3/C6, <code class="highlighter-rouge">rtconfig.h</code>, board/context, CMake и скрипты компоновки), добавлен <code class="highlighter-rouge">components/riscv/vectors_rtthread.S</code>, а в FreeRTOS, esp_system, esp_timer и других местах добавлены ветки переключателя <code class="highlighter-rouge">CONFIG_IDF_RTOS_RTTHREAD</code>; в menuconfig это соответствует пункту «Component config → FreeRTOS → Extra → Replace FreeRTOS with RT-Thread». Для RISC-V значение этого шага в том, что C3 и C6 относятся к ядрам RISC-V (в отличие от Xtensa в S2/S3): ранее RT-Thread можно было запускать только на IDF 5.x по старой схеме интеграции, а теперь есть база 6.1 плюс официально признанный канал замены ядра.</p>
+
+<h3 id="42-снята-блокировка-однотипного-предложения-на-стороне-bsp-все-тринадцать-конфигураций-c3-проходят-проверка-на-плате-ожидается-10-21">4.2 Снята блокировка однотипного предложения на стороне BSP: все тринадцать конфигураций C3 проходят, проверка на плате ожидается (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 15:24 (время комментария)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11870">PR #11870</a></p>
+
+<p>Сопутствующее пакету предложение в основном репозитории #11870 получило в этом окне ответ мейнтейнера «esp-idf уже слит», прежняя блокирующая точка устранена. Предложение изменяет 55 файлов +4554/-333: C3 и C6 по отдельности адаптированы к совместимости с ESP-IDF v6.1 (объявления FreeRTOS V11 в <code class="highlighter-rouge">portmacro.h</code>, <code class="highlighter-rouge">sections.ld</code>, <code class="highlighter-rouge">port.c</code>, <code class="highlighter-rouge">main.c</code>, <code class="highlighter-rouge">rtconfig.py</code> и небольшие правки драйверов ADC/SPI), а инструментальная цепочка RISC-V обновлена с gcc 11.2 (esp-2022r1) до gcc 15.2 (esp-15.2.0_20251204), одновременно скорректированы CI workflow, docker и <code class="highlighter-rouge">tools/ci</code>. Автор сообщает о проверке: все тринадцать конфигураций attachconfig для C3 компилируются, конфигурация C6 по умолчанию компилируется и линкуется, проверка на реальной плате ещё предстоит; портирование ESP32-S3 и изменения слоя совместимости с FreeRTOS вынесены в отдельное предложение и в этот коммит не входят.</p>
+
+<h3 id="43-ospi-и-octaflash-выходят-на-уровень-компонентов-sfud-поддерживает-режимы-1-1-1-и-8-8-8-10-21">4.3 OSPI и OctaFlash выходят на уровень компонентов: SFUD поддерживает режимы 1-1-1 и 8-8-8 (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 15:22 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11912">PR #11912</a></p>
+
+<p>В существующем драйверном слое есть только пути SPI и QSPI, нативного пути доступа к восьмилинейной Flash через SFUD нет. Данное предложение добавляет OSPI на уровне компонентов: новые определения шины, устройства, конфигурации и сообщений, а также помощник передачи, при этом сохраняются существующие пути SPI/QSPI; передача OSPI и обнаружение устройств подключены к SFUD с покрытием чтения, записи, стирания и запроса состояния, а в таблицу устройств добавлен MX25LM51245G для проверки. Чтобы замкнуть всю цепочку, дополнительно добавлен универсальный низкоуровневый драйвер STM32 OctoSPI <code class="highlighter-rouge">drv_ospi.c</code> (504 строки) и заголовки конфигурации серии L4, а на плате stm32l4r9-st-eval добавлены конфигурация выводов, тактирования и MSP для OCTOSPI1 и вспомогательные функции входа в режимы OPI STR/DTR, попутно исправлено перекрытие <code class="highlighter-rouge">.bss</code>, вызванное раскладкой кучи и компоновки данной платы. Изменено 32 файла +3728/-956, четыре коммита, CLA подписан, ревью назначено трём мейнтейнерам группы STM32; автор сообщает о запуске на реальной плате со сборкой GCC — оба режима, 1-1-1 и 8-8-8, распознаются SFUD.</p>
+
+<h3 id="44-исправлен-спецификатор-формата-в-функции-печати-gic-для-cortex-a-передача-non-pointer-в-p-является-неопределённым-поведением-10-21">4.4 Исправлен спецификатор формата в функции печати GIC для Cortex-A: передача non-pointer в %p является неопределённым поведением (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 18:00 (время создания)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11914">PR #11914</a></p>
+
+<p>Для <code class="highlighter-rouge">libcpu/arm/cortex-a</code> функции печати информации GICv2 и GICv3 содержат четыре типа несоответствия спецификаторов формата и типов аргументов: физический адрес имеет тип <code class="highlighter-rouge">rt_uint32_t</code>, но печатается через <code class="highlighter-rouge">%p</code>, что является неопределённым поведением; номер версии GIC имеет тип <code class="highlighter-rouge">unsigned long</code>, максимальный номер прерывания и номер прерывания имеют тип <code class="highlighter-rouge">unsigned int</code>, но все печатаются через <code class="highlighter-rouge">%d</code>. При компиляции платы Cortex-A с <code class="highlighter-rouge">-Wall -Wformat</code> всё это выдаёт предупреждения. Предложение заменяет <code class="highlighter-rouge">%p</code> на <code class="highlighter-rouge">0x%08x</code>, <code class="highlighter-rouge">%d</code> на <code class="highlighter-rouge">%u</code>, а для номера версии, извлекаемого из <code class="highlighter-rouge">0xfUL</code>, добавляет явное приведение к <code class="highlighter-rouge">unsigned int</code>; в двух файлах +64/-40, изменяются только спецификаторы формата, логика выполнения не затрагивается.</p>
+
+<h3 id="45-ruiching-v184-и-новая-ide-энкодер-mipi-rgb666-подтяжка-gpio-поддержка-проектов-gd32h7-10-21">4.5 RuiChing V1.8.4 и новая IDE: энкодер, MIPI RGB666, подтяжка GPIO, поддержка проектов GD32H7 (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 11:50 (время публикации)　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a532671.html">EE Times China: публикация платформы RuiChing V1.8.4</a>, <a href="https://www.rt-thread.com/ruiching/document/site/">Центр документации RuiChing</a></p>
+
+<p>Платформа RuiChing выпустила V1.8.4: на стороне SDK 6 новых функций и 4 исправления, IDE RuiChingStudio синхронно обновлена до V1.5.62. Новые возможности сосредоточены на периферии и дисплее RC3506: добавлен драйвер абсолютного поворотного энкодера QY1503, работающий через интерфейс SSI и предоставляющий пример вывода ортогональных импульсов через PWM, ориентированный на замкнутый контур управления двигателем и измерение угла; в MIPI DSI добавлена адаптация RGB666 (18-битная глубина цвета), формат отображения и число lane настраиваются через дерево устройств; открыт интерфейс <code class="highlighter-rouge">mipi_display_start()</code>, позволяющий приложению самостоятельно определять момент инициализации дисплея для упорядочивания подачи питания на дисплей и подсветку; в GPIO добавлены два входных режима <code class="highlighter-rouge">PIN_MODE_INPUT_PULLUP</code> и <code class="highlighter-rouge">PIN_MODE_INPUT_PULLDOWN</code>, избавляющие от внешних подтягивающих резисторов; добавлена отладочная команда <code class="highlighter-rouge">amp_device</code>, позволяющая просматривать принадлежность устройств в архитектуре AMP (сторона RT-Thread или сторона Linux), аффинность прерываний и тактовые частоты. На стороне IDE добавлена поддержка создания проектов, сборки и загрузки/отладки через J-Link/DAP-Link для серии GD32H7, а также оптимизирован процесс компоновки проектов GD32H7 и RK3576; полный журнал изменений и SDK синхронизированы с центром документации.</p>
+
+<h3 id="46-создан-репозиторий-примеров-встраиваемого-ui-для-gd32-остальные-основные-репозитории-организации-продолжают-молчать-10-21">4.6 Создан репозиторий примеров встраиваемого UI для GD32, остальные основные репозитории организации продолжают молчать (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 17:58 (время коммита)　<strong>Источник</strong>: <a href="https://github.com/RT-Thread-packages/GD32EmbeddedUI-demos">GD32EmbeddedUI-demos</a></p>
+
+<p>В организации RT-Thread-packages добавлен <code class="highlighter-rouge">GD32EmbeddedUI-demos</code>, созданный мейнтейнером Rbb666 в пределах окна мониторинга; сейчас в нём только один Initial commit, содержимое ещё не сформировано, в этом выпуске фиксируется лишь факт создания репозитория. Остальные репозитории организации без новых пушей: основной репозиторий остановился на 10-19, rtthread-skills и smart-build на 10-18, env и репозиторий спецификаций портирования на 10-17, индекс packages на 10-14; слой совместимости FreeRTOS и стандартные драйверы n32h7xx имели пуши 10-16 и 10-14 соответственно. На стороне экосистемы в окне мониторинга появились также несколько личных репозиториев (rt-thread-am, rtthread-nano-fw, извлечение фреймворка initcall, плагин автодополнения для Studio и др.), все — новые репозитории с единичными звёздами, не образующие достойной освещения динамики проекта.</p>
+
+<h2 id="5-отраслевые-применения">5. Отраслевые применения</h2>
+
+<h3 id="51-исправления-ruiching-v184-для-промышленных-площадок-аффинность-прерываний-ethercat-зависание-netstat-под-telnet-скорость-uart-dma-10-21">5.1 Исправления RuiChing V1.8.4 для промышленных площадок: аффинность прерываний EtherCAT, зависание netstat под telnet, скорость UART DMA (10-21)</h3>
+
+<p><strong>Дата</strong>: 2026-10-21 11:50 (время публикации)　<strong>Источник</strong>: <a href="https://www.eet-china.com/mp/a532671.html">EE Times China: публикация платформы RuiChing V1.8.4</a>, <a href="https://www.rt-thread.com/ruiching/document/site/changelog/summary/">Журнал изменений RuiChing</a></p>
+
+<p>Все четыре исправления этой версии указывают на промышленные площадки: задача и прерывание EtherCAT ранее не были привязаны к одному CPU, прерывание по умолчанию попадало на CPU0, при переключении нескольких задач периодически возникали конфликты доступа и зависания; после исправления оба привязаны к одному ядру; удалённое выполнение netstat через telnet блокировалось без отклика — исправлено; в примере UART DMA не удавалось установить скорость передачи, корневая причина в процедуре инициализации последовательного порта DMA — исправлено; в примере с 4,3-дюймовым экраном повышена PWM подсветки для улучшения видимости на улице. В сочетании с уже освещёнными в предыдущем выпуске виртуальным сетевым интерфейсом и монтированием NFS промышленного шлюза EG1200, а также решением управления движением колёсных двигателей ROS2 на базе RC-Pi-3506, эта продуктовая линейка RuiChing в данном выпуске демонстрирует два параллельных направления развития — «сетевые возможности на стороне шлюза» и «реальное время на стороне управления движением», причём исправления в основном приходят из обратной связи реальных проектов, а не из внутреннего тестирования.</p>
+
+<h2 id="6-итоги-и-наблюдения-за-трендами">6. Итоги и наблюдения за трендами</h2>
+
+<h3 id="61-тренды-текущего-выпуска">6.1 Тренды текущего выпуска</h3>
+
+<ul>
+  <li><strong>Обсуждение планировщика перешло от «каждый предлагает своё» к «сравнению реализаций»</strong>: отложенный на три года #6645 был повторно проверен, его критерий независимо сошёлся с #11907, но два способа реализации разошлись по уровню безопасности памяти — отложенная запись READY на одноядерной системе порождает путь повторного освобождения через idle-рекультивацию, а вариант с сохранением старого состояния — нет. Такое горизонтальное сравнение между предложениями ценнее для принятия решений, чем отдельный патч, и фактически делает #11907 базовой линией продвижения.</li>
+  <li><strong>Отчёты о дефектах по-прежнему инициируются внешними исследователями и содержат полную зону влияния</strong>: за день два отчёта о проблемах с памятью — вводящий коммит переполнения стека NFS прослеживается до 2010 года, затронуты все версии начиная с v1.2.0, а выход за границы при чтении в DHCP подтверждается反 примером отсутствия проверки в другой реализации в том же каталоге. Оба отчёта содержат среду воспроизведения и условия срабатывания, что значительно снижает стоимость исправления.</li>
+  <li><strong>На стороне RISC-V получен канал замены ядра</strong>: после слияния полного обновления ESP-IDF 6.1 C3/C6 могут заменить FreeRTOS на RT-Thread через <code class="highlighter-rouge">CONFIG_IDF_RTOS_RTTHREAD</code>, инструментальная цепочка одновременно переходит на GCC 15.2; блокирующий пункт предложения BSP в основном репозитории в тот же день устранён, осталась только проверка на плате. Это самый весомый шаг, связанный с RISC-V, за текущий период.</li>
+  <li><strong>Основная ветка неподвижна, версия застряла на сентябре</strong>: три дня подряд ноль коммитов, ноль слияний, в v5.4.0 только макрос версии. Вся активность сосредоточена в предложениях на рассмотрении, заявках о дефектах и репозиториях пакетов, что形成 тот же ритм, что и прекращение обновлений официальных каналов.</li>
+  <li><strong>Платформы производителей стабильно итерируются по версиям и включают в исправления проблемы с мест эксплуатации</strong>: шесть新增 и четыре исправления в RuiQing V1.8.4 соответствуют конкретным сценариям (замкнутый контур энкодера, адаптация MIPI-экрана, отладка AMP, аффинность EtherCAT), IDE синхронно расширена до GD32H7, что показывает: конкурентоспособность промышленных платформ смещается от «работает ли вообще» к «стабильно ли на месте».</li>
+</ul>
+
+<h3 id="62-ограничения-и-пояснения-по-дедупликации">6.2 Ограничения и пояснения по дедупликации</h3>
+
+<ul>
+  <li>Данный выпуск охватывает 24-часовое окно (10-21 08:00 ~ 10-22 08:00), не понедельник, объединение за несколько дней не выполняется.</li>
+  <li>В окне основного репозитория ноль коммитов и ноль слияний; все пункты взяты из предложений на рассмотрении, заявок о дефектах, репозиториев на стороне RT-Thread-packages и релизов производителей, статус каждого указан.</li>
+  <li>Дедупликация с прошлым выпуском: #11907, #11909, #11911, #11910, #11903, #11870 уже были включены в прошлый выпуск; в этом выпуске описаны только новые выводы в окне (подтверждение мейнтейнером слияния esp-idf по #11870, данные повторной проверки #6645, статус процесса #11910 и #11911).</li>
+  <li>В результатах поиска #11815 (макропереключатель lwip) и #11814 (распределение ресурсов RA6W1) отображаются как обновлённые в окне, фактическое время слияния — 10-14 и 10-15 соответственно; в окне были только комментарии и изменения статуса, новые включения не выполнялись.</li>
+  <li>Интерфейс статей форума выдаёт только первые 25 записей, последняя — редактированное обновление уже включённой в прошлый выпуск работы; страница списка официальных новостей рендерится на фронтенде, новости берутся по интерфейсу.</li>
+  <li>Google News на английском: три дня без попаданий; на китайском за трёхдневное окно действительна только одна публикация — RuiQing V1.8.4; запрос по RuiQing по-прежнему тонет в одноимённых автомобильных материалах, отсеяно по семантике заголовка.</li>
+  <li>При анонимном лимите GitHub на локальной машине полная проверка推送 на уровне организации не проводилась; вместо этого использовалась перекрёстная проверка потока коммитов репозиториев и страницы организации; время推送 страницы организации RT-Thread-packages сверено по каждому репозиторию.</li>
+</ul>
+
+<h2 id="приложение-таблица-проверки-источников">Приложение: таблица проверки источников</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Источник</th>
+      <th>Результат проверки</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Официальный новостной интерфейс RT-Thread (категория организации)</td>
+      <td>Нет新增, последняя из 25 архивных записей по-прежнему 06-17</td>
+    </tr>
+    <tr>
+      <td>Страница списка новостей официального сайта</td>
+      <td>Динамический рендеринг на фронтенде, при захвате получается только пустая оболочка загрузки</td>
+    </tr>
+    <tr>
+      <td>Интерфейс статей форума сообщества</td>
+      <td>Среди первых 25 записей нет совершенно новых длинных материалов, последняя — редактированное обновление уже включённой в прошлый выпуск работы (10-21 10:08)</td>
+    </tr>
+    <tr>
+      <td>commits основного репозитория GitHub</td>
+      <td>В окне 0, последний по-прежнему первая версия K1 от 10-19</td>
+    </tr>
+    <tr>
+      <td>PR основного репозитория GitHub</td>
+      <td>В окне 13 обновлений, открыто 4 новых (#11912, #11914, #11915, ещё #11916 — тестовый черновик, не учитывается), ни один не слит</td>
+    </tr>
+    <tr>
+      <td>Issue основного репозитория GitHub</td>
+      <td>Открыто 2 новых (#11913, #11917), оба не взяты в работу</td>
+    </tr>
+    <tr>
+      <td>releases / tags основного репозитория GitHub</td>
+      <td>Новых релизов нет, последний по-прежнему v5.3.0 от 09-10</td>
+    </tr>
+    <tr>
+      <td>GitHub RT-Thread-packages</td>
+      <td>esp-idf #18 слит (10-21), GD32EmbeddedUI-demos создан (10-21), FreeRTOS-Wrapper остановлен 10-16</td>
+    </tr>
+    <tr>
+      <td>Другие репозитории организации GitHub</td>
+      <td>rtthread-skills, smart-build остановлены 10-18; env, репозиторий спецификаций остановлены 10-17; packages остановлен 10-14</td>
+    </tr>
+    <tr>
+      <td>Поиск по экосистеме GitHub topic:rt-thread</td>
+      <td>За последнюю неделю несколько личных новых репозиториев, все не проектного уровня, не включены</td>
+    </tr>
+    <tr>
+      <td>Агрегация Google News (китайский, через прокси)</td>
+      <td>За трёхдневное окно 1 действительная публикация (RuiQing V1.8.4), остальное — одноимённый шум</td>
+    </tr>
+    <tr>
+      <td>Агрегация Google News (английский)</td>
+      <td>За трёхдневное окно ноль попаданий</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>Кандидаты в окне — ложные совпадения threads, релевантных обсуждений нет</td>
+    </tr>
+    <tr>
+      <td>Отраслевые СМИ и каналы производителей</td>
+      <td>Релизная публикация RuiQing V1.8.4 и журнал обновлений центра документации</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="полный-список-источников">Полный список источников</h3>
+
+<ul>
+  <li><strong>[1]</strong> PR #6645 (патч планировщика по временным слотам, комментарии к ревью) — <a href="https://github.com/RT-Thread/rt-thread/pull/6645">https://github.com/RT-Thread/rt-thread/pull/6645</a></li>
+  <li><strong>[2]</strong> PR #11907 (порядок готовности задач с одинаковым приоритетом) — <a href="https://github.com/RT-Thread/rt-thread/pull/11907">https://github.com/RT-Thread/rt-thread/pull/11907</a></li>
+  <li><strong>[3]</strong> PR #11915 (неинициализированные глобальные переменные в динамических модулях) — <a href="https://github.com/RT-Thread/rt-thread/pull/11915">https://github.com/RT-Thread/rt-thread/pull/11915</a></li>
+  <li><strong>[4]</strong> Issue #5705 (аномалия с неинициализированными глобальными переменными в модулях) — <a href="https://github.com/RT-Thread/rt-thread/issues/5705">https://github.com/RT-Thread/rt-thread/issues/5705</a></li>
+  <li><strong>[5]</strong> components/libc/posix/libdl/dlelf.c — <a href="https://github.com/RT-Thread/rt-thread/blob/master/components/libc/posix/libdl/dlelf.c">https://github.com/RT-Thread/rt-thread/blob/master/components/libc/posix/libdl/dlelf.c</a></li>
+  <li><strong>[6]</strong> история коммитов основного репозитория — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[7]</strong> releases основного репозитория — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[8]</strong> tags основного репозитория — <a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[9]</strong> Issue #11917 (выход за границы при чтении NFS) — <a href="https://github.com/RT-Thread/rt-thread/issues/11917">https://github.com/RT-Thread/rt-thread/issues/11917</a></li>
+  <li><strong>[10]</strong> components/dfs/dfs_v1/filesystems/nfs/dfs_nfs.c — <a href="https://github.com/RT-Thread/rt-thread/blob/master/components/dfs/dfs_v1/filesystems/nfs/dfs_nfs.c">https://github.com/RT-Thread/rt-thread/blob/master/components/dfs/dfs_v1/filesystems/nfs/dfs_nfs.c</a></li>
+  <li><strong>[11]</strong> Issue #11913 (выход за границы при чтении в DHCP raw) — <a href="https://github.com/RT-Thread/rt-thread/issues/11913">https://github.com/RT-Thread/rt-thread/issues/11913</a></li>
+  <li><strong>[12]</strong> components/net/lwip-dhcpd/dhcp_server_raw.c — <a href="https://github.com/RT-Thread/rt-thread/blob/master/components/net/lwip-dhcpd/dhcp_server_raw.c">https://github.com/RT-Thread/rt-thread/blob/master/components/net/lwip-dhcpd/dhcp_server_raw.c</a></li>
+  <li><strong>[13]</strong> PR #11911 (границы имён каталогов в cromfs) — <a href="https://github.com/RT-Thread/rt-thread/pull/11911">https://github.com/RT-Thread/rt-thread/pull/11911</a></li>
+  <li><strong>[14]</strong> PR #11910 (использование tmpfs после усечения) — <a href="https://github.com/RT-Thread/rt-thread/pull/11910">https://github.com/RT-Thread/rt-thread/pull/11910</a></li>
+  <li><strong>[15]</strong> RT-Thread-packages/esp-idf PR #18 (обновление до ESP-IDF v6.1) — <a href="https://github.com/RT-Thread-packages/esp-idf/pull/18">https://github.com/RT-Thread-packages/esp-idf/pull/18</a></li>
+  <li><strong>[16]</strong> PR #11870 (адаптация ESP32 C3/C6 под ESP-IDF v6.1) — <a href="https://github.com/RT-Thread/rt-thread/pull/11870">https://github.com/RT-Thread/rt-thread/pull/11870</a></li>
+  <li><strong>[17]</strong> PR #11912 (OSPI и OctaFlash) — <a href="https://github.com/RT-Thread/rt-thread/pull/11912">https://github.com/RT-Thread/rt-thread/pull/11912</a></li>
+  <li><strong>[18]</strong> изменённые файлы PR #11912 — <a href="https://github.com/RT-Thread/rt-thread/pull/11912/files">https://github.com/RT-Thread/rt-thread/pull/11912/files</a></li>
+  <li><strong>[19]</strong> PR #11914 (спецификаторы формата в GIC) — <a href="https://github.com/RT-Thread/rt-thread/pull/11914">https://github.com/RT-Thread/rt-thread/pull/11914</a></li>
+  <li><strong>[20]</strong> GD32EmbeddedUI-demos — <a href="https://github.com/RT-Thread-packages/GD32EmbeddedUI-demos">https://github.com/RT-Thread-packages/GD32EmbeddedUI-demos</a></li>
+  <li><strong>[21]</strong> релиз платформы Ruiching V1.8.4 — <a href="https://www.eet-china.com/mp/a532671.html">https://www.eet-china.com/mp/a532671.html</a></li>
+  <li><strong>[22]</strong> центр документации Ruiching — <a href="https://www.rt-thread.com/ruiching/document/site/">https://www.rt-thread.com/ruiching/document/site/</a></li>
+  <li><strong>[23]</strong> журнал изменений Ruiching — <a href="https://www.rt-thread.com/ruiching/document/site/changelog/summary/">https://www.rt-thread.com/ruiching/document/site/changelog/summary/</a></li>
+  <li>
+    <p>*</p>
+  </li>
+  <li><strong>[25]</strong> Интерфейс статей форума сообщества — <a href="https://club.rt-thread.org/api/index/getList?type=article">https://club.rt-thread.org/api/index/getList?type=article</a></li>
+  <li><strong>[26]</strong> Статья сообщества: интеллектуальный терминал с взаимодействием двух плат — <a href="https://club.rt-thread.org/api/index/getContent?id=ed284fe924639b32">https://club.rt-thread.org/api/index/getContent?id=ed284fe924639b32</a></li>
+  <li><strong>[27]</strong> Мероприятие сообщества: конкурс по полной адаптации Edgi-X — <a href="https://club.rt-thread.org/api/index/getContent?id=7e373ee70625d5da">https://club.rt-thread.org/api/index/getContent?id=7e373ee70625d5da</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ru/post.html#news-list" class="btn btn-main news-list-link">Назад</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Контакты</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Эл. почта:</strong> contact@kubuds.cn<br>
+            <strong>Адрес:</strong> Комната 108, 1-й этаж, корпус 1, ул. Гаои, д. 88, район Баошань, Шанхай<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Ссылки</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>
