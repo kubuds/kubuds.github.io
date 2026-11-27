@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ja/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ja/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ja/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ja/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ja/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ja/">ホーム</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">サービス <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/service/simulator.html">シミュレータ</a></li>
+              <li><a class="dropdown-item" href="/ja/service/os.html">オペレーティングシステム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/toolchain.html">ツールチェーン</a></li>
+              <li><a class="dropdown-item" href="/ja/service/chip.html">組み込みチップ</a></li>
+
+              <li><a class="dropdown-item" href="/ja/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ja/service/aisys.html">AI システム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/consultation.html">コンサルティング</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">ソリューション <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">コミュニティ <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ja/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ja/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ja/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ja/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ja/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ja/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/post.html" style="white-space: nowrap;">ニュースとイベント</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/about.html" style="white-space: nowrap;">会社概要</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ja/career.html">採用情報</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              日本語 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1117.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1117.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1117.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1117.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1117.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread デイリーレポート (2026-11-17) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ja/">ホーム</a></li>
+                                <li class="breadcrumb-item"><a href="/ja/post.html#news-list" class="news-list-link">ニュースとイベント</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread デイリーレポート (2026-11-17)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread デイリーレポート (2026-11-17)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-17</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>調査期間</strong>：2026-11-16 08:00 ~ 2026-11-17 08:00（北京時間、24時間）</p>
+
+<p><strong>情報源</strong>：RT-Thread 公式ニュースインターフェース（club.rt-thread.org、カテゴリ rt_org）、GitHub メインリポジトリの commits / PR / Issue / releases / tags、RT-Thread org 全リポジトリのプッシュ順確認、ソフトウェアパッケージインデックスリポジトリ packages、Windows ツールリポジトリ env-windows、topic:rt-thread アクティブリポジトリ検索、Google News 中英語クエリ（プロキシ経由、3日・7日ウィンドウ含む）、Hacker News Algolia、Tavily 検索</p>
+
+<hr />
+
+<h2 id="本期インデックス">本期インデックス</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>カーネルとコンポーネントの修正
+        <ul>
+          <li>ptyfs 登録解除時にファイルオブジェクトを解放せず：2万回の開閉で露呈した1件のリーク（11-16）</li>
+          <li>ivshmem 共有メモリウィンドウ：デバイスが決める物理アドレス（11-16）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>セキュリティラインと番号
+        <ul>
+          <li>iso9660 ディレクトリ名長のアンダーフロー：報告と修正が同日到着（11-17）</li>
+          <li>3件の旧件に CVE 番号が付与（11-16）</li>
+          <li>CherryUSB：メンテナが引いたバージョンライン（11-16）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>ソフトウェアパッケージインデックス6件
+        <ul>
+          <li>Agent パッケージ：エンドポイント、音声、スキルを設定として記述（11-16）</li>
+          <li>新規パッケージ2件：Wi-Fi・Bluetooth ホストドライバ、ms-probe 診断（11-16）</li>
+          <li>ライトストリップと赤外線：2つのペリフェラルフレームワークのマルチインスタンス化（11-16）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>ツールチェーンと開発環境
+        <ul>
+          <li>Windows Env：Arm ツールチェーンを 13.3 に更新、clang-format 22.1.8 をバンドル（11-16）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>審査待ちキューと公式見解
+        <ul>
+          <li>コミュニティの小パッチ4件は依然として周辺で待機中（11-16）</li>
+          <li>Kconfiglib 移行提案はクローズ、未マージ（11-16）</li>
+          <li>公式ニュースインターフェースは7期連続で新規なし（11-17）</li>
+          <li>Google News と HN：3日ウィンドウはノイズのみ（11-17）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>まとめとトレンド観察
+        <ul>
+          <li>修正の粒度が変わりつつある</li>
+          <li>番号は開示の終点であり、修正の起点ではない</li>
+          <li>ソフトウェアパッケージ側が当日の第二の主戦場に</li>
+          <li>キューの緩やかな減少と2つの手がかりの引き継ぎ</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="1-カーネルとコンポーネントの修正">1. カーネルとコンポーネントの修正</h2>
+
+<h3 id="11-ptyfs-登録解除時にファイルオブジェクトを解放せず2万回の開閉で露呈した1件のリーク11-16">1.1 ptyfs 登録解除時にファイルオブジェクトを解放せず：2万回の開閉で露呈した1件のリーク（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 11:29（マージ時間）　<strong>出典</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12029">提案 #12029</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/12023">欠陥 #12023</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/7c974b59">コミット 7c974b59</a></p>
+
+<p>この欠陥のタイトルは本文よりも率直に書かれている：ptyfs の登録解除時にあの pts ファイルオブジェクトを決して解放せず、非特権の open/close ループだけでカーネルメモリを枯渇させシステムをクラッシュさせることができる。報告時刻は11月10日午後で、報告者はこの一連の監査で一貫した書き方を踏襲した——まず影響を受けるバージョン区間を示し、次に導入点を示す。</p>
+
+<p>区間は v5.1.0 から master まで。導入点は2024年3月28日の 83e95bdf で、提案 #8672 に由来し、その後 v5.1.0、v5.2.0、v5.3.0 と master 上で個別に検証済みで、いずれもこの欠陥を持つ。再現環境は QEMU の qemu-virt64-aarch64、公式デフォルト設定（ターミナルと ptyfs は RT_USING_SMART 下で組み込み）、公式 CI の musl ツールチェーン gcc 7.3.0 と scons と明記されている。</p>
+
+<p>メンテナは当日夕方に機序を確認した。登録解除関数 <code class="highlighter-rouge">ptyfs_unregister_pts()</code> は pts をルートリンクリストから外し、その番号を回収するだけで、<code class="highlighter-rouge">struct ptyfs_file</code> は決して解放されない。修正提案 #12029 はそこで1行の解放を補うだけでなく、このライフサイクルを完成させる——オブジェクトを解放し、<code class="highlighter-rouge">pts_unit</code> を -1 に初期化し、<code class="highlighter-rouge">lwp_tty_create()</code> の失敗パス上の解放順序を修正し、<code class="highlighter-rouge">lwp_tty_delete()</code> で未登録のデバイスをスキップし、無闇に <code class="highlighter-rouge">rt_device_unregister()</code> を呼ばないようにする。</p>
+
+<p>変更は3ファイルにわたり、60行追加、6行削除。3つの点がそれぞれ一段を担う：<code class="highlighter-rouge">ptyfs.c</code> が主修正（+51/-4）、<code class="highlighter-rouge">tty_pts.c</code> と <code class="highlighter-rouge">tty_device.c</code> が配套（+3/-1、+6/-1）。11月10日夕方に提出され、11月16日午前11時29分にマージ、欠陥は同じ分にクローズされた。</p>
+
+<p>検証データは多くのレポートより確実だ。qemu-virt64-aarch64、RT-Smart が ptyfs をサポートし、<code class="highlighter-rouge">/dev/pts/ptmx</code> に対して2万回のオープンとクローズを実行した。修正前は利用可能メモリが 245164 KB から 237932 KB に減少し、7232 KB 減、1回あたり約 369 バイトに相当する。修正後は 245156 KB から 245116 KB となり、40 KB の正常な変動のみが残った。2万回で既に 7 MB であり、このレートで数千回、数万回のループを繰り返せば、245 MB を食い尽くすのは時間の問題だ。</p>
+
+<p>メンテナ自身も境界を明確にしている。OOM パスを強制的に通しておらず、非特権プロセスでそのループを単独実行してもいない。この2点は残されており、この修正の既知のギャップと見なせる——缺陷タイトルで名指しされた「非特権」は、検証では実際には欠けている。</p>
+
+<h3 id="12-ivshmem-共有メモリウィンドウデバイスが決める物理アドレス11-16">1.2 ivshmem 共有メモリウィンドウ：デバイスが決める物理アドレス（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 10:47（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11993">提案 #11993</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11992">缺陷 #11992</a>、<a href="https://github.com/RT-Thread/rt-thread/commit/43791bbf">コミット 43791bbf</a></p>
+
+<p>同日午前のもう一件は、問題の性質がより硬い。ivshmem の PCI プローブは BAR2 が欠落している場合に JailHouse 互換のフォールバックを通り、デバイスの PCI 設定ワード 0x40 から 0x4f にある共有メモリのアドレスとサイズを直接コピーする。PCI コアはこの2つの値を検証せず、<code class="highlighter-rouge">rt_ioremap()</code> は与えられたものをそのままマップする。結果として、悪意のある、またはフォーマットが乱れた ivshmem デバイスにより、カーネルが任意の物理ウィンドウをマップでき、カーネル自身の RAM も含まれ、さらに <code class="highlighter-rouge">/dev/ivshmemN</code> を通じてユーザー空間に露出され、非特権プロセスによるカーネルメモリへの任意の読み書きが形成される。</p>
+
+<p>修正は4本同時に投入される。第1条が最も本質的だ。その JailHouse フォールバックは新設の <code class="highlighter-rouge">RT_IVSHMEM_JAILHOUSE</code> オプションが有効な場合のみ利用可能で、デフォルトでは無効、ヘルプテキストには「デバイスが信頼できることを要求する」と明記され、このオプションを有効にしなければ正当な BAR2 が必須となる。第2条はマッピング前にウィンドウを検証する——サイズが非ゼロ、アドレスにオーバーフローなし、範囲全体がネイティブポインタとサイズ型で表現可能。第3条は4つの設定ワードを64ビットのローカル変数に読み込み、<code class="highlighter-rouge">shmem</code> と <code class="highlighter-rouge">shmem_size</code> フィールドの32ビットエイリアス経由で書き込まないようにし、これにより32ビットビルドで隣接フィールドを壊す古い問題も併せて修正される。第4条は設定空間読み取りの戻り値のチェックだ。</p>
+
+<p>規模は122行追加、7行削除、2ファイル：<code class="highlighter-rouge">ivshmem.c</code>（+110/-7）と新しい Kconfig（+12）。提案は11月5日に提出され、11月16日に別のメンテナ Rbb666 によってマージされ、その間11日間であり、最近の監査ラインの中ではレビューが比較的遅い案件に属するが、PCI とメモリマッピングを動かすことを考慮すれば、このペースは合理的だ。</p>
+
+<p>検証はコンパイル段階までのみ：変更ファイルは clang-format 22.1.8 を通過し、qemu-virt64-aarch64 は <code class="highlighter-rouge">RT_IVSHMEM_JAILHOUSE</code> の無効と有効の両構成でコンパイルでき、完全なビルドは CI に委ねられる。この種の変更に実行時テストケースがないのは常態だが、「歴史的な互換パスをデフォルトで無効にする」という動作は、長さ検証を1つ補うよりも記録に値する——不安全な選択をデフォルト動作から明示的なスイッチへと格下げしている。</p>
+
+<h2 id="2-セキュリティラインと番号">2. セキュリティラインと番号</h2>
+
+<h3 id="21-iso9660-ディレクトリ名長のアンダーフロー報告と修正が同日到着11-17">2.1 iso9660 ディレクトリ名長のアンダーフロー：報告と修正が同日到着（11-17）</h3>
+
+<p><strong>日付</strong>：2026-11-17 01:46 から 02:03（議題と提案）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/12061">議題 #12061</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12062">提案 #12062</a></p>
+
+<p>午前2時前後の一件は、本期で最速のペースだ。1時46分、同一位置の報告者が議題 #12061 を提出した：ISO9660 ディレクトリレコード解析において、<code class="highlighter-rouge">namelen</code> はメディアから直接来ており検証されていない。非ディレクトリレコードは無条件に <code class="highlighter-rouge">";1"</code> バージョン接尾辞を除去し、<code class="highlighter-rouge">namelen</code> が0または1の場合、<code class="highlighter-rouge">rt_size_t</code> が減算でアンダーフローし、続く <code class="highlighter-rouge">rt_strncpy()</code> が境界外書き込みとなり、1回の <code class="highlighter-rouge">getdents</code> や <code class="highlighter-rouge">ls</code> が無制限のカーネルメモリゼロクリア書き込みに変わる。</p>
+
+<p>影響範囲は控えめに書かれている：v5.2.0 から v5.3.0 および master、11月17日当日に確認。導入点は 42a41c69（2024年11月22日、提案 #9592）で、v5.2.0 で初回リリースされたため、v5.1.0 以前は影響を受けない。再現環境は QEMU virt、Cortex-A、GICv2 で、2048バイトブロックの NVMe デバイスを搭載する。</p>
+
+<p>17分後、メンテナは修正提案 #12062 をコミットした。<code class="highlighter-rouge">namelen</code> をローカル名バッファが収容できる範囲に制限し、<code class="highlighter-rouge">namelen</code> が2以上の場合にのみバージョン接尾辞を剥離する。11行追加、2行削除、1ファイル。提案本文には検証の程度も明記されている。<code class="highlighter-rouge">RT_USING_DFS_V1</code> と <code class="highlighter-rouge">RT_USING_DFS_ISO9660</code> を有効にした qemu-virt64-riscv 上でのみコンパイルとリンク（scons -j8）を行い、ブロックデバイスを用いた実行時再現は行っていない。同一パーサ内の他のレコード走査における境界問題はこのコミットの範囲外である。</p>
+
+<p>これは今期で最も対比すべき時間差の箇所である。3月から5月の一連の報告では、提起から提案までにしばしば数週間を要した。このコミットは17分だった。同一箇所の問題、同一箇所の修正で、速度が変わった。</p>
+
+<h3 id="22-三件の旧件に-cve-番号を付与11-16">2.2 三件の旧件に CVE 番号を付与（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 11:17 から 11:21（コメント時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/11271">イシュー #11271</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11298">イシュー #11298</a>、<a href="https://github.com/RT-Thread/rt-thread/issues/11332">イシュー #11332</a></p>
+
+<p>午前11時17分から11時21分の間に、同一の場所で既にクローズされた3つのイシューのコメント欄にそれぞれ番号が1件ずつ補足された。GPT パーティション項目のアンダーフロー（<code class="highlighter-rouge">ending_lba</code> が <code class="highlighter-rouge">starting_lba</code> より小さいことでアンダーフローしたパーティションサイズを生成）には CVE-2026-38160 が付与され、当該イシューは11月4日にクローズされた。FinSH プロンプトのディレクトリ名を経由したフォーマット文字列インジェクションには CVE-2026-50961 が付与され、4月9日にクローズされた。AT socket パーサがユーザー制御可能な数値ホスト名を受け入れることでカーネルスタックオーバーフローを引き起こす問題には CVE-2026-106729 が付与され、9月21日にクローズされた。</p>
+
+<p>これら3件はいずれも新規の修正ではなく、クローズ時期はそれぞれ4月、9月、11月に位置するが、番号は同じ日の午前中にまとめて補完された。読み方としては、報告側が集中して番号を回収し、3月から5月の一連の開示プロセスを一気に完了させたと解すべきである。レポートでは番号を引用できるが、当日の新規修正として書いてはならない。</p>
+
+<p>下流の利用者にとっての実際的な意義は検索性にある。これまでこれらの欠陥はイシュー番号しか持たず、検索や照合はプロジェクト自身のフィールドに依存していた。番号があれば、CVE データベースに入り、ディストリビューションの脆弱性リストに入り、企業内部の部材リストに入ることができる。搭載台数が億単位のリアルタイムオペレーティングシステムにとって、この一歩はさらに3つの欠陥を修正するよりも制度的価値が高い。</p>
+
+<h3 id="23-cherryusbメンテナが引いたバージョン線11-16">2.3 CherryUSB：メンテナが引いたバージョン線（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 11:23（コメント時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues/11265">イシュー #11265</a></p>
+
+<p>同じ一連のコメントには拒否の1件もある。CherryUSB ホスト音声記述子解析における複数箇所の境界外書き込み（3月17日提起、5月13日クローズ）について、11時23分に CherryUSB 側のメンテナ sakumisu が一言残した。1.7.0 未満では cherryusb の CVE チェックを行わない、と。</p>
+
+<p>時間を遡ると、彼は3月24日にも「rt-thread プロジェクト内で cherryusb をチェックしないでください」と既に述べている。2つの発言を合わせると1つの境界方針になる。CherryUSB は独立した上流プロジェクトであり、独自のバージョン線とセキュリティポリシーを持ち、RT-Thread 側はそれを保証せず、CVE のアーカイブも代行しない。</p>
+
+<p>利用者にとって、この発言の実際的な意味は、CherryUSB を採用する BSP は上流のバージョンを自ら監視する必要があり、RT-Thread の脆弱性リストがそれを保証してくれることを期待してはならないということである。こうした境界宣言はレポートでは目立たないことが多いが、製品コンプライアンスに携わる者にとっては確固たる情報である。</p>
+
+<h2 id="3-ソフトウェアパッケージインデックス6件">3. ソフトウェアパッケージインデックス6件</h2>
+
+<h3 id="31-agent-パッケージエンドポイント音声スキルを設定として記述11-16">3.1 Agent パッケージ：エンドポイント、音声、スキルを設定として記述（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 11:22（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/packages/pull/2050">提案 #2050</a>、<a href="https://github.com/RT-Thread/packages/commit/c4207948">コミット c4207948</a></p>
+
+<p>ソフトウェアパッケージインデックスのリポジトリはこの日の午前中に特に密度が高い。1件目は <code class="highlighter-rouge">ai/Agent</code> の設定項目の補完とメニュー再編で、単一ファイルで416行追加、37行削除、提案は10月30日に提起され、11月16日にマージされた。</p>
+
+<p>再編後は4つのグループに分かれる。モデルエンドポイントのグループ：プロトコルは OpenAI と Anthropic の間で二者択一で、2セットのデフォルトアドレスはそれぞれ DeepSeek の通常エンドポイントとその Anthropic 互換パスを指し、Anthropic のバージョン番号と最大トークンは当該プロトコルを選択した場合にのみ表示される。音声合成のグループ：モード、アドレス、保存ファイル、自動再生の4項目。スキルのグループ：内蔵 Markdown スキルのディレクトリで、デフォルト名は skills。ツールのグループがその後に続く。</p>
+
+<p>この四組の意味は設定項目そのものではなく、このパッケージの位置づけが変わりつつある点にある。以前は動作するデモの性格が強く、エンドポイントはコードに直書きされていた。現在はプロトコル、アドレス、音声バックエンド、スキルディレクトリをすべて設定に切り出したことで、ようやく「別のモデルベンダーに乗り換えるにはメニューを変えるだけ」と言えるようになった。国内で端側 AI を作る際の一般的な組み合わせは DeepSeek とローカル音声であり、このデフォルト値は明らかにこの組み合わせに合わせて決められている。</p>
+
+<h3 id="32-新規パッケージ2件wi-fi-と-bluetooth-ホストドライバms-probe-診断11-16">3.2 新規パッケージ2件：Wi-Fi と Bluetooth ホストドライバ、ms-probe 診断（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 09:17 から 09:28（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/packages/pull/2053">提案 #2053</a>、<a href="https://github.com/RT-Thread/packages/pull/2044">提案 #2044</a>、<a href="https://github.com/RT-Thread/packages/commit/4795a3cb">コミット 4795a3cb</a>、<a href="https://github.com/RT-Thread/packages/commit/9c12b995">コミット 9c12b995</a></p>
+
+<p>新規パッケージ2件、方向性はまったく異なる。</p>
+
+<p>1件目は Wi-Fi と Bluetooth ホストドライバで、672 行追加、3ファイル、作者は myskyy1、11 月 8 日に提出され、11 月 16 日午前にマージされた。位置づけは提案に書かれている。Aerolynq 向けのコンボモジュールで、下層は英飛凌（Infineon）の Wi-Fi と Bluetooth シリコン、SDIO と HCI UART を介し、ライセンスはプロプライエタリ。プロプライエタリライセンスのベンダードライバが公式インデックスに入るのは、エコシステムの開放度における実際の一歩である。インデックス自体はライセンス種別を制限しないが、ライセンスをメタデータに記載することで、利用者が選択する前に分かるようにしている。</p>
+
+<p>2件目は ms-probe 診断パッケージで、63 行追加、3ファイル、作者はメンテナ本人、10 月 7 日に提出され、11 月 16 日午前にマージされた。ms-probe を tools カテゴリに登録し、latest は上流の main ブランチを追跡し、GPL-2.0 と商用のデュアルライセンスを維持し、<code class="highlighter-rouge">pkgs --update</code> の後にパッケージ内の Kconfig.options を読み込むことで、診断関連のスイッチを BSP 設定に押し込むのではなくソースパッケージに追随させる。Probe と故障注入はデフォルトで無効。</p>
+
+<p>1つはハードウェアの受け入れ、1つはツールの登録。並べて見ると、ソフトウェアパッケージインデックスという層が、これまであまり目立たなかった2つのことを同時に担いつつある。新しいシリコンへの門を開くこと、デバッグ手段を標準化すること。</p>
+
+<h3 id="33-テープライトと赤外線2つのペリフェラルフレームワークのマルチインスタンス化11-16">3.3 テープライトと赤外線：2つのペリフェラルフレームワークのマルチインスタンス化（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 09:21 から 09:29（マージ時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/packages/commit/b06e8462">コミット b06e8462</a>、<a href="https://github.com/RT-Thread/packages/commit/92ebc13e">コミット 92ebc13e</a>、<a href="https://github.com/RT-Thread/packages/commit/2ba48178">コミット 2ba48178</a></p>
+
+<p>残り3件はペリフェラルに集中している。WS2812 テープライトが新たにインデックス入り（68 行、3ファイル、作者 moment-NEW）、続いて WS2812B のマルチテープ SPI ドライバ（483 行追加、19 行削除、作者 wdfk-prog）が「1本のテープ」を「設定可能な複数本」に拡張した。もう1件は同じ作者が赤外線フレームワークをマルチインスタンス化したもの（481 行追加、50 行削除）。</p>
+
+<p>3件の共通点は「1枚のボードに複数路を接続する」こと。WS2812 と赤外線は MCU 上ではもともと1路につき1セットの静的設定だったが、マルチインスタンス化によって初めて複数段のテープライト、複数の赤外線トランシーバを同時に駆動できる。こうした変更はレポートでは目立たないが、灯効果やリモコン系製品を手がけるソリューションベンダーにとってはそのまま使える能力である。</p>
+
+<p>wdfk-prog は一人でこの日午前に2件（テープライトと赤外線）を貢献し、さらに前日のソフトウェアパッケージ側の他の変更を加えると、コミュニティ作者のパッケージインデックス上での活発度はすでにメインリポジトリを明らかに上回っている。</p>
+
+<h2 id="4-ツールチェーンと開発環境">4. ツールチェーンと開発環境</h2>
+
+<h3 id="41-windows-envarm-ツールチェーンを-133-に変更clang-format-2218-を同梱11-16">4.1 Windows Env：Arm ツールチェーンを 13.3 に変更、clang-format 22.1.8 を同梱（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 16:21 から 17:14（コミット時間）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/env-windows/commit/b05dc049">コミット b05dc049</a>、<a href="https://github.com/RT-Thread/env-windows/commit/f4208433">コミット f4208433</a></p>
+
+<p>Windows 側の Env ツールリポジトリは普段2か月に1度も動かないが、この日の午後に2件連続で動いた。16 時 21 分に同梱の clang-format を 22.1.8 に変更し、17 時 14 分に同梱の Arm GNU ツールチェーンを 13.3.Rel1 にアップグレードした。</p>
+
+<p>どちらのバージョンも気まぐれに選ばれたわけではない。clang-format 22.1.8 はメインリポジトリの CI が使用するフォーマットバージョンそのものであり、同日にマージされた ivshmem 提案では、検証段に「変更ファイルが clang-format 22.1.8 を通過すること」と書かれている。これまで Windows ユーザーのローカルフォーマットと CI の判定基準がメジャーバージョン一つ分ずれる可能性があり、フォーマットチェックが失敗しても原因が分からないことがあった。Arm GNU 13.3.Rel1 は GCC 13 シリーズの最新メンテナンス版であり、長期サポートライン上での定例的な前進に属する。</p>
+
+<p>このリポジトリの前回の実質的な変更は 9 月 8 日の Env 2.1.0 リリースだった。二か月余りを経ての再始動だが、動いたのはいずれも「環境のデフォルト値」であり、恩恵を受けるのはすべての Windows 開発者であるにもかかわらず、ニュースにはしにくい——こうした変更は通常、一度つまずいた人にしか感知されない。</p>
+
+<h2 id="5-審査待ちキューと公式の見解">5. 審査待ちキューと公式の見解</h2>
+
+<h3 id="51-コミュニティの小さなパッチ4件は依然として外堀で待機中11-16">5.1 コミュニティの小さなパッチ4件は依然として外堀で待機中（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16（最終更新）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12055">提案 #12055</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12056">提案 #12056</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12057">提案 #12057</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/12059">提案 #12059</a></p>
+
+<p>11 月 14 日夕方の十八分間に、あるコミュニティ作者が小さなパッチを4件連続で提出した。ptyfs の登録解除時にファイルオブジェクトを解放するもの（+1/-0）、ivshmem のマッピング前に共有メモリ設定を検証するもの（+39/-4）、finsh のパス補完でバッファコピーを制限するもの（+5/-0）、workqueue の遅延を即時コミットに変更する際に旧タイマーを停止するもの（+12/-2）である。4件はいずれもまだオープンで、最終更新は 11 月 16 日午後である。</p>
+
+<p>同じ週の公式側の動きと照らし合わせると、最初の2件の立場はやや微妙である。ptyfs の1件は解放の一行を加えただけだが、公式の #12029 はすでにマージされ、ライフサイクルの4つのポイントをすべて補完している。ivshmem の1件は検証を 39 行加えたが、公式の #11993 はすでにマージされ、デフォルトで無効のオプションを新たに追加している。内容は吸収され、提案はまだクローズされていない——これは監査ブームの中でよく見られる重複提案の形態であり、クローズするかどうかは作者とレビュアーに委ねられる。本レポートは併存する事実を記録するのみである。</p>
+
+<p>後の2件は公式バージョンにカバーされておらず、依然としてキューでレビュー待ちである。小さなパッチのレビューコストは実は低くない。変更は小さくても影響範囲はカーネルコンポーネントをまたぐため、レビューで読む必要のあるコンテキストは変更されたコードよりはるかに多い。</p>
+
+<h3 id="52-kconfiglib-移行提案はクローズマージされず11-16">5.2 Kconfiglib 移行提案はクローズ、マージされず（11-16）</h3>
+
+<p><strong>日付</strong>：2026-11-16 22:49（クローズ時刻）　<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/10845">提案 #10845</a></p>
+
+<p>もう1件、クローズされてマージされなかったものがある。2025 年 10 月 25 日に Copilot が提出した提案 #10845 は、PyPI 上の kconfiglib 依存を依然としてメンテナンスされている sysprog21 ブランチへ移行することを主張し、その理由として前者がすでに無メンテナンスであること、後者が新版メニューインターフェースと完全な Kconfig 言語互換を提供することを挙げていた。6ファイルを変更、22行追加、5行削除、11 月 16 日 22 時 49 分にクローズ、マージされず。</p>
+
+<p>コメント欄はわずか3件：CLA 未署名、フォーマットの指摘、自動割り当てのレビュアー。一年余りぶら下がったまま、最終的にクローズで幕を閉じた。ツールチェーン層のこうした移行提案のコストはしばしば過小評価される——動かす必要があるのはすべての BSP のビルド前提だからである。</p>
+
+<h3 id="53-公式ニュースインターフェースは連続7期目で新規なし11-17">5.3 公式ニュースインターフェースは連続7期目で新規なし（11-17）</h3>
+
+<p><strong>日付</strong>：2026-11-17（確認時刻）　<strong>情報源</strong>：<a href="https://www.rt-thread.org/news.html">RT-Thread 公式ニュース一覧</a>、<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">RT-Thread 公式ニュースインターフェース</a></p>
+
+<p>インターフェースが返すのは依然として 11 月 6 日にアップロードされたあの5本である。睿赛德のフルスタック能力と工業インテリジェント化、Vinaro 工業 PLC 技術サロン、東南アジア高校の産学融合、臨港自動車ソフトウェアエコシステムサロン、工博会展 AI 小车実操。イベント時期は8月のマレーシア高校行から 10 月 13 日の工博会展までにわたり、11 月 6 日に一度に補発された活動回顧に属する。これら5本は 11 月 9 日号（週末をカバーする三日間の調査期間）ですでにすべて収録されており、その後連続7期新規なし。</p>
+
+<p>公式サイトのニュースページの一覧は依然としてクライアントサイドレンダリングで、項目を取得できないため、インターフェースを基準とする。对外発信の空白はすでに十一日に達しているが、四半期のリズムから見れば依然として正常な間隙であり、シグナルと読む必要はない。業界応用方向（工業、車載、ロボット）は今期新規素材がなく、関連する観察はコード側の動きによってのみ支えられる。</p>
+
+<h3 id="54-google-news-と-hn三日間の調査期間はノイズのみ11-17">5.4 Google News と HN：三日間の調査期間はノイズのみ（11-17）</h3>
+
+<p><strong>日付</strong>：2026-11-17（確認時刻）　<strong>情報源</strong>：<a href="https://news.google.com/">Google News 検索</a></p>
+
+<p>Hacker News 側の3件の候補はすべて <code class="highlighter-rouge">thread</code> の文字通りの誤マッチである。自律兵器条約に関するメディアブリーフ、ダウンロードマネージャーの Show HN、コードレビューツールの3件。タイトルの意味に基づいて除外したところ、リアルタイムオペレーティングシステムに関連するものは一つもなかった。</p>
+
+<p>Google News 英語の3日間ウィンドウはゼロヒット。中国語の精密クエリは3日間ウィンドウで2件、いずれもCSDNの総合記事（摩尔線程のストップ安分析、スマートホームのフルスタック開発）で、本文中にRT-Threadに言及しているが、報道に値する事象にはならない。7日間ウィンドウには他に展示会攻略1件と自動車記事1件があり、後者は「智擎」が「睿擎」と誤マッチしたもの。3日間ウィンドウの裸クエリは正常に返っており、プロキシと検索チャネルの問題は排除できる。</p>
+
+<p>この側は9月以降、有効な項目を一度も産出していない。本期も同じ結論を維持する。</p>
+
+<h2 id="6-総括とトレンド観察">6. 総括とトレンド観察</h2>
+
+<h3 id="61-修正の粒度が変わりつつある">6.1 修正の粒度が変わりつつある</h3>
+
+<p>11月13日の那群は「1日20件」のバッチ硬化だったが、本期のメインリポジトリはわずか2件で、しかも2件とも完全なエンジニアリングだ。ptyfsの件は解放、番号初期化、生成失敗パスの解放順序、登録解除時のデバイス判定という4点をまとめて補修し、ivshmemの件はデフォルト無効のオプションを1つ新設し、3段の範囲チェックを追加し、ついでに32ビットビルドでのフィールド破壊も修正した。</p>
+
+<p>「数量」から「個々の欠陥の完全な収束」への転換は、監査ラインが第2段階に入った標識だ。第1段階が求めたのはカバレッジで、同種パターンを一通り走査すること。第2段階が求めるのは各件が再審査に耐えることで、修正自体が証拠として見なされ始めたからだ——ptyfsの件は2万回ループのメモリ曲線を示し、ivshmemの件は2種構成のコンパイル結論を示しており、いずれもこの志向だ。</p>
+
+<h3 id="62-番号は開示の終点であり修正の起点ではない">6.2 番号は開示の終点であり、修正の起点ではない</h3>
+
+<p>3件のCVE番号が同じ午前中に補完され、落点はそれぞれ4月、9月、11月にクローズされた議題だ。加えてCherryUSBメンテナの「1.7.0未満はチェックしない」という言葉により、この日のセキュリティラインでは2つのことが同時に起きた。すなわち、一批の旧債が正式に記帳され、1本の境界線が明確に引かれた。</p>
+
+<p>プロジェクト側にとって、記帳とはこれらの欠陥が今後、外部の脆弱性データベースとコンプライアンスリストに入り、直したかどうか、どのバージョンで直したかを問い詰められることを意味する。使用者にとって、番号の価値は議題番号をはるかに超える。これも本期で最も誤読されやすい箇所だ——CVE番号を見て新規脆弱性と見なすと、逆方向に読むことになる。</p>
+
+<h3 id="63-ソフトウェアパッケージ側がその日の第2の主戦場になった">6.3 ソフトウェアパッケージ側がその日の第2の主戦場になった</h3>
+
+<p>メインリポジトリ2件、ソフトウェアパッケージインデックス6件、Windowsツールリポジトリ2件。6件のうち3件はペリフェラルフレームワークの多重インスタンス化と新パッケージ（LEDテープ、赤外線、Wi-FiとBluetoothホストドライバ）、1件はAgentパッケージの設定化、2件は診断とツールだ。</p>
+
+<p>この分布は、その日の開発重心がカーネルにないことを示している。パッケージインデックスという層は今年、明らかに引き受けるものが増えた。ベンダドライバの准入、AIコンポーネントの設定化、デバッグツールの標準化が、いずれもこの線上で完結している。「導入台数25億台」と自称するオペレーティングシステムにとって、エコシステム層のスループットは確かにカーネルのコミット数よりも活性度を反映する。</p>
+
+<h3 id="64-キューの緩やかな減少と2本の手がかりの交接">6.4 キューの緩やかな減少と2本の手がかりの交接</h3>
+
+<p>未クローズ提案143（前期144）、未クローズ議題341（前期342）で、それぞれ1件減。期間内マージ提案5件（メインリポジトリ2件、ソフトウェアパッケージインデックス3件）、新規提案2件（iso9660修正と1件のユースケースドキュメント修正）、新規議題1件（iso9660アンダーフロー）、クローズ議題1件（ptyfs）。</p>
+
+<p>2本の手がかりの交接は未明に完了した。ptyfsの件は午前にマージされ議題クローズ、iso9660の件は深夜に報告され17分後に提案が出た。監査ラインは止まっていない。ただ「バッチでの既存処理」から「発見次第修正」に切り替わっただけだ。このリズムが維持されれば、次の観察点は何件直したかではなく、何件にランタイムユースケースが付いたかだ——本期の2件はいずれも付いていない。</p>
+
+<h2 id="付録情報源核查表">付録：情報源核查表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>情報源</th>
+      <th>核查結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread公式ニュースAPI</td>
+      <td>5件、いずれも11-06アップロードの旧イベント回顧で、連続第7期新規ゼロ</td>
+    </tr>
+    <tr>
+      <td>公式サイトニュースページ</td>
+      <td>クライアントレンダリングのため項目を取得できず、APIを基準とする</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリcommits</td>
+      <td>期間内2件、5箇所のファイル変更、追加182行、削除13行</td>
+    </tr>
+    <tr>
+      <td>期間内マージ提案</td>
+      <td>5件：メインリポジトリ2（#12029、#11993）、ソフトウェアパッケージインデックス3（#2050、#2053、#2044）</td>
+    </tr>
+    <tr>
+      <td>期間内新規提案</td>
+      <td>2件（#12062、#12060）</td>
+    </tr>
+    <tr>
+      <td>期間内新規議題</td>
+      <td>1件（#12061）</td>
+    </tr>
+    <tr>
+      <td>期間内クローズ議題</td>
+      <td>1件（#12023、#12029のマージに伴いクローズ）</td>
+    </tr>
+    <tr>
+      <td>旧議題のCVE補記</td>
+      <td>3件の番号確定（CVE-2026-38160、CVE-2026-50961、CVE-2026-106729）、1件メンテナ拒否（CherryUSB）</td>
+    </tr>
+    <tr>
+      <td>ソフトウェアパッケージインデックスリポジトリ</td>
+      <td>6件、12箇所のファイル変更、追加2183行、削除106行</td>
+    </tr>
+    <tr>
+      <td>Windowsツールリポジトリ</td>
+      <td>2件（Arm GNU Toolchain 13.3.Rel1、clang-format 22.1.8）</td>
+    </tr>
+    <tr>
+      <td>未クローズ提案 / 議題</td>
+      <td>143 / 341（前期 144 / 342）</td>
+    </tr>
+    <tr>
+      <td>releasesとtags</td>
+      <td>最新は依然v5.3.0（2026-09-10）、期間内新增なし</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread アクティブリポジトリ</td>
+      <td>zlgopen/awtk 3件の汎用GUI改善（スクロールバー、リモートUIテスト、ベクターキャンバス文字揃え）、RT-Threadとの専項関連なし</td>
+    </tr>
+    <tr>
+      <td>Google News 中国語</td>
+      <td>3日間2件のCSDN総合記事、7日間1件の展示会攻略と1件の自動車記事、いずれも実質なし</td>
+    </tr>
+    <tr>
+      <td>Google News 英語</td>
+      <td>3日間・7日間ウィンドウともゼロヒット。裸クエリは正常で、チャネル障害は排除できる</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>候補3件はすべてthreadの文字通りの誤マッチで、既に除外</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完全情報源リスト">完全情報源リスト</h3>
+
+<ul>
+  <li><strong>[1]</strong> 提案 #12029（ptyfs 登録解除時に pts ファイルを解放） — <a href="https://github.com/RT-Thread/rt-thread/pull/12029">https://github.com/RT-Thread/rt-thread/pull/12029</a></li>
+  <li><strong>[2]</strong> 欠陥 #12023（ptyfs 登録解除がファイルオブジェクトを解放せず、非特権ループがカーネルメモリを枯渇） — <a href="https://github.com/RT-Thread/rt-thread/issues/12023">https://github.com/RT-Thread/rt-thread/issues/12023</a></li>
+  <li><strong>[3]</strong> コミット 7c974b59（ptyfs 修正マージ） — <a href="https://github.com/RT-Thread/rt-thread/commit/7c974b59">https://github.com/RT-Thread/rt-thread/commit/7c974b59</a></li>
+  <li><strong>[4]</strong> 提案 #11993（ivshmem 共有メモリウィンドウ検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/11993">https://github.com/RT-Thread/rt-thread/pull/11993</a></li>
+  <li><strong>[5]</strong> 欠陥 #11992（ivshmem が任意の物理ウィンドウをマッピング） — <a href="https://github.com/RT-Thread/rt-thread/issues/11992">https://github.com/RT-Thread/rt-thread/issues/11992</a></li>
+  <li><strong>[6]</strong> コミット 43791bbf（ivshmem 修正マージ） — <a href="https://github.com/RT-Thread/rt-thread/commit/43791bbf">https://github.com/RT-Thread/rt-thread/commit/43791bbf</a></li>
+  <li><strong>[7]</strong> 議題 #12061（ISO9660 ディレクトリレコード namelen アンダーフロー） — <a href="https://github.com/RT-Thread/rt-thread/issues/12061">https://github.com/RT-Thread/rt-thread/issues/12061</a></li>
+  <li><strong>[8]</strong> 提案 #12062（ISO9660 namelen 検証） — <a href="https://github.com/RT-Thread/rt-thread/pull/12062">https://github.com/RT-Thread/rt-thread/pull/12062</a></li>
+  <li><strong>[9]</strong> 議題 #11271（GPT パーティションエントリのアンダーフロー、CVE-2026-38160） — <a href="https://github.com/RT-Thread/rt-thread/issues/11271">https://github.com/RT-Thread/rt-thread/issues/11271</a></li>
+  <li><strong>[10]</strong> 議題 #11298（FinSH フォーマット文字列、CVE-2026-50961） — <a href="https://github.com/RT-Thread/rt-thread/issues/11298">https://github.com/RT-Thread/rt-thread/issues/11298</a></li>
+  <li><strong>[11]</strong> 議題 #11332（AT socket パーサのスタックオーバーフロー、CVE-2026-106729） — <a href="https://github.com/RT-Thread/rt-thread/issues/11332">https://github.com/RT-Thread/rt-thread/issues/11332</a></li>
+  <li><strong>[12]</strong> 議題 #11265（CherryUSB オーディオディスクリプタの範囲外、メンテナ版の見解） — <a href="https://github.com/RT-Thread/rt-thread/issues/11265">https://github.com/RT-Thread/rt-thread/issues/11265</a></li>
+  <li><strong>[13]</strong> 提案 #2050（ai/Agent 設定項目の補完とメニュー再配置） — <a href="https://github.com/RT-Thread/packages/pull/2050">https://github.com/RT-Thread/packages/pull/2050</a></li>
+  <li><strong>[14]</strong> コミット c4207948（Agent Kconfig 再配置） — <a href="https://github.com/RT-Thread/packages/commit/c4207948">https://github.com/RT-Thread/packages/commit/c4207948</a></li>
+  <li><strong>[15]</strong> 提案 #2053（Wi-Fi および Bluetooth ホストドライバソフトウェアパッケージ） — <a href="https://github.com/RT-Thread/packages/pull/2053">https://github.com/RT-Thread/packages/pull/2053</a></li>
+  <li><strong>[16]</strong> コミット 4795a3cb（rtt-wifi-bt-host-driver をインデックスに登録） — <a href="https://github.com/RT-Thread/packages/commit/4795a3cb">https://github.com/RT-Thread/packages/commit/4795a3cb</a></li>
+  <li><strong>[17]</strong> 提案 #2044（ms-probe 診断ソフトウェアパッケージ） — <a href="https://github.com/RT-Thread/packages/pull/2044">https://github.com/RT-Thread/packages/pull/2044</a></li>
+  <li><strong>[18]</strong> コミット 9c12b995（ms-probe をインデックスに登録） — <a href="https://github.com/RT-Thread/packages/commit/9c12b995">https://github.com/RT-Thread/packages/commit/9c12b995</a></li>
+  <li><strong>[19]</strong> コミット b06e8462（WS2812 ソフトウェアパッケージ） — <a href="https://github.com/RT-Thread/packages/commit/b06e8462">https://github.com/RT-Thread/packages/commit/b06e8462</a></li>
+  <li><strong>[20]</strong> コミット 92ebc13e（WS2812B マルチストリップ SPI ドライバ） — <a href="https://github.com/RT-Thread/packages/commit/92ebc13e">https://github.com/RT-Thread/packages/commit/92ebc13e</a></li>
+  <li><strong>[21]</strong> コミット 2ba48178（赤外線フレームワークのマルチインスタンス化） — <a href="https://github.com/RT-Thread/packages/commit/2ba48178">https://github.com/RT-Thread/packages/commit/2ba48178</a></li>
+  <li><strong>[22]</strong> コミット b05dc049（clang-format 22.1.8 をバンドル） — <a href="https://github.com/RT-Thread/env-windows/commit/b05dc049">https://github.com/RT-Thread/env-windows/commit/b05dc049</a></li>
+  <li><strong>[23]</strong> コミット f4208433（Arm GNU Toolcha</li>
+</ul>
+
+<p>13.3.Rel1） — <a href="https://github.com/RT-Thread/env-windows/commit/f4208433">https://github.com/RT-Thread/env-windows/commit/f4208433</a></p>
+<ul>
+  <li><strong>[24]</strong> 提案 #12055（ptyfs 登録解除時の解放、コミュニティパッチ、審査中） — <a href="https://github.com/RT-Thread/rt-thread/pull/12055">https://github.com/RT-Thread/rt-thread/pull/12055</a></li>
+  <li><strong>[25]</strong> 提案 #12056（ivshmem マッピング前の検証、コミュニティパッチ、審査中） — <a href="https://github.com/RT-Thread/rt-thread/pull/12056">https://github.com/RT-Thread/rt-thread/pull/12056</a></li>
+  <li><strong>[26]</strong> 提案 #12057（finsh パス補完バッファ、審査中） — <a href="https://github.com/RT-Thread/rt-thread/pull/12057">https://github.com/RT-Thread/rt-thread/pull/12057</a></li>
+  <li><strong>[27]</strong> 提案 #12059（workqueue タイマー、審査中） — <a href="https://github.com/RT-Thread/rt-thread/pull/12059">https://github.com/RT-Thread/rt-thread/pull/12059</a></li>
+  <li><strong>[28]</strong> 提案 #12060（utest README パス区切り文字） — <a href="https://github.com/RT-Thread/rt-thread/pull/12060">https://github.com/RT-Thread/rt-thread/pull/12060</a></li>
+  <li><strong>[29]</strong> 提案 #10845（Kconfiglib 移行、クローズ未マージ） — <a href="https://github.com/RT-Thread/rt-thread/pull/10845">https://github.com/RT-Thread/rt-thread/pull/10845</a></li>
+  <li><strong>[30]</strong> RT-Thread 公式ニュース一覧 — <a href="https://www.rt-thread.org/news.html">https://www.rt-thread.org/news.html</a></li>
+  <li><strong>[31]</strong> RT-Thread 公式ニュース API — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[32]</strong> RT-Thread org リポジトリ一覧 — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[33]</strong> メインリポジトリ提案一覧 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[34]</strong> メインリポジトリ課題一覧 — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+  <li><strong>[35]</strong> メインリポジトリコミット履歴 — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[36]</strong> ソフトウェアパッケージインデックスリポジトリのコミット履歴 — <a href="https://github.com/RT-Thread/packages/commits/master">https://github.com/RT-Thread/packages/commits/master</a></li>
+  <li><strong>[37]</strong> Windows ツールリポジトリのコミット履歴 — <a href="https://github.com/RT-Thread/env-windows/commits/main">https://github.com/RT-Thread/env-windows/commits/main</a></li>
+  <li><strong>[38]</strong> releases と tags — <a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[39]</strong> zlgopen/awtk（エコシステム参考、専門項目ではない） — <a href="https://github.com/zlgopen/awtk">https://github.com/zlgopen/awtk</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ja/post.html#news-list" class="btn btn-main news-list-link">戻る</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>お問い合わせ</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Eメール:</strong> contact@kubuds.cn<br>
+            <strong>住所:</strong> 中国上海市宝山区高逸路 88 号 1 棟 1 階 108 室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>リンク</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

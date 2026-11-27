@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ch/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/ch/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ch/">首页</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服务与支持 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/service/simulator.html">模拟器</a></li>
+              <li><a class="dropdown-item" href="/ch/service/os.html">操作系统</a></li>
+              <li><a class="dropdown-item" href="/ch/service/toolchain.html">软件工具链</a></li>
+              <li><a class="dropdown-item" href="/ch/service/chip.html">嵌入式芯片</a></li>
+
+              <li><a class="dropdown-item" href="/ch/service/ide.html">集成开发环境</a></li>
+              <li><a class="dropdown-item" href="/ch/service/aisys.html">AI软件栈服务</a></li>
+              <li><a class="dropdown-item" href="/ch/service/consultation.html">专家咨询</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解决方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社区 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ch/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ch/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ch/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ch/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ch/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ch/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/post.html" style="white-space: nowrap;">新闻与活动</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/about.html" style="white-space: nowrap;">关于我们</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ch/career.html">招贤纳士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1120.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1120.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1120.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/risc-v/daily/2026/1120.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1120.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 全球动态日报（2026-11-20） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ch/">首页</a></li>
+                                <li class="breadcrumb-item"><a href="/ch/post.html#news-list" class="news-list-link">新闻与活动</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 全球动态日报（2026-11-20）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 全球动态日报（2026-11-20）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-20</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>调研窗口</strong>：2026-11-19 05:00 ~ 2026-11-20 05:00（北京时间，24 小时）。
+<strong>信源</strong>：Google News 聚合（中英文 24 组查询，另补 10 组中文团队词与厂商英文查询，走代理）。Hacker News、Phoronix、CNX Software、LinuxGizmos、RISC-V International 与 RISE 博客、openRuyi 官网。RISC-V 会员企业官网巡检（391 家）、riscv100.top 榜单巡检。GitHub 上覆盖香山、CORE-V、达摩院玄铁、奕斯伟、算能、芯来、乐鑫、进迭时空、revyos、openRuyi-Project 等组织与重点仓库的提交与发布检索。</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>今日重点：赛昉 昉·天枢-70 随 JH-B100 量产，国产乱序 RISC-V CPU IP 首次在数据中心规模化商用（11-19）。</li>
+  <li>一、开源社区与软件生态。
+    <ul>
+      <li>RISE：Python 的 riscv64 原生轮子过 1500 个，缺的还有 519 个（11-18）。</li>
+      <li>openRuyi 二十笔：gRPC 升 1.85.3 并改链系统 OpenSSL 4，protobuf 到 36.2（11-19）。</li>
+      <li>revyos/linux 二十笔：内核转 Debian 打包层，K3 加 WRS.STO 勘误（11-20）。</li>
+      <li>香山三仓十笔：矩阵与 AME 验证成主线，GEM5 补 SMT 与除法器（11-19）。</li>
+      <li>Hypnos：德尔夫特理工的双相持续学习平台，RISC-V MCU 整机 33.3 毫瓦（11-19）。</li>
+    </ul>
+  </li>
+  <li>二、产品与生态动态。
+    <ul>
+      <li>2026 RISC-V 产业发展大会澳门场：湾区开源生态中心启动，开放算力平台签约（11-19）。</li>
+      <li>英飞凌把旗舰 AURIX 家族转到 RISC-V，riscv.org 发布五问访谈（11-19）。</li>
+      <li>LILYGO T-CAN485 C5：ESP32-C5 进工业控制板，CAN 与 RS-485 同板（11-18）。</li>
+    </ul>
+  </li>
+  <li>三、国内团队深挖。
+    <ul>
+      <li>进迭时空 llama.cpp 跟上游同步，精度枚举随上游改（11-19）。</li>
+      <li>riscv100 新增两条 K3 X100 的 SPEC CPU2006 记录，浮点每 GHz 7.54 与 7.88（11-18）。</li>
+      <li>奕斯伟 StarPro64：1.6GHz 工作点、风扇与看门狗进设备树（11-20）。</li>
+    </ul>
+  </li>
+  <li>四、具身智能与机器人专章。
+    <ul>
+      <li>进迭时空机器人栈三笔：时钟锚点、深度补洞、参考运动规划器（11-19）。</li>
+    </ul>
+  </li>
+  <li>五、总结与趋势观察。
+    <ul>
+      <li>近三日趋势：管理面出数字，打包层补基础，平台侧签协议（11-17 ~ 11-19）。</li>
+    </ul>
+  </li>
+  <li>附录：完整信源清单与信源核查表。</li>
+</ul>
+
+<hr />
+
+<p><strong>本期提要</strong>：今天最实的一条是赛昉把乱序 RISC-V 核送进了数据中心的量产出货。昉·天枢-70 集成在服务器 BMC 芯片 JH-B100 里，赛昉称这是国产乱序 RISC-V CPU IP 首次在服务器场景规模化商用，年出货量「有望」达千万级。第二条是英飞凌。这家 2025 年占全球车用 MCU 三分之一以上的厂商，把旗舰 AURIX 家族的第一代 RISC-V 产品拿出来了，riscv.org 同步发了五问访谈。开源侧三条都落在基础上：RISE 的 Python 轮子过 1500 个，openRuyi 把 gRPC 切到系统 OpenSSL 4，revyos 把内核配置搬进 Debian 打包层。国内团队侧，进迭时空的机器人栈一天补了时间基准、深度图与规划器接口三处。</p>
+
+<hr />
+
+<h2 id="今日重点赛昉-昉天枢-70-随-jh-b100-量产国产乱序-risc-v-cpu-ip-首次在数据中心规模化商用11-19">今日重点：赛昉 昉·天枢-70 随 JH-B100 量产，国产乱序 RISC-V CPU IP 首次在数据中心规模化商用（11-19）</h2>
+
+<p>11 月 19 日，赛昉科技宣布其自研 RISC-V CPU IP「昉·天枢-70」（Dubhe-70）已搭载于服务器 BMC 芯片 JH-B100 实现量产交付。公司的表述是：这是国产乱序 RISC-V CPU IP 首次在数据中心服务器场景实现规模化量产商用，年出货量有望达到千万级。此前 11 月 17 日，赛昉已官宣 JH-B100 量产并交付客户，当时未披露内核型号与出货预期。</p>
+
+<p>天枢-70 的参数按赛昉公开资料：9 级及以上流水线，三发射超标量，深度乱序执行，支持多核缓存一致性与 I/O 缓存一致性，指令集为 RV64GCBH。这颗核在 2024 年 8 月发布。当时给出的指标是 SPECint2006 每 GHz 7.2 分，性能对标 Arm Cortex-A72／A510。相对 Cortex-A55，赛昉称性能高 80%、能效比高 32%、面效比高 90%。本次量产稿的口径改成「接近 Cortex-A73」。两次表述不完全一致，本次以新稿为准记录，同时保留旧稿数值。</p>
+
+<p>JH-B100 里除天枢-70，还集成了赛昉自研的昉·星路-500 一致性 NoC。这颗芯片是四核配置、19200 DMIPS，兼容 DDR4-3200 与 DDR5-4800，集成 PFR 与 PROT，支持国密 SM2／SM3／SM4。接口含双路 PCIe 4.0 端点、全功能 eSPI Slave、PECI 与两路 LTPI。产品线上，赛昉还有天枢-83、天枢-100 两颗更高性能的 CPU IP，以及星路-700 NoC，公司称已获客户选用。</p>
+
+<p>这条消息的分量在场景选择，不在发布。BMC 是服务器主板上的管理芯片，负责状态监控、电源管理、故障告警与远程运维，一板一颗，对可靠性与容错的要求接近主算力，但不承担业务负载。用它做乱序核的第一个量产落点，逻辑与车规芯片从车身控制切入是同一套：位置边缘，验证门槛高，但一旦进去就是长期供货。赛昉自己给出的说法是「通过终端客户严苛的导入验证」。</p>
+
+<p>「年出货量有望达千万级」这个数字要打折扣。全球服务器年出货量在千万台量级，BMC 通常一板一颗，若真做到一千万颗，意味着拿下了大部分增量市场。这是「有望」，不是订单，也不是已交付量。赛昉没有给出客户名称、排产节奏与单季出货。此前 11 月 17 日的官方口径只写到「通过多家服务器制造厂商及互联网企业的产品导入与审查流程」，客户整机「即将进入量产」。</p>
+
+<p>产业链位置也要说清。国产 RISC-V 目前在数据中心的量产案例集中在 BMC、边缘网关、AI 推理卡这类「次核心」场景，双路或四路主 CPU 批量替换 x86 的公开案例还没有。天枢-70 这一笔证明的是乱序核能过服务器级的验证流程，而不是通用算力已经被替代。跟踪点有两个：JH-B100 的季度出货能否兑现，以及天枢-83／100 有没有客户流片。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://news.mydrivers.com/1/1166/1166936.htm">快科技：国产乱序 RISC-V CPU IP 落地数据中心</a>、<a href="http://tech.news18a.com/article/18143">网通社：昉·天枢-70 首次量产</a>、<a href="https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news">赛昉官网：服务器 BMC 芯片量产交付</a>、<a href="https://www.ithome.com/0/788/873.htm">IT之家：2024 年 8 月天枢-70 发布</a>。</p>
+
+<h2 id="一开源社区与软件生态">一、开源社区与软件生态</h2>
+
+<h3 id="risepython-的-riscv64-原生轮子过-1500-个缺的还有-519-个11-18">RISE：Python 的 riscv64 原生轮子过 1500 个，缺的还有 519 个（11-18）</h3>
+
+<p>11 月 18 日，RISE 项目（RISC-V Software Ecosystem）发布进展报告，标题为《Python on RISC-V: 1500 Packages and Counting》。作者是高通公司的 Ludovic Henry。报告的口径是：RISE 的轮子看板跟踪 PyPI 下载量最高的 15000 个包。其中 2076 个含原生代码，必须为 riscv64 单独构建。截至 11 月 18 日，已有 1506 个拿到 riscv64 轮子。</p>
+
+<p>数字要拆开看。1506 个里有 117 个是上游项目自己在 PyPI 发布，1389 个由 RISE 自建索引提供。按下载排名分层：前 100 名可用 92 个，缺 5 个；前 500 名可用 438 个，缺 50 个；前 1000 名可用 842 个，缺 133 个；全部 2076 个里仍缺 519 个，占四分之一。也就是说，绝大多数用户要装得上，得在命令行里加一条 <code class="highlighter-rouge">--extra-index-url https://pypi.riseproject.dev/simple</code>。</p>
+
+<p>已经进榜的包里，NumPy、SciPy、pandas、cryptography、PyArrow、PyTorch 与 vLLM 都在。PyTorch 的 2.13.0 轮子覆盖 CPython 3.12、3.13、3.14 与自由线程版 3.14，在 RISC-V 实机上构建而非 QEMU 或交叉编译，完整跑过 212038 个测试用例。vLLM 的 0.29.0+cpu 在 9 月 21 日合并，0.30.0 于 9 月 24 日跟进，首个版本产出的是 CPython 3.12 ABI3 的 <code class="highlighter-rouge">manylinux_2_39_riscv64</code> 轮子。</p>
+
+<p>报告里最值得记的是一个对照。在 StarFive VisionFive 2 上，从源码构建 NumPy 约需 15 分钟，装预编译轮子约 25 秒。当项目的依赖树里有十几个含扩展的包时，这个差距会以小时计。报告也给了退场机制：一旦上游开始自己发 riscv64 轮子，自动化流程会提议把 RISE 的构建下线。判断这条进展的真正指标不是索引多大，而是有多少能因为上游接手而被删掉。</p>
+
+<p>需要提醒两点。其一，这是一个独立供应链。1389 个包依赖 RISE 的构建与发布流程，虽有不可变 Release 与 SHA-256 摘要，但与各包上游维护者是两套责任。其二，目标平台是 glibc Linux，不覆盖跑 MicroPython 或裸机的 MCU 级 RISC-V。安装可用也不等于性能可用，标量实现能跑起来，向量优化仍要另做。</p>
+
+<p><strong>日期</strong>：2026-11-18　<strong>来源</strong>：<a href="https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/">RISE：Python on RISC-V: 1500 Packages and Counting</a>、<a href="https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting">Adafruit 转载</a>。</p>
+
+<h3 id="openruyi-二十笔grpc-升-1853-并改链系统-openssl-4protobuf-到-36211-19">openRuyi 二十笔：gRPC 升 1.85.3 并改链系统 OpenSSL 4，protobuf 到 36.2（11-19）</h3>
+
+<p>openRuyi 主仓在 11 月 19 日晚至 20 日凌晨落 20 笔提交。01 时 17 分的一组五笔是重头。gRPC 升到 1.85.3 并改为链接系统 OpenSSL 4，protobuf 升到 36.2。protobuf-c 改为按新版 Protobuf 字段 API 构建，re2 升到 2025.11.05，abseil-cpp 升到 20260817.0。这五个包是同一条依赖链，一次动完。</p>
+
+<p>零时 06 分有两笔 GRUB 改动：提供 kernel-install 集成，以及把 <code class="highlighter-rouge">/etc/default/grub</code> 打进包。23 时 28 分的一批是 13 个 Go 生态包，含 golang.org/x 系列的周边工具链、gofumpt、misspell、go-billy、paho.golang 与几颗测试辅助库。</p>
+
+<p>把 gRPC 切到系统 OpenSSL 4 这件事单独说。gRPC 默认带 BoringSSL，发行版打包时常改成链接系统 OpenSSL，以便统一 TLS 补丁与 FIPS 策略。这次改动的前提是 openRuyi 仓库里已有 OpenSSL 4，否则链接不上。同一批里 protobuf 与 protobuf-c 必须同时升，否则序列化层会出现 ABI 不一致。这三笔的排列顺序说明打包者清楚依赖方向。</p>
+
+<p>GRUB 的两笔指向另一个方向：让内核安装走标准流程。<code class="highlighter-rouge">kernel-install</code> 是 systemd 提供的钩子，发行版用它把内核、initramfs 与启动项一次装好。把 <code class="highlighter-rouge">/etc/default/grub</code> 打进包，是为了让用户改启动参数时有文件可改，而不是手编 <code class="highlighter-rouge">grub.cfg</code>。这类改动不出现在发布说明里，但决定了发行版能不能被当作日常系统用。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://github.com/openRuyi-Project/openRuyi">openRuyi-Project/openRuyi</a>、<a href="https://openruyi.cn/zh-Hans/news/">openRuyi 官网新闻页</a>。</p>
+
+<h3 id="revyoslinux-二十笔内核转-debian-打包层k3-加-wrssto-勘误11-20">revyos/linux 二十笔：内核转 Debian 打包层，K3 加 WRS.STO 勘误（11-20）</h3>
+
+<p>revyos/linux 的 <code class="highlighter-rouge">revyos/7.3.y</code> 分支在 11 月 20 日凌晨 01 时 29 分至 01 时 33 分一次性落地 20 笔，时间戳集中在四分钟内。从标题看，这批改动做的是两件事：把内核构建搬到 Debian 的打包层，以及把平台支持扩到六家。</p>
+
+<p>打包层的改动包括：新增 <code class="highlighter-rouge">debian_defconfig</code>，用主版本号作包名的临时方案，让 <code class="highlighter-rouge">linux-image</code> 提供 <code class="highlighter-rouge">wireguard-modules</code>。另有 linuxboot 配置，把 EFI framebuffer 切到 efidrm 并打开 DRM panic 支持，CI 增加交叉与本机两种构建。平台开关一次打开六家：奕斯伟 EIC7700、超睿 UltraRISC DP1000、进迭时空 K3 与 K1、玄铁 TH1520、算能 SG2042／SG2044，另加 Picoheart 勘误。</p>
+
+<p>与芯片相关的实质改动有三笔。一笔是 <code class="highlighter-rouge">riscv: errata: spacemit: Use WRS.STO instead of WRS.NTO on K3</code>，把 K3 上等待指令的 WRS.NTO 换成 WRS.STO。这类勘误通常对应硅上的一个具体行为差异，NTO（no timeout）与 STO（short timeout）的区别在于等待超时语义。第二笔给奕斯伟 StarPro64 加了 1.6GHz 的 CPU 工作点。第三笔给同一块板打开风扇控制与看门狗。</p>
+
+<p>把 20 笔放在四分钟内落地，形态与前几日一致，属批量整理后推送，不代表当天写了 20 个补丁。可读出的方向是明确的：revyos 正把内核从「按平台改配置」推到「按 Debian 内核包维护」。这一步做成了，后续跟进上游稳定版会容易得多，代价是要维护一套打包补丁。K3 的 WRS.STO 勘误值得单独跟踪，它是少数能证明 K3 已在真实硬件上跑内核的证据。</p>
+
+<p><strong>日期</strong>：2026-11-20　<strong>来源</strong>：<a href="https://github.com/revyos/linux/tree/revyos/7.3.y">revyos/linux（revyos/7.3.y）</a>。</p>
+
+<h3 id="香山三仓十笔矩阵与-ame-验证成主线gem5-补-smt-与除法器11-19">香山三仓十笔：矩阵与 AME 验证成主线，GEM5 补 SMT 与除法器（11-19）</h3>
+
+<p>11 月 19 日，香山项目三个仓库共落十笔。主仓 XiangShan 在 <code class="highlighter-rouge">kunminghu-v3</code> 分支两笔。14 时 35 分的 #6987 让 DCache 按内存通道分别发 DiffRefillEvent，不再排队。09 时 31 分的 #6947 把 ICache 里 itlb／pmp 请求的 size 置为 1.U。</p>
+
+<p>差分测试仓 difftest 三笔都指向矩阵扩展。17 时 12 分的 #1050 把异步 CPU MMA 验证并行化；15 时的 #1049 在没有待处理 REF 控制时跳过 ROB 扫描；14 时 45 分的 #1044 跟踪 TR 存储请求与应答。作者分别是 yu-yake2002 与 ecall73。三笔合起来是同一件事：矩阵单元的验证数据量在变大，靠逐条扫描已经跟不上，改成并行与条件跳过。</p>
+
+<p>性能模型 GEM5 的 <code class="highlighter-rouge">xs-dev</code> 分支五笔。15 时 12 分的 #1346 用本地写嗅探检测 SMT 的读后写冲突。14 时 58 分的 #1355 让性能 CI 日志对齐 perf 触发器。12 时 50 分的 #1319 加入 teacher-student 的 BOP 优化。12 时 45 分的 #1327 做整数与浮点除法器的唤醒，10 时 26 分的 #1324 修正整数除法 CLZ 延迟的计算。后两笔是一对，先把延迟算法改对，再接唤醒逻辑。</p>
+
+<p>这一天没有性能数字，全部是可验证性建设。ICache 的 req.size 与 DCache 的 refill 事件都属于「模型与 RTL 对不上就会误报」的细节。SMT 的 RAR 冲突检测是新方向，昆明湖的 SMT 支持此前在模型里没有专门检查。矩阵侧的动作最集中，AME 与 matrix 两个前缀占了 difftest 的全部三笔，说明向量与矩阵单元的验证正在成为瓶颈。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3">OpenXiangShan/XiangShan（kunminghu-v3）</a>、<a href="https://github.com/OpenXiangShan/difftest">OpenXiangShan/difftest</a>、<a href="https://github.com/OpenXiangShan/GEM5/tree/xs-dev">OpenXiangShan/GEM5（xs-dev）</a>。</p>
+
+<h3 id="hypnos德尔夫特理工的双相持续学习平台risc-v-mcu-整机-333-毫瓦11-19">Hypnos：德尔夫特理工的双相持续学习平台，RISC-V MCU 整机 33.3 毫瓦（11-19）</h3>
+
+<p>11 月 19 日，IoT Tech News 报道了德尔夫特理工大学（TU Delft）的 Hypnos 平台，论文同期挂在 arXiv（2611.24637）。作者是 Guilherme Guedes、Marco P. E. Apolinario 与 Charlotte Frenkel。这套平台要解决的问题是：让边缘设备在部署后继续学习新样本，又不把原始数据传到服务器。</p>
+
+<p>Hypnos 把学习拆成两相，对应人脑的清醒与睡眠。清醒相在设备上跑，核心是一颗 X-HEEP 的 RISC-V 微控制器加 Quadrilatero 矩阵协处理器，另有一个紧凑加速器负责深度可分离卷积、逐通道重量化与原型运算。这一相只做无梯度的原型更新，来一个样本就更新一次类别原型，同时把压缩后的特征存下来。反向传播不在设备上跑。睡眠相交给智能充电器：充电器从设备取回乘积量化码与权重，解码出隐层激活，用回放做梯度更新，再把整合后的参数写回。</p>
+
+<p>指标按论文：在 CORe50 的 NICv2-391 协议上，INT8 激活配置达到 78.6% 准确率，单样本设备侧延迟 7.79 秒；INT16 激活配置换到 81.6%、10.54 秒。与量化隐层回放相比，学习步数少 3.8 倍、每样本学习算力少 22 倍，准确率还更高。28 纳米工艺综合结果为 9.43 平方毫米、375MHz 下 33.3 毫瓦，清醒相加速器只占面积的 10.7%。5.48MB 的回放缓存放在充电器侧，不占设备内存。整套设计已开源。</p>
+
+<p>值得记的是这个资源调度思路。它没有试图把训练压进电池供电的设备，而是把「巩固」这一步挪到有墙插电源与大内存的时刻。代价是设备必须被插上电才能完成长期记忆，收益是设备侧的功耗与面积都压到可用范围。局限也清楚：7.79 秒一个样本只能用于慢变传感器流，摄像头级的连续学习还差得远。论文用的是 MobileNetV3-Large 冻结骨干加在线原型分类器，不是端到端训练。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/">IoT Tech News：Hypnos brings continual learning to RISC-V edge devices</a>、<a href="https://arxiv.org/abs/2611.24637">arXiv:2611.24637</a>、<a href="https://github.com/cogsys-tudelft/hypnos">cogsys-tudelft/hypnos</a>。</p>
+
+<h2 id="二产品与生态动态">二、产品与生态动态</h2>
+
+<h3 id="2026-risc-v-产业发展大会澳门场湾区开源生态中心启动开放算力平台签约11-19">2026 RISC-V 产业发展大会澳门场：湾区开源生态中心启动，开放算力平台签约（11-19）</h3>
+
+<p>11 月 19 日，2026 RISC-V 产业发展大会全球合作特别论坛暨 RDSA 国际论坛在澳门银河国际会议中心举行，主题为「标准互通·全球共生」。会议由澳门经济及科技发展局指导，中国电子工业标准化技术协会 RISC-V 工作委员会、RDSA 产业联盟、粤港澳大湾区 RISC-V 开源生态发展中心与澳门产业技术研究院联合主办。RDSA 国际论坛自 2024 年起已连续办三年。</p>
+
+<p>会上有三项落地。一是粤港澳大湾区 RISC-V 开源生态发展中心正式启动，由珠海、横琴、澳门三地共建，下设基础研究平台、应用创新平台与开源社区。二是 RISC-V 国际化供需对接平台启动，按中电标协秘书长朵晶的介绍，供给侧可发布产品与方案，需求侧可发布应用需求。三是 RISC-V 国际开放算力平台完成战略意向签约。签约方包括奕斯伟计算、北京开源芯片研究院、苏州国芯、蓝芯算力、进迭时空，以及 EverPure、ExaLeapSem、2V Systems 等海外机构。</p>
+
+<p>会议同步发布首批 RISC-V 出海典型产品与解决方案，共 9 款，来自深度数智、希姆计算、算能科技、跃昉科技、奥维领芯科技与毫厘智能科技。2026 DSA 国际创新创业大赛同日启动，设团队组与企业组，覆盖 DSA 算法与应用、硬件加速、DSA 芯片设计三个赛道，奖金池 115 万澳门元，评审首次增加「落户澳门意愿及可行性」一项。</p>
+
+<p>会上引用的行业数据是：2025 年全球 RISC-V SoC 出货约 69 亿颗，预计 2031 年增至 360 亿颗，年复合增长率 31.7%。这组数字来自会议材料，未见第三方署名，按引用记录。北京开源芯片研究院院长唐丹在受访时表示，研究院可为澳门提供技术支援，共同参与国际标准制定与兼容性测试。判断这类会议的分量要看落地物：这次落地的是中心、平台与签约意向，属组织架构层面，尚未看到具体项目清单与资金安排。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="http://macaucee.com.mo/content.asp?id=122435">澳门会展经济报：2026 RISC-V 产业发展大会全球合作特别论坛在澳门举行</a>、<a href="https://www.macaodaily.com/content/202611/20/c517948.html">澳门日报：RISC-V 论坛澳举行 深化全球产业协同</a>、<a href="https://www.semiw.com/news/17950775858030.html">半导体世界转载</a>。</p>
+
+<h3 id="英飞凌把旗舰-aurix-家族转到-risc-vriscvorg-发布五问访谈11-19">英飞凌把旗舰 AURIX 家族转到 RISC-V，riscv.org 发布五问访谈（11-19）</h3>
+
+<p>11 月 19 日，RISC-V International 博客刊出对英飞凌汽车微控制器软件与生态管理副总裁 Thomas Schneid 的五问访谈，主题是 AURIX RC1 的发布。AURIX RC1 于 11 月 4 日发布，是英飞凌第一个基于 RISC-V 指令集的微控制器家族。</p>
+
+<p>访谈给出的背景数字值得记：按 TechInsights 的统计，英飞凌 2025 年供应了全球三分之一以上的车用微控制器。AURIX 是这家公司汽车业务起家的家族，也是其市场地位的主要支撑。RC1 把原有的 AURIX TriCore 与 TRAVEO T2G 两条产品线并到一代上，覆盖从实时控制器到 MCU／MPU 混合器件的范围。应用面列出 zonal、车身、底盘、电池管理、动力总成、驾驶辅助安全管理与座舱。部分型号会带一个并行处理单元（PPU）做 AI 加速。</p>
+
+<p>英飞凌强调的是迁移成本。Schneid 的说法是，公司花了很大力气让车企转向 RISC-V 的工程投入、以及对客户工具链的影响都降到最低。这句话的分量在于，车用 MCU 的替换成本主要不在芯片本身，而在 AUTOSAR 配置、调试器、功能安全认证与供应链再验证。一家占三分之一市场的供应商愿意动旗舰家族，说明它判断生态已经够用。</p>
+
+<p>要留的余地也不少。英飞凌明确说具体型号与产品线细节尚未公布，这意味着没有 SKU、没有样片时间表、没有量产节点。AURIX 现有客户的迁移也不会一夜完成，车规项目的设计周期通常三到五年。把这条与赛昉的 BMC 量产放在一起看，2026 年 RISC-V 的产业信号集中在「管理面」与「控制面」，还不在主算力。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/">RISC-V International：V Questions with… Infineon’s Thomas Schneid</a>。</p>
+
+<h3 id="lilygo-t-can485-c5esp32-c5-进工业控制板can-与-rs-485-同板11-18">LILYGO T-CAN485 C5：ESP32-C5 进工业控制板，CAN 与 RS-485 同板（11-18）</h3>
+
+<p>11 月 18 日，LinuxGizmos 报道 LILYGO 上架两款开发平台。其中 T-CAN485 C5 基于乐鑫 ESP32-C5，是 RISC-V 架构。另一款 T-Display CM0 用的是四核 Arm Cortex-A53 的 Compute Module Zero，不属于 RISC-V，这里只作区分、不计入。</p>
+
+<p>T-CAN485 C5 的配置：16MB flash 加 8MB PSRAM，无线支持 2.4／5GHz 双频 Wi-Fi 6、蓝牙 5 LE 与 IEEE 802.15.4（Zigbee 与 Thread）。工业接口给得比较全。SN65HVD251DR 的 CAN 收发器速率到 1Mbps；MAX13487E 半双工 RS-485 带自动方向控制；W5500 以太网控制器走 SPI。另有 0 至 10V 模拟输入、3.3 至 24V 数字输入、microSD 与 Qwiic 接口。板子尺寸 128×62×17 毫米，7 至 24V 直流输入或 5V USB 供电。</p>
+
+<p>这块板的意义在于把 ESP32-C5 从「Wi-Fi 6 开发板」推到工业现场。CAN 与 RS-485 是产线与楼宇控制的两条主干，配上 0 至 10V 模拟量与宽压输入，说明目标场景是 PLC 周边或网关，而不是桌面实验。ESP32-C5 是乐鑫第一颗带双频 Wi-Fi 6 的 RISC-V 芯片，这类板子多起来，RISC-V 在 MCU 侧的出货结构会从消费类往工业类挪。</p>
+
+<p><strong>日期</strong>：2026-11-18　<strong>来源</strong>：<a href="https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/">LinuxGizmos：LILYGO CM0 terminal and ESP32-C5 board</a>。</p>
+
+<h2 id="三国内团队深挖">三、国内团队深挖</h2>
+
+<h3 id="进迭时空-llamacpp-跟上游同步精度枚举随上游改11-19">进迭时空 llama.cpp 跟上游同步，精度枚举随上游改（11-19）</h3>
+
+<p>11 月 19 日，spacemit-com/llama.cpp 的 <code class="highlighter-rouge">mtmd-backend</code> 分支做了一次较大的上游同步。14 时 36 分合入 #81「Sync upstream llama.cpp master into mtmd-backend」。13 时 17 分落一笔 <code class="highlighter-rouge">spacemit: use current precision enum after upstream sync</code>，作者 timeuser4。后者是前者的补丁：上游把精度枚举改了名或改了取值，下游后端必须跟着改。</p>
+
+<p>同批进来的还有若干上游改动。OpenCL 后端允许在分解式 FA 里调整 KV padding（#32522），ggml 补 WASM Relaxed SIMD 增强（#19590）。另有修复循环状态里的 sticky NaN（#31913）、把 CI 的 LLVM 换成 22.1.8（#32548）。这些不是进迭时空写的，是随同步一起进来的上游代码。</p>
+
+<p>这次同步值得记的原因是它暴露了维护成本的结构。RISC-V 后端改的是 ggml 的张量算子与内存布局，而上游在快速重构这部分。精度枚举这种底层类型一改，下游所有后端都要重新编译并核对语义。进迭时空的做法是保持一个长期分支、定期整批同步，而不是逐笔 rebase。好处是合并冲突集中处理，坏处是每次同步都要补一批适配提交，且与上游的距离会周期性拉大。</p>
+
+<p>同一天 spacemit-com 还有两处小动作：mpp 修了 pkgconfig 在模块未启用时仍引入 C++ 头文件的问题；ai-sdk 与 bianbu-agentic 各更新了一次子模块指针。这三笔都属于维护，不构成功能进展。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://github.com/spacemit-com/llama.cpp">spacemit-com/llama.cpp（mtmd-backend）</a>、<a href="https://github.com/spacemit-com/llama.cpp/pull/81">PR #81：同步上游 master</a>。</p>
+
+<h3 id="奕斯伟-starpro6416ghz-工作点风扇与看门狗进设备树11-20">奕斯伟 StarPro64：1.6GHz 工作点、风扇与看门狗进设备树（11-20）</h3>
+
+<p>11 月 20 日凌晨，revyos/linux 里有三笔针对奕斯伟 EIC7700 平台 StarPro64 的设备树改动：给 CPU 增加 1.6GHz 的工作点，打开风扇控制，打开看门狗。同一批里另有一笔打开 EIC7700 平台支持的总开关。作者为 Icenowy 与 RevySR。</p>
+
+<p>三笔的分量在于它们都是「上板才需要」的改动。CPU 工作点意味着这颗芯片在 1.6GHz 上已被验证可稳定运行，而不只是规格书上的数字。风扇控制说明这块板有主动散热，且温度曲线需要在设备树里描述。看门狗打开则关系到无人值守场景的自动恢复。</p>
+
+<p>奕斯伟计算的 EIC7700 是其 RISC-V 边缘计算 SoC，StarPro64 是对应的高性能单板。此前该平台的软件支持多集中在厂商自己的 linux-stable 与 opensbi 仓，最近一次推送是 10 月 19 日。这次改动落在 revyos 而非厂商仓，说明第三方发行版开始把这块板当作正式支持的平台来维护。对用户的实际意义是：装 revyos 之后，风扇会转、频率会升、死机会自动重启。</p>
+
+<p><strong>日期</strong>：2026-11-20　<strong>来源</strong>：<a href="https://github.com/revyos/linux/tree/revyos/7.3.y">revyos/linux（revyos/7.3.y）</a>、<a href="https://github.com/eswincomputing">eswincomputing</a>。</p>
+
+<h3 id="riscv100-榜单新增两条-k3-x100-的-spec-cpu2006-记录11-18">riscv100 榜单新增两条 K3 X100 的 SPEC CPU2006 记录（11-18）</h3>
+
+<p>11 月 18 日，riscv100.top 的 What’s New 新增两条 Data updates，都是进迭时空 K3 X100 的 SPEC CPU2006 Speed Base 记录。两条均为标量代码，测试频率 2.4 GHz。</p>
+
+<p>第一条为 LLVM 23.1.0。整数 7.162 分/GHz，整数总分 17.19；浮点 7.537 分/GHz，浮点总分 18.09。这是该平台第一次出现 LLVM 23.1.0 的运行记录，此前只有 LLVM 21.1.0 与 22.1.0。</p>
+
+<p>第二条为 XSCC 1.1。整数 7.513 分/GHz，总分 18.03；浮点 7.877 分/GHz，总分 18.90。</p>
+
+<p>两条在 RISC-V 频道 SPEC CPU2006 的浮点每 GHz 排序里分列第 22 与第 15，该榜当前共 31 条记录。同平台更好的成绩仍在：XSCC 1.1 于 10 月 9 日那次记录为浮点 7.918、整数 8.230。所以这两条属同平台追加运行，不是新纪录。</p>
+
+<p>引用时带一句口径。站点在这两个更新页上都写明是工程测量（engineering measurement），不具备提交 SPEC 官方认证的资格。</p>
+
+<p>另有一条站务更新：11 月 19 日站点加了中英文切换，属功能更新，不是数据。</p>
+
+<p><strong>日期</strong>：2026-11-18　<strong>来源</strong>：<a href="https://riscv100.top/whats-new/2026-11-18-x100-llvm23-spec06-speed">What’s New：K3 X100 LLVM 23.1.0 SPEC CPU2006</a>、<a href="https://riscv100.top/whats-new/2026-11-18-x100-xscc11-spec06-speed">What’s New：K3 X100 XSCC 1.1 SPEC CPU2006</a>、<a href="https://riscv100.top/riscv/spec06">RISC-V 频道 · SPEC CPU2006</a>。</p>
+
+<h2 id="四具身智能与机器人专章">四、具身智能与机器人专章</h2>
+
+<h3 id="进迭时空机器人栈三笔时钟锚点深度补洞参考运动规划器11-19">进迭时空机器人栈三笔：时钟锚点、深度补洞、参考运动规划器（11-19）</h3>
+
+<p>11 月 19 日，spacemit-robotics 的 humanoid_common 合入三个 PR，分别解决时间基准、深度图质量与规划器接入。</p>
+
+<p>03 时 15 分合入 #36「feat(perception): add robot clock anchor service」，作者 chenzhaoqiJM。它在硬件驱动里加了一个只读的 RPC 服务，通过 ZMQ 把 IMU 的采样时间戳与主机接收时间戳对外暴露，让外部的深度相机发布者能把采集时刻映射到机器人时钟。实现上跑在后台线程、不阻塞控制环，时钟回拨时会作废旧锚点并切换会话。</p>
+
+<p>07 时 57 分合入 #37「feat(perception): simulate and fill depth holes」，同一作者。它给仿真加了可配置的深度空洞、噪声与仿真时延，默认按 30FPS 采集且不做追赶式补帧；补洞用两像素半径内的原始有效邻居填充，保留采集时间戳，丢弃渲染器预热阶段的过期帧。#36 与 #37 是一对：前者给时间基准，后者在仿真里造出真实相机才有的缺陷，好让下游算法在仿真阶段就能处理。</p>
+
+<p>08 时 18 分合入 #38「feat(planner): support optional reference motion planners」，作者 beililcj。改动引入可选的参考运动规划器，带请求所有权、运行时可用性判断与状态上报，同时把内部传输协议从 v7 升到 v8，关节与 IMU 反馈仍走独立消息。提交说明里写了验证方式：本机打包构建、lint 与 10 个规划器、传输、算子回归测试通过。</p>
+
+<p>同日 ros2_humanoid 有两笔配套。11 时 45 分加「bridge RealSense depth to Hiking control」，16 时 08 分「align Hiking depth preview」。omni-agent 一笔，给 ASR 加了 provider 覆盖与 LLM <code class="highlighter-rouge">/health</code> 启动等待。</p>
+
+<p>三笔连起来的意图清楚。机器人栈在接第三方感知与第三方策略，接的时候必须先解决两件事：不同来源的数据怎么对齐到同一时间轴，不同来源的控制指令谁说了算。#36 解决前者，#38 的「请求所有权」解决后者。把关节与 IMU 反馈保持为独立消息，也是同一个考虑——状态回传与指令下发不能混在一条通道里。</p>
+
+<p><strong>日期</strong>：2026-11-19　<strong>来源</strong>：<a href="https://github.com/spacemit-robotics/humanoid_common/pull/36">humanoid_common PR #36：机器人时钟锚点</a>、<a href="https://github.com/spacemit-robotics/humanoid_common/pull/37">PR #37：深度空洞补全</a>、<a href="https://github.com/spacemit-robotics/humanoid_common/pull/38">PR #38：可选参考运动规划器</a>、<a href="https://github.com/spacemit-robotics/ros2_humanoid">ros2_humanoid</a>、<a href="https://github.com/spacemit-robotics/omni-agent">omni-agent</a>。</p>
+
+<h2 id="五总结与趋势观察">五、总结与趋势观察</h2>
+
+<p>第一条判断是数据中心管理面成了国产乱序 RISC-V 核的第一个量产落点。赛昉的天枢-70 在 2024 年 8 月发布时是一颗「高性能、极低功耗」的 IP，两年后装进 JH-B100 出货。路径选得对：BMC 一板一颗、对可靠性要求高、不承担业务负载，是验证乱序核工程成熟度的合适位置。要打折扣的是「年出货千万级」，这是预期不是订单，且全球服务器年出货量本身就在千万台量级。真正的观察点是季度出货能否兑现，以及天枢-83／100 有没有客户流片。</p>
+
+<p>第二条判断是生态侧的动作从「能不能装」转到「谁来维护」。RISE 的 1506 个轮子里有 1389 个挂在自己的索引上，报告自己把「上游接手后下线 RISE 构建」当作成功指标。openRuyi 把 gRPC 从 bundled BoringSSL 切到系统 OpenSSL 4，revyos 把内核搬进 Debian 打包层。两件事方向一致：把补丁收进发行版的统一维护面，而不是各仓库各留一份。这类工作不出现在发布说明里，但决定了三年后还能不能跟进上游。</p>
+
+<p>第三条判断是车用 MCU 的头部供应商开始动旗舰家族。英飞凌占全球车用 MCU 三分之一以上，把 AURIX 与 TRAVEO 两条线并到一代 RISC-V 产品上，并强调迁移成本最小化。这是今年最重的架构信号之一，但当下没有 SKU、没有样片时间表。车规项目的设计周期三到五年，真正见到量产车上的 RC1 要到 2029 年前后。</p>
+
+<h3 id="近三日趋势管理面出数字打包层补基础平台侧签协议11-17--11-19">近三日趋势：管理面出数字，打包层补基础，平台侧签协议（11-17 ~ 11-19）</h3>
+
+<p>把 11 月 17 日至 19 日连起来看，三条线各走一步。管理面，11 月 17 日赛昉官宣 JH-B100 量产交付，11 月 19 日补上内核型号与出货预期，从「交付客户」走到「规模化商用」的表述。同期紫荆的 M100 把车规芯片的累计出货与客户名单摆出来。两条都在回答 RISC-V 在整机 BOM 里站哪个位置，答案都是边缘但必需的那一颗。</p>
+
+<p>基础软件侧，三天里做的都是打包与配置。11 月 17 日 openRuyi 把 OpenSBI 推到 1.9、引入 OpenSSL 3.6.5。11 月 18 日补齐 curl 与 nginx 的安全更新并收进 14 个 Go 包。11 月 19 日把 gRPC 链切到 OpenSSL 4。revyos 从 11 月 18 日的「配置基线」走到 11 月 20 日的「Debian 打包层」。RISE 则把 Python 轮子的覆盖率做成一张可跟踪的表。三天没有一条是性能突破，全是可维护性。</p>
+
+<p>平台与组织侧，11 月 19 日的澳门会议启动了湾区开源生态中心与国际化供需对接平台，并给开放算力平台签了战略意向。同一天 riscv.org 把英飞凌的访谈放出来。一边在搭组织架构，一边在把头部供应商的表态落地成公开文本。两条合起来说明 2026 年下半年的重心是「把已经能跑的东西组织起来」，而不是再发新架构。</p>
+
+<h2 id="附录">附录</h2>
+
+<h3 id="信源核查表">信源核查表</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News 聚合（中英文 24 组查询，另补 10 组中文团队词）</td>
+      <td>窗口内实质新增三条：赛昉天枢-70 量产（11 月 19 日，快科技首发，网通社等转载）、澳门 RISC-V 产业发展大会（11 月 19 日，澳门日报等在 11 月 19 日至 20 日发稿）、RISE 的 Python 轮子报告（11 月 18 日发布，11 月 19 日经 Adafruit 等传播），均已收录。剔除项：Purism Librem 5 v2 的西班牙语与葡萄牙语跟进稿（11 月 18 日报告已按官方新闻稿收录）、紫荆 M100 的长沙晚报探访稿（11 月 18 日报告已作今日重点）、阿里巴巴 CEO 关于千问在平头哥芯片上训练的表述（主体是 PPU 与倚天线，不属 RISC-V）、OpenAI 与 AMD 的芯片设计合作多篇（无 RISC-V 专属信息）、Microchip RT PolarFire 宇航级认证（主体是 FPGA，RISC-V 仅为其 SoC 子系列的核）、WCH ch32fun 开源栈（项目本身非新增，属转载）</td>
+    </tr>
+    <tr>
+      <td>Hacker News／Phoronix／CNX Software／LinuxGizmos／RISC-V International</td>
+      <td>HN 窗口内一条：Show HN 的 RISC-V 模拟器在 RTX3060 上启动 256  hart SMP Linux（1 分、1 评论），另有 11 月 18 日一则「早于 OpenAI 开源的 RISC-V CPU 设计 AI 回路」讨论（9 分），均属个人项目，不作条目。CNX Software 与 LinuxGizmos 窗口内各一条，前者为 Waveshare ESP32-S31 显示屏套件（ESP32-S31 属乐鑫新系列，产品页未给架构细节，暂不收录），后者为 LILYGO 两款板卡（已收录 T-CAN485 C5，T-Display CM0 为 Arm，剔除）。riscv.org 博客窗口内一条，即英飞凌五问访谈，已收录</td>
+    </tr>
+    <tr>
+      <td>GitHub 组织与重点仓库核查（40 余仓库）</td>
+      <td>窗口内活跃：XiangShan 2 笔、difftest 3 笔、GEM5 5 笔、openRuyi 20 笔、revyos/linux 20 笔、cvw 若干（Atom 流取不到，主分支窗口内未见新提交）、spacemit-com/llama.cpp 14 笔（含一次整批上游同步）、spacemit-com/mpp 1 笔、spacemit-com/ai-sdk 与 bianbu-agentic 各 1 笔、humanoid_common 4 笔、ros2_humanoid 2 笔、omni-agent 1 笔。零推送：NEMU、XSCache、cva6、core-v-verif、XUANTIE-RV（74 仓库）、eswincomputing（17 仓库）、sophgo、Radxa Linkr、RuyiSDK。芯来 Nuclei-Software 两个仓库的 pushed_at 在窗口内但主分支无提交，推送到的是 <code class="highlighter-rouge">develop</code> 与 <code class="highlighter-rouge">develop_n100</code> 分支，事件时间为 11 月 18 日 16 时 55 分（北京时间），在窗口之外，本期不计</td>
+    </tr>
+    <tr>
+      <td>openRuyi 双源</td>
+      <td>官网新闻页最新仍为 2026 年 10 月 19 日两篇与 2026.09 版本发布，窗口内无新版本；主仓 20 笔已按日志收录</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 巡检</td>
+      <td>两条数据更新（11-18）：进迭时空 K3 X100 的 LLVM 23.1.0 与 XSCC 1.1 各一条 SPEC CPU2006 Speed Base 记录，浮点每 GHz 为 7.537 与 7.877；11-19 站点加中英文切换属功能更新；Upcoming 无新增，委员会成员无增删</td>
+    </tr>
+    <tr>
+      <td>RISC-V 会员官网巡检（391 家）</td>
+      <td>变化项以高校与基金会首页为主（布兰登堡工业大学、中国石油大学（北京）、CNCF、CMC Microsystems、苏黎世联邦理工、欧洲空间局等），抽查均为首页新闻轮换与招生公告，无新产品、融资或架构发布，不收录；抓取失败 74 家，含中科院软件所、北京开源芯片研究院、Synopsys、腾讯等</td>
+    </tr>
+    <tr>
+      <td>RVSC2026 峰会官网核查</td>
+      <td>无变更：官网 sitemap、11 个关键页面与源码仓库均无更新，源码 HEAD 仍为 10 月 20 日</td>
+    </tr>
+    <tr>
+      <td>排除项核查</td>
+      <td>阿里 CEO 关于千问在平头哥芯片训练的表述按主题归属剔除，平头哥的 PPU 与倚天线不属 RISC-V；合见工软、芯华章等 EDA 相关稿窗口内无 RISC-V 专属内容；「OpenAI 模型在 RISC-V 核测试中登顶」一类标题属 AI 辅助芯片设计的转述，原文无 RISC-V 专属评测数据，不收录</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完整信源清单">完整信源清单</h3>
+
+<ul>
+  <li><strong>[1]</strong> 快科技：重大突破！国产乱序 RISC-V CPU IP 落地数据中心 — <a href="https://news.mydrivers.com/1/1166/1166936.htm">https://news.mydrivers.com/1/1166/1166936.htm</a></li>
+  <li><strong>[2]</strong> 网通社：赛昉昉·天枢-70 乱序 RISC-V CPU IP 首次量产 — <a href="http://tech.news18a.com/article/18143">http://tech.news18a.com/article/18143</a></li>
+  <li><strong>[3]</strong> 赛昉科技官网：基于 RISC-V 的服务器 BMC 芯片量产交付 — <a href="https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news">https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news</a></li>
+  <li><strong>[4]</strong> IT之家：赛昉推出 64 位极低功耗乱序 RISC-V CPU 内核 IP 昉·天枢-70（2024-08） — <a href="https://www.ithome.com/0/788/873.htm">https://www.ithome.com/0/788/873.htm</a></li>
+  <li><strong>[5]</strong> RISE：Python on RISC-V: 1500 Packages and Counting — <a href="https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/">https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/</a></li>
+  <li><strong>[6]</strong> Adafruit：Python on RISC-V: 1500 packages and counting — <a href="https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting">https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting</a></li>
+  <li><strong>[7]</strong> openRuyi-Project/openRuyi — <a href="https://github.com/openRuyi-Project/openRuyi">https://github.com/openRuyi-Project/openRuyi</a></li>
+  <li><strong>[8]</strong> openRuyi 官网新闻页 — <a href="https://openruyi.cn/zh-Hans/news/">https://openruyi.cn/zh-Hans/news/</a></li>
+  <li><strong>[9]</strong> revyos/linux（revyos/7.3.y 分支） — <a href="https://github.com/revyos/linux/tree/revyos/7.3.y">https://github.com/revyos/linux/tree/revyos/7.3.y</a></li>
+  <li><strong>[10]</strong> OpenXiangShan/XiangShan（kunminghu-v3 分支） — <a href="https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3">https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3</a></li>
+  <li><strong>[11]</strong> OpenXiangShan/difftest — <a href="https://github.com/OpenXiangShan/difftest">https://github.com/OpenXiangShan/difftest</a></li>
+  <li><strong>[12]</strong> OpenXiangShan/GEM5（xs-dev 分支） — <a href="https://github.com/OpenXiangShan/GEM5/tree/xs-dev">https://github.com/OpenXiangShan/GEM5/tree/xs-dev</a></li>
+  <li><strong>[13]</strong> IoT Tech News：Hypnos brings continual learning to RISC-V edge devices — <a href="https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/">https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/</a></li>
+  <li><strong>[14]</strong> arXiv:2611.24637 Hypnos 论文 — <a href="https://arxiv.org/abs/2611.24637">https://arxiv.org/abs/2611.24637</a></li>
+  <li><strong>[15]</strong> cogsys-tudelft/hypnos 开源仓库 — <a href="https://github.com/cogsys-tudelft/hypnos">https://github.com/cogsys-tudelft/hypnos</a></li>
+  <li><strong>[16]</strong> 澳门会展经济报：2026 RISC-V 产业发展大会全球合作特别论坛在澳门举行 — <a href="http://macaucee.com.mo/content.asp?id=122435">http://macaucee.com.mo/content.asp?id=122435</a></li>
+  <li><strong>[17]</strong> 澳门日报：RISC-V 论坛澳举行 深化全球产业协同 — <a href="https://www.macaodaily.com/content/202611/20/c517948.html">https://www.macaodaily.com/content/202611/20/c517948.html</a></li>
+  <li><strong>[18]</strong> 半导体世界：标准互通·全球共生 — <a href="https://www.semiw.com/news/17950775858030.html">https://www.semiw.com/news/17950775858030.html</a></li>
+  <li><strong>[19]</strong> RISC-V International：V Questions with… Infineon’s Thomas Schneid — <a href="https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/">https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/</a></li>
+  <li><strong>[20]</strong> LinuxGizmos：LILYGO CM0 terminal and ESP32-C5 board — <a href="https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/">https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/</a></li>
+  <li><strong>[21]</strong> spacemit-com/llama.cpp（mtmd-backend 分支） — <a href="https://github.com/spacemit-com/llama.cpp">https://github.com/spacemit-com/llama.cpp</a></li>
+  <li><strong>[22]</strong> humanoid_common PR #36：机器人时钟锚点服务 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/36">https://github.com/spacemit-robotics/humanoid_common/pull/36</a></li>
+  <li><strong>[23]</strong> humanoid_common PR #37：深度空洞补全 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/37">https://github.com/spacemit-robotics/humanoid_common/pull/37</a></li>
+  <li><strong>[24]</strong> humanoid_common PR #38：可选参考运动规划器 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/38">https://github.com/spacemit-robotics/humanoid_common/pull/38</a></li>
+  <li><strong>[25]</strong> spacemit-robotics/ros2_humanoid — <a href="https://github.com/spacemit-robotics/ros2_humanoid">https://github.com/spacemit-robotics/ros2_humanoid</a></li>
+  <li><strong>[26]</strong> spacemit-robotics/omni-agent — <a href="https://github.com/spacemit-robotics/omni-agent">https://github.com/spacemit-robotics/omni-agent</a></li>
+  <li><strong>[27]</strong> eswincomputing（奕斯伟计算 GitHub 组织） — <a href="https://github.com/eswincomputing">https://github.com/eswincomputing</a></li>
+  <li><strong>[28]</strong> riscv100.top 榜单 — <a href="https://riscv100.top/">https://riscv100.top/</a></li>
+</ul>
+
+<p><strong>局限性说明</strong>：本期为 24 小时窗口（11 月 19 日 05:00 至 11 月 20 日 05:00）。媒体侧三条实质新闻中，赛昉与澳门会议两条为中文源，英飞凌一条为 riscv.org 官方访谈；技术细节以提交标题、发布说明与论文摘要为准，未对代码或芯片逐项核验。赛昉的「年出货量有望达千万级」为厂商预期，无客户名单、排产节奏与季度数据佐证。天枢-70 的性能表述在 2024 年发布稿与 2026 年量产稿之间不一致，前者对标 A72／A510 并给出对 A55 的具体百分比，后者称接近 A73。本报告并列记录，不作取舍。英飞凌的 AURIX RC1 仅公布家族定位，无 SKU、样片时间表与量产节点，访谈中的迁移成本说法为公司自述。RISE 的覆盖率数字来自其自有看板，无第三方复核，519 个「缺口」按其分类口径统计。revyos/linux 的 20 笔在四分钟内落地，形态为批量推送，是否与前两日批次同源无法从提交标题判定。spacemit-com/llama.cpp 的 14 笔中多数为上游同步带入，进迭时空自有的改动只有精度枚举适配一笔。Hypnos 为学术成果，CORe50 上的准确率与延迟为论文自测，未在第三方硬件复现。会员官网巡检的「内容变化」按页面文本 hash 判定，抓取失败 74 家。GitHub 匿名 API 本期部分可用，组织级统计结合 Atom 流，非默认分支与非重点仓库可能漏计。</p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ch/post.html#news-list" class="btn btn-main news-list-link">返回新闻列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>联系我们</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>邮箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市宝山区高逸路88号1幢1层108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>链接</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-4 col-md-4 ">
+          <h4>关注我们</h4>
+          <img src="/assets/img/contact/qrcode_wechat_public_account_100px.webp" class="img-fluid text-left"
+            alt="weixin_public_qrcode">
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

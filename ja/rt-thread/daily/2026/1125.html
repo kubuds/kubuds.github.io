@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ja/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ja/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ja/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ja/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ja/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ja/">ホーム</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">サービス <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/service/simulator.html">シミュレータ</a></li>
+              <li><a class="dropdown-item" href="/ja/service/os.html">オペレーティングシステム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/toolchain.html">ツールチェーン</a></li>
+              <li><a class="dropdown-item" href="/ja/service/chip.html">組み込みチップ</a></li>
+
+              <li><a class="dropdown-item" href="/ja/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ja/service/aisys.html">AI システム</a></li>
+              <li><a class="dropdown-item" href="/ja/service/consultation.html">コンサルティング</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">ソリューション <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ja/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ja/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">コミュニティ <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ja/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ja/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ja/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ja/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ja/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ja/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/post.html" style="white-space: nowrap;">ニュースとイベント</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ja/about.html" style="white-space: nowrap;">会社概要</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ja/career.html">採用情報</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              日本語 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1125.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1125.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1125.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1125.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1125.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread デイリーレポート (2026-11-25) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ja/">ホーム</a></li>
+                                <li class="breadcrumb-item"><a href="/ja/post.html#news-list" class="news-list-link">ニュースとイベント</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread デイリーレポート (2026-11-25)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread デイリーレポート (2026-11-25)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-25</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>調査期間</strong>：2026-11-24 08:00 ~ 2026-11-25 08:00（北京時間、24 時間）。</p>
+
+<p><strong>情報源</strong>：公式ニュースインターフェースと企業公式サイトのニュースセンター、メインリポジトリのコミットと提案、releases と tags、org 全リポジトリのプッシュ、Env プラグインインデックス、topic 検索、Google News（プロキシ経由）、HN、ベンダー製品ドキュメント。</p>
+
+<hr />
+
+<h2 id="本期インデックス">本期インデックス</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>新アーキテクチャ：RH850 がメインラインへ
+        <ul>
+          <li>ルネサス RH850/U2C8 の移植をマージ、52 ファイル、4122 行（11-24）</li>
+          <li>シリアルは V1 のみ接続、ツールチェーンは v850-elf を使用（11-24）</li>
+          <li>CI マトリクスに RH850 を追加、ARM、AArch64、RISC-V と並列（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>カーネルとドライバの強化：同源の提案 6 件を清算
+        <ul>
+          <li>同一作者によるセキュリティ提案 6 件が 5 分以内にマージ（11-24）</li>
+          <li>既存イシュー 5 件がマージに伴いクローズ（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>チップと開発ボードの適配
+        <ul>
+          <li>GD32H77D GinoPi のボードレベルサポートをマージ、107 ファイル、2.67 万行（11-24）</li>
+          <li>STM32F103C6 が blue-pill ボードレベルに参加（11-24）</li>
+          <li>SWM341 CAN の受信パケットをクラシックフレーム長で切り詰め（11-24）</li>
+          <li>4 箇所の小修正：x86 ツールチェーン、AF_NETLINK、ROMFS アライメント、macOS ドキュメント（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>ツールチェーンと SDK：Env Pilot がプラグインマーケットへ
+        <ul>
+          <li>Env Pilot 0.1.2 をプラグインパッケージとしてリリース（11-24）</li>
+          <li>プラグインディレクトリが 1 項目から 2 項目へ（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>コミュニティ協作と審査待ちキュー
+        <ul>
+          <li>審査中の提案が 144 から 131 へ、イシューが 339 から 331 へ（11-24）</li>
+          <li>全志 V861 の 5 コミットが CI マトリクスで停滞、作者は夜間に作業を停止（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>業界応用観察：車載規格と HMI の 2 ライン
+        <ul>
+          <li>QEMU を先行させる車載規格の path（11-24）</li>
+          <li>GinoPi はグラフィカルインタラクションを指向（11-24）</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>まとめとトレンド観察
+        <ul>
+          <li>単日 16 件のマージ、前日の 3 倍超</li>
+          <li>新アーキテクチャがもたらすのは長期的なメンテナンスコスト</li>
+          <li>セキュリティ強化はバッファ境界に集中</li>
+          <li>Env はプラグイン化へ転換</li>
+          <li>ニュース側は引き続き静穏</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>付録：情報源確認表</li>
+</ul>
+
+<hr />
+
+<h2 id="1-新アーキテクチャrh850-がメインラインへ">1. 新アーキテクチャ：RH850 がメインラインへ</h2>
+
+<h3 id="11-ルネサス-rh850u2c8-の移植をマージ52-ファイル4122-行11-24">1.1 ルネサス RH850/U2C8 の移植をマージ、52 ファイル、4122 行（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:01（マージ）。<strong>出典</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11998">#11998</a>。</p>
+
+<p>提案は 11 月 6 日に提出され、11 月 24 日にマージ、レビューに 18 日を要した。作者は parthitce、コミット署名は Linumiz の Parthiban Nallathambi。</p>
+
+<p>マージ後、メインブランチに一度に 4 コミットが着地：カーネルアーキテクチャ層、ボードレベルライブラリ、QEMU ボードレベル、CI。合計 52 ファイル、新規 4122 行、削除はゼロ。</p>
+
+<p>カーネル層は libcpu/rh850 に配置。スレッド切り替えは TRAP0 を使用し、ネスト割り込み、FPU コンテキスト、フォールトダンプをサポート。ボードレベルライブラリにはスタートアップコード、INTC 割り込みコントローラ、OSTM タイマー、RLIN3 シリアルを含む。</p>
+
+<p>QEMU ボードレベルは qemu-rh850-u2c と命名され、シリアルは RLIN311 に配置、起動後は直接 msh に入る。libcpu ディレクトリは現在 21 個、rh850 が今回の新規追加分。</p>
+
+<p><strong>判断</strong>：これはアーキテクチャレベルの移植であり、単なる開発ボードの追加ではない。根拠は、変更が libcpu、bsp、CI の 3 箇所に同時に及んでおり、独立したツールチェーンとシミュレータを伴うこと。</p>
+
+<h3 id="12-シリアルは-v1-のみ接続ツールチェーンは-v850-elf-を使用11-24">1.2 シリアルは V1 のみ接続、ツールチェーンは v850-elf を使用（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:01（マージ）。<strong>出典</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11998">#11998 説明</a>。</p>
+
+<p>シリアルドライバは V1 のみ実装。Kconfig では BSP_USING_UART が RT_USING_SERIAL_V1 に依存しており、新版シリアルフレームワークは当面選択不可。</p>
+
+<p>ツールチェーンは v850-elf-gcc を使用。tools/ci/toolchain_bsp.yml はこのボードを v850-elf-gcc の類に分類。ダウンロード元は linumiz/rh850-gcc-toolchain の v1.2.0 を指す。</p>
+
+<p>このツールチェーンは GCC 14.3 に picolibc を加えたもの。シミュレータは linumiz/qemu-rh850 の rh850-v1.2.0 由来。CI は 2 つの圧縮パッケージをダウンロード後、まず SHA-256 を検証してから解凍する。</p>
+
+<p><strong>判断</strong>：ツールチェーンが v850 系譜を再利用していることは、このラインがまず動作させることを優先していることを示す。根拠は、RH850 と V850 がともにルネサスの 32 ビット MCU 命令セット系譜に属し、リポジトリには既に libcpu/v850 と bm3803 ボードレベルが存在すること。</p>
+
+<h3 id="13-ci-マトリクスに-rh850-を追加armaarch64risc-v-と並列11-24">1.3 CI マトリクスに RH850 を追加、ARM、AArch64、RISC-V と並列（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:01（マージ）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/blob/master/.github/workflows/utest_auto_run.yml">utest_auto_run.yml</a>。</p>
+
+<p>utest_auto_run.yml のプラットフォームマトリックスに RH850 の行を追加、マシンは rh850-u2c、カーネルは standard、SD カードなし。テストケースセットは 3 つ失敗：kernel_basic、mem、cpp11。</p>
+
+<p>3 つ目は C++ グローバルコンストラクタを検証するためのもの。トリガーパスに bsp/renesas/rh850 を追加。</p>
+
+<p>bsp/README.md に RH850 アーキテクチャシリーズを追加、メンテナンスレベルは「基本サポート」、シリアル列はサポートと記載。</p>
+
+<p>提案者は検証結果を提案に記載。ハードフロートとソフトフロートのビルドは通過、scons –dist も通過。msh で list thread と free は正常、kernel_basic は 22 項目すべて通過。clang-format と cppcheck はクリーン。</p>
+
+<p><strong>判断</strong>：CI に入れる方がメインラインに入れるより価値が高い。根拠は、シミュレータとテストケースセットがあれば、今後のカーネル変更はすべてこの関門を通らなければならなくなること。</p>
+
+<h2 id="2-カーネルとドライバの堅牢化同源の提案-6-件を精算">2. カーネルとドライバの堅牢化：同源の提案 6 件を精算</h2>
+
+<h3 id="21-同一作者のセキュリティ提案-6-件が-5-分以内にマージ11-24">2.1 同一作者のセキュリティ提案 6 件が 5 分以内にマージ（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:11 から 15:16（マージ）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11820">#11820</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11821">#11821</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11823">#11823</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11824">#11824</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11825">#11825</a>、<a href="https://github.com/RT-Thread/rt-thread/pull/11826">#11826</a>。</p>
+
+<p>6 件はすべて manyangshen によるもので、作者日付は 9 月 22 日、2 ヶ月間保留されていた。</p>
+
+<p>ドライバ側 3 件。I2C はバス制御と転送を直列化する。ブロックデバイスはパーティション I/O を相対セクタ内に制限する。virtio は不正な入力オフセットを拒否し、オーバーフローを回避する。</p>
+
+<p>カーネルと IPC 側 2 件。メッセージキューパスは終端 NUL に従ってサイズを決定する。電源管理はサスペンド時のモードでデバイスを復元し、一律にデフォルトモードにはしない。</p>
+
+<p>ボードレベル側 1 件。STM32 OpenAMP の受信リング状態を有界にし同期を追加、ラップアラウンドを修正。6 件の変更はいずれも大きくなく、多くは十数行から数十行の間。</p>
+
+<p><strong>判断</strong>：これはまとめて放出したもの。根拠は 6 件が同一作者、同一分帯にマージされ、作者日付が一致しており、レビューが同じラウンドで完了したことを示す。</p>
+
+<h3 id="22-既存イシュー-5-件がマージに伴いクローズ11-24">2.2 既存イシュー 5 件がマージに伴いクローズ（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:14 から 15:48（クローズ）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/issues">イシューリスト</a>。</p>
+
+<p>#10379 と #10380 は virtio_input ドライバの境界外書き込みと境界外読み込み。#11299 は stm32mp157a-st-ev1 上の OpenAMP 仮想シリアル RX リングの境界外書き込み。</p>
+
+<p>#11292 は mq_open と mq_unlink が rt_sprintf でキュー名を固定バッファに結合、プレフィックスは /dev/mqueue/。#11854 は STM32F103C6 の機能リクエストで、ボードレベルマージに伴いクローズ。</p>
+
+<p>ウィンドウ内の新規提案イシューはゼロ。</p>
+
+<p><strong>判断</strong>：このイシュー群の共通点はバッファ境界と並行タイミング。根拠は 5 件すべてが同一ラウンドの修正に由来し、いずれも新機能に関与しないこと。</p>
+
+<h2 id="3-チップと開発ボードの適合">3. チップと開発ボードの適合</h2>
+
+<h3 id="31-gd32h77d-ginopi-ボードレベルサポートをマージ107-ファイル267-万行11-24">3.1 GD32H77D GinoPi ボードレベルサポートをマージ、107 ファイル、2.67 万行（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:20（マージ）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11829">#11829</a>。</p>
+
+<p>提案は CYFS3 から、9 月 23 日に提出。マージ時 107 ファイル、26711 行追加、907 行削除。</p>
+
+<p>新しいボードレベルディレクトリは bsp/gd32/arm/gd32h77d-ginopi。メインコントローラ GD32H77DIW、Cortex-M7、600MHz。</p>
+
+<p>オンボード 8MiB GD25Q64 QSPI Flash、32MiB 16 ビット SDRAM、さらに GD32VW553 AT Wi-Fi モジュールが uart4 経由。</p>
+
+<p>ドライバは LCD、OV7670 カメラ、GT911 タッチ、QSPI Flash ファイルシステム、ENET1 RMII、USB 高速ポートを搭載。デフォルト .config はシリアルと PIN のみ有効、その他は必要に応じて menuconfig で有効化。</p>
+
+<p>Gino Pi は RT-Thread と兆易創新が共同で発表した初の GD32H77D エコシステム開発ボードで、公式サイトの製品ページは 9 月 8 日に公開された。ボードのデフォルトクロックは 600MHz、サンプルプログラムは 500ms ごとに PC4 をトグルする。</p>
+
+<p><strong>判断</strong>：これはメーカーとコミュニティが共同で構築したフラッグシップボードであり、サードパーティによる移植ではない。根拠は、ボード製品ページが RT-Thread 公式サイトに掲載されており、BSP が GCC と MDK5 の両方のプロジェクトを提供していることである。</p>
+
+<h3 id="32-stm32f103c6-が-blue-pill-ボードに参入11-24">3.2 STM32F103C6 が blue-pill ボードに参入（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 21:41（マージ）。<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/11850">#11850</a>。</p>
+
+<p>STM32F103C6 は C8 の縮小版で、Flash 32KB、RAM 10KB。この変更では Kconfig、リンカスクリプト、rtconfig.py を拡張し、同じ blue-pill ボードで小容量チップを選択できるようにした。</p>
+
+<p>合計 8 ファイル、138 行追加、25 行削除。同じバッチで README の LED ピンの記載誤りも修正された。PB2 は PC13 が正しい。</p>
+
+<p><strong>判断</strong>：これは低コストボードをメインラインに取り込むもの。根拠は、同じ BSP が現在 C6 と C8 の両容量をカバーしていることである。</p>
+
+<h3 id="33-swm341-can-受信がクラシックフレーム長で切り捨て11-24">3.3 SWM341 CAN 受信がクラシックフレーム長で切り捨て（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:04（マージ）。<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12076">#12076</a>。</p>
+
+<p>ドライバは DLC フィールドに従って直接データをコピーするため、DLC が 8 より大きい場合は 8 バイトのバッファを越えてしまう。この変更では長さをクラシックフレームの上限にクランプした。</p>
+
+<p>2 ファイル、8 行追加。作者は cms19859230182-lang で、全志 V861 五筆提案の投稿者でもある。</p>
+
+<p><strong>判断</strong>：読み取り側の境界修正であり、メッセージのセマンティクスは変更しない。根拠は、長さのみをクランプし、DLC フィールド自体には触れていないことである。</p>
+
+<h3 id="34-4-件の小修正x86-ツールチェーンaf_netlinkromfs-アライメントmacos-ドキュメント11-24">3.4 4 件の小修正：x86 ツールチェーン、AF_NETLINK、ROMFS アライメント、macOS ドキュメント（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 15:05 から 21:24（マージ）。<strong>情報源</strong>：<a href="https://github.com/RT-Thread/rt-thread/commits/master">コミット一覧</a>。</p>
+
+<p>x86 ボードの README でツールチェーンのダウンロード URL を変更、1 行の変更。</p>
+
+<p>netdev の AF_NETLINK パスでビルドエラーを補修、2 ファイル各 3 行前後。tools 内の ROMFS ジェネレータは UTF-8 ファイル名の後にバイナリエントリをアライメントするよう修正、41 行追加、15 行削除。</p>
+
+<p>macOS の QEMU クイックスタートドキュメントで PATH 展開と再起動スクリプトを修正、作者は bernard。</p>
+
+<p><strong>判断</strong>：4 件はいずれも再現性の問題。根拠は、いずれも新しい環境で直接遭遇するものであり、機能とは無関係であることである。</p>
+
+<h2 id="4-ツールチェーンと-sdkenv-pilot-がプラグインマーケットに参入">4. ツールチェーンと SDK：Env Pilot がプラグインマーケットに参入</h2>
+
+<h3 id="41-env-pilot-012-がプラグインパッケージとしてリリース11-24">4.1 Env Pilot 0.1.2 がプラグインパッケージとしてリリース（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 18:54（リリース）。<strong>情報源</strong>：<a href="https://github.com/RT-Thread/sdk/releases/tag/env-plugin-env-pilot-v0.1.2">Release</a>。</p>
+
+<p>パッケージ名は org.rt-thread.env-pilot-0.1.2-py3-none-any.epack、1 551 793 バイト。本レポートの確認時点でダウンロード 3 回。</p>
+
+<p>プラグインの自己記述は、ローカルの Claude Code のオーケストレーションと実行ワークベンチであり、Windows と Linux 向け。機能宣言は commands、service、webui の 3 項目。</p>
+
+<p>互換範囲は env 2.0.2 から 3.0 未満、Python 3.7 以降と記載。パッケージ内に SHA-256 を同梱し、インデックスにも同じものを保存。</p>
+
+<p><strong>判断</strong>：Env は増分機能をプラグインとして提供し始め、本体に詰め込まなくなった。根拠は、プラグインパッケージが独立した Release を通り、バージョン番号が Env 本体と切り離されていることである。</p>
+
+<h3 id="42-プラグインディレクトリが-1-項目から-2-項目に11-24">4.2 プラグインディレクトリが 1 項目から 2 項目に（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 18:56 から 19:07（コミットとマージ）。<strong>情報源</strong>：<a href="https://github.com/RT-Thread/sdk/commit/2a4de786">sdk コミット</a>、<a href="https://github.com/RT-Thread/sdk/tree/main/env-plugins">プラグインインデックス</a>。</p>
+
+<p>env-plugins/index.json の index 配列に org.rt-thread.env-pilot を追加。この項目は既存の org.rt-thread.kconfig と並列に並ぶ。</p>
+
+<p>kconfig プラグインは 0.1.34 で停止、11 月 5 日リリース。README によると、マーケットはデフォルトでこのディレクトリを読み、プラグインパッケージは GitHub Release に置くだけでよく、マーケットサーバは不要。</p>
+
+<p><strong>判断</strong>：これはサーバレスプラグインマーケットの 2 回目の実践である。根拠は、インデックスにはディレクトリ名のみを列挙し、実際のダウンロード URL とチェックサムは各プラグイン自身の index.json に置いていることである。</p>
+
+<h2 id="5-コミュニティ協力と審査待ちキュー">5. コミュニティ協力と審査待ちキュー</h2>
+
+<h3 id="51-審査中提案-144-が-131-に減少イシュー-339-が-331-に減少11-24">5.1 審査中提案 144 が 131 に減少、イシュー 339 が 331 に減少（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24（キュー計数）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/pulls">提案リスト</a>、<a href="https://github.com/RT-Thread/rt-thread/issues">イシューリスト</a>。</p>
+
+<p>調査期間内に16件の提案がマージされ、メインブランチには18件のコミットが反映された。新規イシューはゼロ、クローズされたイシューは5件。</p>
+
+<p>提案は純減13件、イシューは8件の純減。昨日は提案7件減、イシュー3件減であった。</p>
+
+<p><strong>判断</strong>：これは2日連続の純減であり、かつ減少量が拡大している。根拠は、昨日が7件減、今日が13件減で、いずれもクローズ側ではなくマージ側に由来していることである。</p>
+
+<h3 id="52-全志-v861-の5件が-ci-マトリクスで停滞作者は夜間に作業を中断11-24">5.2 全志 V861 の5件が CI マトリクスで停滞、作者は夜間に作業を中断（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24 14:54 から 22:08（レビューと回答）。<strong>ソース</strong>：<a href="https://github.com/RT-Thread/rt-thread/pull/12077">#12077</a>。</p>
+
+<p>メンテナーの Rbb666 は、BSP ビルドマトリクスが空であり、C907 がコンパイルに入っていないと指摘した。allwinner/avaota-f2 を .github/ALL_BSP_COMPILE.json の SUB_RTT_BSP に追加するよう要求。さらに、クリーンチェックアウトで DTB を生成し、ビルドを完了できることを検証するよう求めた。</p>
+
+<p>意見には失敗した実行へのリンクが添付されていた。作者はまず2つの CI ファイルを補い、自動レビューがその後 workflow ラベルに従って3名のメンテナーに割り当てた。</p>
+
+<p>22時08分、作者は「もう直せない、明朝起きてからやる」とコメントした。5件は依然マージされておらず、ブランチは当日の master 先端に基づいて再構築済みで、ベースコミットは STM32F103C6 のものである。</p>
+
+<p><strong>判断</strong>：停滞点は DTB 生成からビルドマトリクス登録へ移った。根拠は、今回の指摘で論点が変わったものの、いずれも同じ事柄を指していることである。すなわち、クリーンチェックアウトで自身がビルドを通せなければならない、ということだ。</p>
+
+<h2 id="6-業界応用観察車載と-hmi-の2つのライン">6. 業界応用観察：車載と HMI の2つのライン</h2>
+
+<h3 id="61-qemu-が先行する車載パス11-24">6.1 QEMU が先行する車載パス（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24（本レポートの判断）。<strong>ソース</strong>：<a href="https://www.renesas.com/en/products/rh850-u2c">ルネサス RH850/U2C 製品ページ</a>。</p>
+
+<p>RH850/U2C はルネサスの28nm車載 MCU。G4KH コアは最高320MHzで、デュアルコアロックステップを構成でき、安全レベルは ASIL D に達する。</p>
+
+<p>公式が挙げる用途はシャシー、ボディ管理、バッテリー管理、モータ制御である。今回の RT-Thread は QEMU シミュレーションまでしか対応しておらず、ボード名も qemu-rh850-u2c で、実ハードウェアの記録はない。シリアルも V1 のみの対応である。</p>
+
+<p><strong>判断</strong>：これはまず入口を確保したものであり、量産レベルの適配ではない。根拠は、ツールチェーンとシミュレータがいずれも同一の外部企業から提供されており、リポジトリ側に原廠が共同保守している印がないことである。</p>
+
+<h3 id="62-ginopi-はグラフィカルインタラクションを指向11-24">6.2 GinoPi はグラフィカルインタラクションを指向（11-24）</h3>
+
+<p><strong>日付</strong>：2026-11-24（本レポートの判断）。<strong>ソース</strong>：<a href="https://www.rt-thread.com/ruiching/document/site/product/ginopi/">Gino Pi 製品ページ</a>。</p>
+
+<p>GD32H77D は MIPI DSI、LCD-TFT、カメラインターフェース、画像アクセラレータを備える。ボードレベルドライバには LCD、OV7670、GT911 の3つが揃っており、さらに SDRAM と QSPI Flash ファイルシステムも備える。</p>
+
+<p>この組み合わせが対応するのは HMI パネル、ハンドヘルド機器、ビジョン取得であり、低消費電力センサーノードではない。</p>
+
+<p><strong>判断</strong>：メインラインは中高級グラフィックスボードを補完している。根拠は、このボードのドライバリストで表示と取得が大部分を占める一方、デフォルト設定ではむしろシリアルのみが有効になっていることである。</p>
+
+<h2 id="7-まとめとトレンド観察">7. まとめとトレンド観察</h2>
+
+<h3 id="71-単日16件のマージ前日の3倍超">7.1 単日16件のマージ、前日の3倍超</h3>
+
+<p>11月23日は6件、11月24日は16件で、2日合計22件。6件のセキュリティ提案の作者日付は9月22日で、2か月押されてからマージされた。</p>
+
+<h3 id="72-新アーキテクチャがもたらすのは長期的な保守コスト">7.2 新アーキテクチャがもたらすのは長期的な保守コスト</h3>
+
+<p>RH850 は libcpu、bsp、CI の3か所に入り、今後カーネル変更はこのパイプラインで一度止められることになる。作者は同時に picolibc と mem.cfg の2か所の上流修正も提出しており、移植過程が逆に共通コードを修正したことを示している。</p>
+
+<h3 id="73-セキュリティ強化はバッファ境界に集中">7.3 セキュリティ強化はバッファ境界に集中</h3>
+
+<p>6件の提案のうち4件は長さ、オフセット、終端文字に関係する。これは同時期にクローズされた5件のイシューと符合し、欠陥タイプが高度に一致している。</p>
+
+<h3 id="74-env-はプラグイン化へ転換">7.4 Env はプラグイン化へ転換</h3>
+
+<p>Env Pilot は2つ目のプラグインであり、webui を備えた最初のものでもある。プラグインパッケージと Env 本体は別々にリリースされ、今後の機能は独立してイテレーションできる。</p>
+
+<h3 id="75-ニュース側は引き続き静寂">7.5 ニュース側は引き続き静寂</h3>
+
+<p>公式ニュースインターフェースの最新は依然11月6日、公式サイトのニュースセンターの最新は11月3日である。Google News の3日間ウィンドウには CSDN の汎用技術記事が4件あるのみで、タイトルに RT-Thread の文字は含まれていない。本期の情報はすべてコードとリリースに由来する。</p>
+
+<p><strong>局限性説明</strong>：RH850 は QEMU 検証記録のみで、実ハードウェアのテストは見られない。公式ニュースインターフェースは5件のみを返し、期間内の新規はない。Google News の RT-Thread に対するマッチングは信頼できず、中国語クエリの3日間ウィンドウの4件はいずれも汎用組み込み記事であり、除外済みである。</p>
+
+<h2 id="付録情報源核查表">付録：情報源核查表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>情報源</th>
+      <th>調査結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread 公式ニュースインターフェース</td>
+      <td>5件、最新 11-06 15:54、調査期間内の新規追加ゼロ</td>
+    </tr>
+    <tr>
+      <td>企業公式サイトニュースセンター</td>
+      <td>最新 11-03（烏鎮サミット）、調査期間内の新規記事ゼロ</td>
+    </tr>
+    <tr>
+      <td>メインリポジトリ commits</td>
+      <td>調査期間内 18件、11-24 15:01 から 21:41 に集中</td>
+    </tr>
+    <tr>
+      <td>調査期間内にマージされた提案</td>
+      <td>16件、#11998、#11829、#11850 と新アーキテクチャ4件のコミットを含む</td>
+    </tr>
+    <tr>
+      <td>調査期間内に新規作成されたイシュー</td>
+      <td>0件</td>
+    </tr>
+    <tr>
+      <td>調査期間内にクローズされたイシュー</td>
+      <td>5件：#10379、#10380、#11299、#11292、#11854</td>
+    </tr>
+    <tr>
+      <td>未クローズ提案 / イシュー</td>
+      <td>131 / 331（前回 144 / 339）</td>
+    </tr>
+    <tr>
+      <td>releases と tags</td>
+      <td>最新は依然 v5.3.0（2026-09-10）、調査期間内の新規追加なし</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org リポジトリ</td>
+      <td>メインリポジトリ 11-24 21:41 プッシュ、sdk 11-24 19:07、packages 最近 11-18</td>
+    </tr>
+    <tr>
+      <td>SDK プラグインインデックス</td>
+      <td>2件：kconfig 0.1.34、env-pilot 0.1.2</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread アクティブリポジトリ</td>
+      <td>2リポジトリ：boa-z/rt-carplay（11-23 プッシュ）、zlgopen/awtk（汎用 GUI、専項外）</td>
+    </tr>
+    <tr>
+      <td>Google News 中国語</td>
+      <td>24時間調査期間内ヒットゼロ；3日間調査期間内 4件の CSDN 汎技術記事</td>
+    </tr>
+    <tr>
+      <td>Google News 英語</td>
+      <td>3日間調査期間内 1件の Phoronix プロセッサレビュー、主題と無関係</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>4件の候補はすべて無関係な話題（エディタ、ゲーム、ターミナル）、除外済み</td>
+    </tr>
+    <tr>
+      <td>全志 V861 提案</td>
+      <td>5件は依然マージされず、11-24 夜間にビルドマトリクスの意見が追加</td>
+    </tr>
+    <tr>
+      <td>RH850 実ハードウェア</td>
+      <td>記録なし、QEMU rh850-u2c 検証のみ</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完全な情報源リスト">完全な情報源リスト</h3>
+
+<ul>
+  <li><strong>[1]</strong> 公式ニュースインターフェース — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[2]</strong> 睿赛德ニュースセンター — <a href="https://www.rt-thread.com/col19/list.html">https://www.rt-thread.com/col19/list.html</a></li>
+  <li><strong>[3]</strong> メインリポジトリのコミット一覧 — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[4]</strong> 提案 #11998（RH850 移植と QEMU ボード） — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[5]</strong> RH850 ツールチェーンリリース — <a href="https://github.com/linumiz/rh850-gcc-toolchain/releases/tag/v1.2.0">https://github.com/linumiz/rh850-gcc-toolchain/releases/tag/v1.2.0</a></li>
+  <li><strong>[6]</strong> RH850 エミュレータリリース — <a href="https://github.com/linumiz/qemu-rh850/releases/tag/rh850-v1.2.0">https://github.com/linumiz/qemu-rh850/releases/tag/rh850-v1.2.0</a></li>
+  <li><strong>[7]</strong> ルネサス RH850/U2C 製品ページ — <a href="https://www.renesas.com/en/products/rh850-u2c">https://www.renesas.com/en/products/rh850-u2c</a></li>
+  <li><strong>[8]</strong> ユースケース自動実行パイプライン — <a href="https://github.com/RT-Thread/rt-thread/blob/master/.github/workflows/utest_auto_run.yml">https://github.com/RT-Thread/rt-thread/blob/master/.github/workflows/utest_auto_run.yml</a></li>
+  <li><strong>[9]</strong> 提案 #11820（I2C バス制御の直列化） — <a href="https://github.com/RT-Thread/rt-thread/pull/11820">https://github.com/RT-Thread/rt-thread/pull/11820</a></li>
+  <li><strong>[10]</strong> 提案 #11821（電源管理のサスペンドモード別復帰） — <a href="https://github.com/RT-Thread/rt-thread/pull/11821">https://github.com/RT-Thread/rt-thread/pull/11821</a></li>
+  <li><strong>[11]</strong> 提案 #11823（メッセージキューパスのサイズ固定） — <a href="https://github.com/RT-Thread/rt-thread/pull/11823">https://github.com/RT-Thread/rt-thread/pull/11823</a></li>
+  <li><strong>[12]</strong> 提案 #11824（ブロックデバイスパーティションの I/O 境界） — <a href="https://github.com/RT-Thread/rt-thread/pull/11824">https://github.com/RT-Thread/rt-thread/pull/11824</a></li>
+  <li><strong>[13]</strong> 提案 #11825（STM32 OpenAMP 受信リング） — <a href="https://github.com/RT-Thread/rt-thread/pull/11825">https://github.com/RT-Thread/rt-thread/pull/11825</a></li>
+  <li><strong>[14]</strong> 提案 #11826（virtio 不正入力オフセット） — <a href="https://github.com/RT-Thread/rt-thread/pull/11826">https://github.com/RT-Thread/rt-thread/pull/11826</a></li>
+  <li><strong>[15]</strong> 提案 #11829（GD32H77D GinoPi ボード） — <a href="https://github.com/RT-Thread/rt-thread/pull/11829">https://github.com/RT-Thread/rt-thread/pull/11829</a></li>
+  <li><strong>[16]</strong> 提案 #11850（STM32F103C6 サポート） — <a href="https://github.com/RT-Thread/rt-thread/pull/11850">https://github.com/RT-Thread/rt-thread/pull/11850</a></li>
+  <li><strong>[17]</strong> 提案 #12076（SWM341 CAN 受信パケット長） — <a href="https://github.com/RT-Thread/rt-thread/pull/12076">https://github.com/RT-Thread/rt-thread/pull/12076</a></li>
+  <li><strong>[18]</strong> Gino Pi 製品ページ — <a href="https://www.rt-thread.com/ruiching/document/site/product/ginopi/">https://www.rt-thread.com/ruiching/document/site/product/ginopi/</a></li>
+  <li><strong>[19]</strong> 兆易创新 GD32H78D/77D シリーズ説明 — <a href="https://www.gigadevice.com.cn/product/mcu/high-performance-mcus/gd32h7xx-series/gd32h78dh77d">https://www.gigadevice.com.cn/product/mcu/high-performance-mcus/gd32h7xx-series/gd32h78dh77d</a></li>
+  <li><strong>[20]</strong> Env Pilot プラグインリリース — <a href="https://github.com/RT-Thread/sdk/releases/tag/env-plugin-env-pilot-v0.1.2">https://github.com/RT-Thread/sdk/releases/tag/env-plugin-env-pilot-v0.1.2</a></li>
+  <li><strong>[21]</strong> sdk コミット（プラグイン登録） — <a href="https://github.com/RT-Thread/sdk/commit/2a4de786">https://github.com/RT-Thread/sdk/commit/2a4de786</a></li>
+  <li><strong>[22]</strong> Env プラグインインデックス — <a href="https://github.com/RT-Thread/sdk/tree/main/env-plugins">https://github.com/RT-Thread/sdk/tree/main/env-plugins</a></li>
+  <li><strong>[23]</strong> 提案 #12077（Allwinner V861 C907 ボード） — <a href="https://github.com/RT-Thread/rt-thread/pull/12077">https://github.com/RT-Thread/rt-thread/pull/12077</a></li>
+  <li><strong>[24]</strong> 提案一覧 — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[25]</strong> イシュー一覧 — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ja/post.html#news-list" class="btn btn-main news-list-link">戻る</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>お問い合わせ</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Eメール:</strong> contact@kubuds.cn<br>
+            <strong>住所:</strong> 中国上海市宝山区高逸路 88 号 1 棟 1 階 108 室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>リンク</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ko/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/ko/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/ko/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ko/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ko/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ko/">홈</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">서비스 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/service/simulator.html">시뮬레이터</a></li>
+              <li><a class="dropdown-item" href="/ko/service/os.html">운영체제</a></li>
+              <li><a class="dropdown-item" href="/ko/service/toolchain.html">툴체인</a></li>
+              <li><a class="dropdown-item" href="/ko/service/chip.html">임베디드 칩</a></li>
+
+              <li><a class="dropdown-item" href="/ko/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ko/service/aisys.html">AI 시스템</a></li>
+              <li><a class="dropdown-item" href="/ko/service/consultation.html">컨설팅</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">솔루션 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">커뮤니티 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ko/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ko/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ko/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ko/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ko/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ko/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/post.html" style="white-space: nowrap;">뉴스 및 이벤트</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/about.html" style="white-space: nowrap;">회사 소개</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ko/career.html">채용 정보</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              한국어 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1120.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/risc-v/daily/2026/1120.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1120.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1120.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1120.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 데일리 리포트 (2026-11-20) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ko/">홈</a></li>
+                                <li class="breadcrumb-item"><a href="/ko/post.html#news-list" class="news-list-link">뉴스 및 이벤트</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 데일리 리포트 (2026-11-20)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 데일리 리포트 (2026-11-20)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-20</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>모니터링 기간</strong>: 2026-11-19 05:00 ~ 2026-11-20 05:00 (베이징 시간, 24시간).
+<strong>출처</strong>: Google News 집계 (중영문 24개 쿼리, 추가로 10개 중문 팀 키워드와 벤더 영문 쿼리 보충, 프록시 경유). Hacker News, Phoronix, CNX Software, LinuxGizmos, RISC-V International 및 RISE 블로그, openRuyi 공식 웹사이트. RISC-V 회원사 공식 웹사이트 점검 (391곳), riscv100.top 순위 점검. GitHub 상에서 XiangShan, CORE-V, DAMO XuanTie, ESWIN, SOPHGO, Nuclei, Espressif, SpacemiT, revyos, openRuyi-Project 등 조직과 주요 저장소의 커밋 및 릴리스 검색.</p>
+
+<hr />
+
+<h2 id="이번-호-인덱스">이번 호 인덱스</h2>
+
+<ul>
+  <li>오늘의 핵심: StarFive Dubhe-70, JH-B100과 함께 양산, 국산 비순차 RISC-V CPU IP 최초로 데이터센터에서 규모화 상용화 (11-19).</li>
+  <li>
+    <ol>
+      <li>오픈소스 커뮤니티와 소프트웨어 생태계.
+        <ul>
+          <li>RISE: Python의 riscv64 네이티브 휠 1500개 돌파, 부족한 것은 아직 519개 (11-18).</li>
+          <li>openRuyi 20건: gRPC 1.85.3으로 업그레이드 및 시스템 OpenSSL 4로 링크 변경, protobuf 36.2로 (11-19).</li>
+          <li>revyos/linux 20건: 커널을 Debian 패키징 레이어로 전환, K3에 WRS.STO 정오표 추가 (11-20).</li>
+          <li>XiangShan 3개 저장소 10건: 행렬과 AME 검증이 주 라인으로, GEM5에 SMT와 디바이더 보충 (11-19).</li>
+          <li>Hypnos: 델프트 공대의 양방향 지속 학습 플랫폼, RISC-V MCU 전체 시스템 33.3밀리와트 (11-19).</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>제품과 생태계 동향.
+        <ul>
+          <li>2026 RISC-V 산업 발전 대회 마카오 행사: 베이에어리어 오픈소스 생태계 센터 출범, 오픈 컴퓨팅 파워 플랫폼 협약 체결 (11-19).</li>
+          <li>Infineon, 플래그십 AURIX 패밀리를 RISC-V로 전환, riscv.org에 5문 인터뷰 게시 (11-19).</li>
+          <li>LILYGO T-CAN485 C5: ESP32-C5 산업 제어 보드 진입, CAN과 RS-485 동일 보드 (11-18).</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>국내 팀 심층 분석.
+        <ul>
+          <li>SpacemiT llama.cpp 업스트림과 동기화, 정밀도 열거 업스트림 변경에 따라 수정 (11-19).</li>
+          <li>ESWIN StarPro64: 1.6GHz 동작점, 팬과 워치독 디바이스 트리에 추가 (11-20).</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>구현형 지능과 로봇 특별 장.
+        <ul>
+          <li>SpacemiT 로봇 스택 3건: 클록 앵커, 깊이 홀 채우기, 참조 운동 플래너 (11-19).</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>요약과 트렌드 관찰.
+        <ul>
+          <li>최근 3일 트렌드: 관리면에서 수치 공개, 패키징 레이어에서 기반 보충, 플랫폼 측에서 협약 체결 (11-17 ~ 11-19).</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>부록: 전체 출처 목록과 출처 검증표.</li>
+</ul>
+
+<hr />
+
+<p><strong>이번 호 요약</strong>: 오늘 가장 실질적인 것은 StarFive가 비순차 RISC-V 코어를 데이터센터 양산 출하에 진입시킨 것이다. Dubhe-70은 서버 BMC 칩 JH-B100에 통합되었으며, StarFive는 이것이 국산 비순차 RISC-V CPU IP 최초로 서버 시나리오에서 규모화 상용화된 것이라고 밝혔고, 연간 출하량이 “기대치”로 천만 수준에 달할 수 있다고 했다. 두 번째는 Infineon이다. 2025년 전 세계 차량용 MCU의 3분의 1 이상을 점유한 이 업체가 플래그십 AURIX 패밀리의 첫 세대 RISC-V 제품을 내놓았고, riscv.org가 동시에 5문 인터뷰를 게재했다. 오픈소스 측 세 가지는 모두 기반에 집중되었다: RISE의 Python 휠 1500개 돌파, openRuyi가 gRPC를 시스템 OpenSSL 4로 전환, revyos가 커널 설정을 Debian 패키징 레이어로 이동. 국내 팀 측에서는 SpacemiT의 로봇 스택이 하루에 시간 기준, 깊이 맵, 플래너 인터페이스 세 곳을 보충했다.</p>
+
+<hr />
+
+<h2 id="오늘의-핵심-starfive-dubhe-70-jh-b100과-함께-양산-국산-비순차-risc-v-cpu-ip-최초로-데이터센터에서-규모화-상용화-11-19">오늘의 핵심: StarFive Dubhe-70, JH-B100과 함께 양산, 국산 비순차 RISC-V CPU IP 최초로 데이터센터에서 규모화 상용화 (11-19)</h2>
+
+<p>11월 19일, StarFive Technology는 자체 개발 RISC-V CPU IP “Dubhe-70”이 서버 BMC 칩 JH-B100에 탑재되어 양산 납품을 실현했다고 발표했다. 회사의 표현에 따르면: 이것은 국산 비순차 RISC-V CPU IP 최초로 데이터센터 서버 시나리오에서 규모화 양산 상용화를 실현한 것이며, 연간 출하량은 천만 수준에 달할 것으로 기대된다. 앞서 11월 17일 StarFive는 JH-B100 양산 및 고객 납품을 공식 발표했으나, 당시 코어 모델과 출하 예상치는 공개하지 않았다.</p>
+
+<p>Dubhe-70의 사양은 StarFive 공개 자료 기준: 9단 이상 파이프라인, 3발행 슈퍼스칼라, 깊은 비순차 실행, 멀티코어 캐시 일관성 및 I/O 캐시 일관성 지원, 명령어 집합은 RV64GCBH. 이 코어는 2024년 8월에 발표되었다. 당시 제시된 지표는 SPECint2006 GHz당 7.2점으로, 성능은 Arm Cortex-A72／A510에 대응. Cortex-A55 대비 StarFive는 성능 80% 높음, 에너지 효율 32% 높음, 면적 효율 90% 높음이라고 밝혔다. 이번 양산 보도자료의 표현은 “Cortex-A73에 근접”으로 바뀌었다. 두 표현이 완전히 일치하지 않으므로, 이번에는 신규 보도자료를 기준으로 기록하되 기존 보도자료의 수치도 함께 보존한다.</p>
+
+<p>JH-B100에는 TianShu-70 외에도 StarFive가 자체 개발한 Fang·Xinglu-500 일관성 NoC가 통합되어 있다. 이 칩은 쿼드코어 구성에 19200 DMIPS이며 DDR4-3200과 DDR5-4800을 지원하고, PFR과 PROT를 통합했으며 중국 상용암호 SM2/SM3/SM4를 지원한다. 인터페이스는 듀얼 PCIe 4.0 엔드포인트, 풀기능 eSPI Slave, PECI와 2채널 LTPI를 포함한다. 제품 라인에서 StarFive는 더 높은 성능의 CPU IP인 TianShu-83, TianShu-100과 Xinglu-700 NoC도 보유하고 있으며, 회사 측은 이미 고객이 채택했다고 밝혔다.</p>
+
+<p>이 소식의 무게는 발표 자체가 아니라 적용 시나리오 선택에 있다. BMC는 서버 메인보드의 관리 칩으로, 상태 모니터링, 전원 관리, 장애 경보와 원격 운영을 담당하며 보드당 하나씩 탑재되어 신뢰성과 내결함성 요구가 메인 연산에 가깝지만 비즈니스 부하는 지지 않는다. 이를 비순차 코어의 첫 양산 적용점으로 삼는 논리는 차량용 칩이 차체 제어에서 진입하는 것과 같은 세트다. 위치는 주변부이고 검증 문턱은 높지만, 일단 진입하면 장기 공급이 된다. StarFive가 스스로 내놓은 표현은 「최종 고객의 엄격한 도입 검증을 통과했다」이다.</p>
+
+<p>「연간 출하량이 천만 개 수준에 달할 전망」이라는 숫자는 할인해서 봐야 한다. 글로벌 서버 연간 출하량은 천만 대 수준이고 BMC는 보통 보드당 하나씩이므로, 정말로 천만 개를 달성한다면 대부분의 증분 시장을 확보했다는 뜻이다. 이는 「전망」이지 주문도, 이미 납품된 물량도 아니다. StarFive는 고객 이름, 생산 일정과 분기별 출하량을 제시하지 않았다. 앞서 11월 17일의 공식 입장은 「다수 서버 제조사 및 인터넷 기업의 제품 도입 및 심사 절차를 통과했다」, 고객 완제품은 「곧 양산에 들어간다」까지만 적고 있었다.</p>
+
+<p>산업 체인에서의 위치도 분명히 해야 한다. 국산 RISC-V는 현재 데이터센터에서의 양산 사례가 BMC, 엣지 게이트웨이, AI 추론 카드 같은 「차핵심」 시나리오에 집중되어 있으며, 듀얼 또는 쿼드 메인 CPU로 x86을 대량 교체한 공개 사례는 아직 없다. TianShu-70의 이번 사례가 증명하는 것은 비순차 코어가 서버급 검증 절차를 통과할 수 있다는 것이지, 범용 연산이 이미 대체되었다는 것이 아니다. 추적할 지점은 두 가지다. JH-B100의 분기 출하가 실현될 수 있는지, 그리고 TianShu-83/100에 고객 테이프아웃이 있는지.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://news.mydrivers.com/1/1166/1166936.htm">KuaiKeJi: 국산 비순차 RISC-V CPU IP, 데이터센터 진입</a>, <a href="http://tech.news18a.com/article/18143">WangTongShe: Fang·TianShu-70 첫 양산</a>, <a href="https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news">StarFive 공식 사이트: 서버 BMC 칩 양산 납품</a>, <a href="https://www.ithome.com/0/788/873.htm">ITZhiJia: 2024년 8월 TianShu-70 발표</a>.</p>
+
+<h2 id="1-오픈소스-커뮤니티와-소프트웨어-생태계">1. 오픈소스 커뮤니티와 소프트웨어 생태계</h2>
+
+<h3 id="rise-python의-riscv64-네이티브-휠-1500개-돌파-아직-519개-부족-11-18">RISE: Python의 riscv64 네이티브 휠 1500개 돌파, 아직 519개 부족 (11-18)</h3>
+
+<p>11월 18일, RISE 프로젝트(RISC-V Software Ecosystem)가 《Python on RISC-V: 1500 Packages and Counting》이라는 제목의 진행 보고서를 발표했다. 저자는 Qualcomm의 Ludovic Henry다. 보고서의 기준은 다음과 같다. RISE의 휠 대시보드는 PyPI 다운로드 수 최상위 15000개 패키지를 추적한다. 그중 2076개는 네이티브 코드를 포함해 riscv64용으로 별도 빌드해야 한다. 11월 18일 기준으로 1506개가 riscv64 휠을 확보했다.</p>
+
+<p>숫자는 나눠서 봐야 한다. 1506개 중 117개는 업스트림 프로젝트가 PyPI에 직접 배포한 것이고, 1389개는 RISE 자체 인덱스에서 제공한다. 다운로드 순위로 계층화하면: 상위 100위 중 92개 사용 가능, 5개 부족; 상위 500위 중 438개 사용 가능, 50개 부족; 상위 1000위 중 842개 사용 가능, 133개 부족; 전체 2076개 중 여전히 519개 부족으로 4분의 1을 차지한다. 즉 대다수 사용자가 설치하려면 명령줄에 <code class="highlighter-rouge">--extra-index-url https://pypi.riseproject.dev/simple</code> 한 줄을 추가해야 한다.</p>
+
+<p>이미 목록에 오른 패키지에는 NumPy, SciPy, pandas, cryptography, PyArrow, PyTorch와 vLLM이 모두 있다. PyTorch의 2.13.0 휠은 CPython 3.12, 3.13, 3.14와 자유 스레드 버전 3.14를 커버하며, QEMU나 크로스 컴파일이 아닌 RISC-V 실기에서 빌드되어 212038개 테스트 케이스를 전부 통과했다. vLLM의 0.29.0+cpu는 9월 21일 병합되었고 0.30.0이 9월 24일 뒤따랐으며, 첫 버전은 CPython 3.12 ABI3의 <code class="highlighter-rouge">manylinux_2_39_riscv64</code> 휠을 산출했다.</p>
+
+<p>보고서에서 가장 기록할 만한 것은 하나의 대조다. StarFive VisionFive 2에서 소스로 NumPy를 빌드하는 데 약 15분이 걸리며, 미리 컴파일된 휠을 설치하는 데는 약 25초다. 프로젝트의 의존성 트리에 확장을 포함한 패키지가 십여 개 있으면 이 격차는 시간 단위가 된다. 보고서는 퇴장 메커니즘도 제시했다. 업스트림이 자체적으로 riscv64 휠을 배포하기 시작하면 자동화 흐름이 RISE의 빌드를 내리도록 제안한다는 것이다. 이 진전의 진정한 지표는 인덱스가 얼마나 큰지가 아니라, 업스트림이 인수함으로써 얼마나 많이 삭제될 수 있는지다.</p>
+
+<p>두 가지를 짚어둘 필요가 있다. 첫째, 이것은 독립적인 공급망이다. 1389개 패키지가 RISE의 빌드 및 릴리스 프로세스에 의존하며, 불변 Release와 SHA-256 다이제스트가 있긴 하지만 각 패키지 업스트림 유지관리자와는 두 개의 책임 체계다. 둘째, 대상 플랫폼은 glibc Linux이며, MicroPython을 돌리거나 베어메탈로 동작하는 MCU급 RISC-V는 커버하지 않는다. 설치가 가능하다는 것이 성능이 가능하다는 것과 같지 않으며, 스칼라 구현으로 돌아가는 것은 되어도 벡터 최적화는 별도로 해야 한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-18　<strong>출처</strong>: <a href="https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/">RISE: Python on RISC-V: 1500 Packages and Counting</a>, <a href="https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting">Adafruit 재게시</a>.</p>
+
+<h3 id="openruyi-스무-건-grpc-1853으로-올리고-시스템-openssl-4로-링크-변경-protobuf-362로-11-19">openRuyi 스무 건: gRPC 1.85.3으로 올리고 시스템 OpenSSL 4로 링크 변경, protobuf 36.2로 (11-19)</h3>
+
+<p>openRuyi 메인 저장소에 11월 19일 저녁부터 20일 새벽까지 20건의 커밋이 올라갔다. 01시 17분의 다섯 건이 핵심이다. gRPC를 1.85.3으로 올리고 시스템 OpenSSL 4로 링크하도록 변경했으며, protobuf를 36.2로 올렸다. protobuf-c는 새 Protobuf 필드 API에 맞춰 빌드하도록 변경했고, re2는 2025.11.05로, abseil-cpp는 20260817.0으로 올렸다. 이 다섯 패키지는 같은 의존성 사슬이라 한 번에 처리했다.</p>
+
+<p>0시 06분에는 GRUB 변경 두 건이 있었다: kernel-install 통합 제공, 그리고 <code class="highlighter-rouge">/etc/default/grub</code>를 패키지에 포함. 23시 28분의 묶음은 13개의 Go 생태계 패키지로, golang.org/x 계열 주변 툴체인, gofumpt, misspell, go-billy, paho.golang과 몇 개의 테스트 보조 라이브러리가 포함됐다.</p>
+
+<p>gRPC를 시스템 OpenSSL 4로 전환한 일은 따로 언급할 만하다. gRPC는 기본적으로 BoringSSL을 내장하는데, 배포판 패키징 시에는 TLS 패치와 FIPS 정책을 통일하기 위해 시스템 OpenSSL로 링크하도록 바꾸는 경우가 많다. 이번 변경의 전제는 openRuyi 저장소에 이미 OpenSSL 4가 있어야 링크가 된다는 것이다. 같은 묶음에서 protobuf와 protobuf-c는 반드시 동시에 올려야 하며, 그렇지 않으면 직렬화 계층에서 ABI 불일치가 발생한다. 이 세 건의 배열 순서는 패키저가 의존성 방향을 명확히 인지하고 있음을 보여준다.</p>
+
+<p>GRUB 두 건은 다른 방향을 가리킨다: 커널 설치가 표준 절차를 따르도록 하는 것이다. <code class="highlighter-rouge">kernel-install</code>은 systemd가 제공하는 훅으로, 배포판이 이를 사용해 커널, initramfs, 부팅 항목을 한 번에 설치한다. <code class="highlighter-rouge">/etc/default/grub</code>를 패키지에 포함한 것은 사용자가 부팅 매개변수를 수정할 때 수정할 파일이 있도록 하기 위함이며, <code class="highlighter-rouge">grub.cfg</code>를 직접 편집하지 않도록 하기 위해서다. 이런 변경은 릴리스 노트에는 나오지 않지만, 해당 배포판이 일상용 시스템으로 쓰일 수 있는지를 결정한다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://github.com/openRuyi-Project/openRuyi">openRuyi-Project/openRuyi</a>, <a href="https://openruyi.cn/zh-Hans/news/">openRuyi 공식 웹사이트 뉴스 페이지</a>.</p>
+
+<h3 id="revyoslinux-스무-건-커널을-debian-패키징-계층으로-전환-k3에-wrssto-에라타-추가-11-20">revyos/linux 스무 건: 커널을 Debian 패키징 계층으로 전환, K3에 WRS.STO 에라타 추가 (11-20)</h3>
+
+<p>revyos/linux의 <code class="highlighter-rouge">revyos/7.3.y</code> 브랜치에 11월 20일 새벽 01시 29분부터 01시 33분까지 20건이 한꺼번에 반영됐으며, 타임스탬프가 4분 안에 집중됐다. 제목으로 보아 이번 변경은 두 가지 일을 한다: 커널 빌드를 Debian의 패키징 계층으로 옮기는 것, 그리고 플랫폼 지원을 여섯 곳으로 확장하는 것이다.</p>
+
+<p>패키징 계층 변경에는 <code class="highlighter-rouge">debian_defconfig</code> 추가, 메이저 버전 번호를 패키지 이름으로 쓰는 임시 방안, <code class="highlighter-rouge">linux-image</code>가 <code class="highlighter-rouge">wireguard-modules</code>를 제공하도록 하는 것이 포함됐다. 또한 linuxboot 설정이 있어 EFI framebuffer를 efidrm으로 전환하고 DRM panic 지원을 켰으며, CI에 크로스와 네이티브 두 가지 빌드를 추가했다. 플랫폼 스위치는 여섯 곳을 한 번에 켰다: ESWIN EIC7700, UltraRISC DP1000, SpacemiT K3와 K1, XuanTie TH1520, Sophgo SG2042／SG2044, 그리고 Picoheart 에라타 추가.</p>
+
+<p>칩 관련 실질 변경은 세 건이다. 한 건은 <code class="highlighter-rouge">riscv: errata: spacemit: Use WRS.STO instead of WRS.NTO on K3</code>로, K3에서 대기 명령의 WRS.NTO를 WRS.STO로 바꾼다. 이런 에라타는 보통 실리콘의 구체적인 동작 차이에 대응하며, NTO(no timeout)와 STO(short timeout)의 차이는 대기 타임아웃 의미에 있다. 두 번째는 ESWIN StarPro64에 1.6GHz CPU 동작점을 추가한 것이다. 세 번째는 같은 보드에 팬 제어와 워치독을 켠 것이다.</p>
+
+<p>20개의 커밋을 4분 안에 반영했으며, 형태는 지난 며칠과 동일하다. 이는 일괄 정리 후 푸시한 것으로, 당일에 20개의 패치를 작성했다는 뜻은 아니다. 읽어낼 수 있는 방향은 명확하다. revyos는 커널을 「플랫폼별 설정 변경」에서 「Debian 커널 패키지 기반 유지보수」로 밀어붙이고 있다. 이 단계가 완성되면 이후 업스트림 안정 버전을 따라가는 것이 훨씬 쉬워지지만, 대가는 패키징 패치 세트를 유지보수해야 한다는 점이다. K3의 WRS.STO 정정은 별도로 추적할 가치가 있다. 이는 K3가 실제 하드웨어에서 커널을 구동했음을 입증할 수 있는 몇 안 되는 증거다.</p>
+
+<p><strong>날짜</strong>: 2026-11-20　<strong>출처</strong>: <a href="https://github.com/revyos/linux/tree/revyos/7.3.y">revyos/linux (revyos/7.3.y)</a>.</p>
+
+<h3 id="샹산-3개-저장소-10개-커밋-매트릭스와-ame-검증이-주축-gem5는-smt와-나눗셈기-보완-11-19">샹산 3개 저장소 10개 커밋: 매트릭스와 AME 검증이 주축, GEM5는 SMT와 나눗셈기 보완 (11-19)</h3>
+
+<p>11월 19일, 샹산 프로젝트의 세 저장소에 총 10개의 커밋이 반영되었다. 메인 저장소 XiangShan은 <code class="highlighter-rouge">kunminghu-v3</code> 브랜치에 2개 커밋. 14시 35분의 #6987은 DCache가 메모리 채널별로 DiffRefillEvent를 발행하도록 하여 더 이상 대기열에 쌓이지 않게 했다. 09시 31분의 #6947은 ICache의 itlb／pmp 요청에 대한 size를 1.U로 설정했다.</p>
+
+<p>차분 테스트 저장소 difftest의 3개 커밋은 모두 매트릭스 확장을 가리킨다. 17시 12분의 #1050은 비동기 CPU MMA 검증을 병렬화했다. 15시의 #1049는 처리 대기 중인 REF 제어가 없을 때 ROB 스캔을 건너뛰게 했다. 14시 45분의 #1044는 TR 저장 요청과 응답을 추적한다. 작성자는 각각 yu-yake2002와 ecall73이다. 세 커밋을 합치면 같은 일이다. 매트릭스 유닛의 검증 데이터량이 커지고 있어, 항목별 스캔으로는 따라갈 수 없게 되어 병렬화와 조건부 건너뛰기로 전환한 것이다.</p>
+
+<p>성능 모델 GEM5의 <code class="highlighter-rouge">xs-dev</code> 브랜치 5개 커밋. 15시 12분의 #1346은 로컬 쓰기 스누핑으로 SMT의 읽기 후 쓰기 충돌을 검출한다. 14시 58분의 #1355는 성능 CI 로그를 perf 트리거에 정렬했다. 12시 50분의 #1319는 teacher-student의 BOP 최적화를 추가했다. 12시 45분의 #1327은 정수 및 부동소수점 나눗셈기의 웨이크업을 구현했고, 10시 26분의 #1324는 정수 나눗셈 CLZ 지연 계산을 수정했다. 뒤의 두 커밋은 한 쌍으로, 먼저 지연 알고리즘을 올바르게 고친 뒤 웨이크업 로직을 연결했다.</p>
+
+<p>이날은 성능 수치가 없었고, 전부 검증 가능성 구축이었다. ICache의 req.size와 DCache의 refill 이벤트는 모두 「모델과 RTL이 맞지 않으면 오탐이 발생하는」 세부 사항에 속한다. SMT의 RAR 충돌 검출은 새로운 방향으로, 쿤밍후의 SMT 지원은 이전에 모델에서 별도 검사가 없었다. 매트릭스 쪽 움직임이 가장 집중되어, AME와 matrix 두 접두사가 difftest의 세 커밋 전부를 차지했으며, 이는 벡터와 매트릭스 유닛의 검증이 병목이 되고 있음을 보여준다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3">OpenXiangShan/XiangShan (kunminghu-v3)</a>, <a href="https://github.com/OpenXiangShan/difftest">OpenXiangShan/difftest</a>, <a href="https://github.com/OpenXiangShan/GEM5/tree/xs-dev">OpenXiangShan/GEM5 (xs-dev)</a>.</p>
+
+<h3 id="hypnos-델프트-공대의-양상-지속-학습-플랫폼-risc-v-mcu-전체-333밀리와트-11-19">Hypnos: 델프트 공대의 양상 지속 학습 플랫폼, RISC-V MCU 전체 33.3밀리와트 (11-19)</h3>
+
+<p>11월 19일, IoT Tech News는 델프트 공과대학(TU Delft)의 Hypnos 플랫폼을 보도했으며, 논문은 같은 시기 arXiv(2611.24637)에 게재되었다. 저자는 Guilherme Guedes, Marco P. E. Apolinario, Charlotte Frenkel이다. 이 플랫폼이 해결하려는 문제는 엣지 기기가 배포 후에도 새로운 샘플을 계속 학습하면서 원본 데이터를 서버로 전송하지 않도록 하는 것이다.</p>
+
+<p>Hypnos는 학습을 두 단계로 나누며, 이는 인간 뇌의 각성과 수면에 대응한다. 각성 단계는 기기에서 실행되며, 핵심은 X-HEEP의 RISC-V 마이크로컨트롤러에 Quadrilatero 매트릭스 코프로세서를 더한 것이고, 별도로 깊이별 분리 합성곱, 채널별 재양자화, 프로토타입 연산을 담당하는 컴팩트 가속기가 있다. 이 단계는 그래디언트 없는 프로토타입 업데이트만 수행하며, 샘플이 하나 들어올 때마다 클래스 프로토타입을 한 번 업데이트하고 압축된 특징을 저장한다. 역전파는 기기에서 실행되지 않는다. 수면 단계는 스마트 충전기에 맡긴다. 충전기는 기기에서 곱셈 양자화 코드와 가중치를 가져와 은닉층 활성화를 디코딩하고, 리플레이로 그래디언트 업데이트를 수행한 뒤 통합된 파라미터를 다시 기록한다.</p>
+
+<p>지표는 논문 기준: CORe50의 NICv2-391 프로토콜에서 INT8 활성화 구성은 78.6% 정확도, 단일 샘플 기기 측 지연 7.79초; INT16 활성화 구성은 81.6%, 10.54초로 교체된다. 양자화 은닉층 리플레이와 비교해 학습 스텝 수는 3.8배 적고, 샘플당 학습 연산량은 22배 적으며, 정확도는 더 높다. 28나노 공정 합성 결과는 9.43제곱밀리미터, 375MHz에서 33.3밀리와트이며, 각성 단계 가속기는 면적의 10.7%만 차지한다. 5.48MB의 리플레이 캐시는 충전기 측에 두어 기기 메모리를 차지하지 않는다. 전체 설계는 이미 오픈소스로 공개되었다.</p>
+
+<p>주목할 만한 것은 이 리소스 스케줄링 접근 방식이다. 이는 훈련을 배터리로 구동되는 기기에 밀어 넣으려 하지 않고, 「공고화」 단계를 벽면 콘센트 전원과 대용량 메모리가 있는 시점으로 옮겼다. 대가는 기기가 전원에 연결되어야만 장기 기억을 완성할 수 있다는 것이고, 이점은 기기 측 전력 소비와 면적을 모두 사용 가능한 범위로 낮춘다는 것이다. 한계도 분명하다. 7.79초에 샘플 하나는 느리게 변하는 센서 스트림에만 쓸 수 있고, 카메라급 연속 학습에는 아직 거리가 멀다. 논문은 MobileNetV3-Large 동결 백본에 온라인 프로토타입 분류기를 사용했으며, 엔드투엔드 훈련이 아니다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/">IoT Tech News: Hypnos brings continual learning to RISC-V edge devices</a>, <a href="https://arxiv.org/abs/2611.24637">arXiv:2611.24637</a>, <a href="https://github.com/cogsys-tudelft/hypnos">cogsys-tudelft/hypnos</a>.</p>
+
+<h2 id="2-제품-및-생태계-동향">2. 제품 및 생태계 동향</h2>
+
+<h3 id="2026-risc-v-산업-발전-대회-마카오-개최-완하이-개방형-소스-생태계-센터-출범-개방형-컴퓨팅-파워-플랫폼-협약-체결-11-19">2026 RISC-V 산업 발전 대회 마카오 개최: 완하이 개방형 소스 생태계 센터 출범, 개방형 컴퓨팅 파워 플랫폼 협약 체결 (11-19)</h3>
+
+<p>11월 19일, 2026 RISC-V 산업 발전 대회 글로벌 협력 특별 포럼 겸 RDSA 국제 포럼이 마카오 갤럭시 국제 컨퍼런스 센터에서 개최되었으며, 주제는 「표준 상호운용·글로벌 공생」이었다. 이 회의는 마카오 경제 및 과학기술 발전국이 지도하고, 중국 전자공업표준화기술협회 RISC-V 작업위원회, RDSA 산업 연맹, 웨강아오 대만구 RISC-V 오픈소스 생태계 발전 센터, 마카오 산업기술연구원이 공동 주최했다. RDSA 국제 포럼은 2024년부터 3년 연속 개최되고 있다.</p>
+
+<p>회의에서는 세 가지 성과가 있었다. 첫째, 웨강아오 대만구 RISC-V 오픈소스 생태계 발전 센터가 공식 출범했으며, 주하이, 헝친, 마카오 3개 지역이 공동으로 건설하고 기초 연구 플랫폼, 응용 혁신 플랫폼, 오픈소스 커뮤니티를 하위에 둔다. 둘째, RISC-V 국제화 수요-공급 매칭 플랫폼이 출범했으며, 중국 전자공업표준화기술협회 두징 사무총장의 소개에 따르면 공급 측은 제품과 솔루션을 게시할 수 있고 수요 측은 응용 수요를 게시할 수 있다. 셋째, RISC-V 국제 개방형 컴퓨팅 파워 플랫폼이 전략적 의향 협약을 완료했다. 협약 당사자로는 ESWIN Computing, 베이징 오픈소스 칩 연구원, 쑤저우 국신, 란신 컴퓨팅 파워, 진디 시공간, 그리고 EverPure, ExaLeapSem, 2V Systems 등 해외 기관이 포함된다.</p>
+
+<p>회의에서는 동시에 첫 RISC-V 해외 진출 대표 제품 및 솔루션 9종이 발표되었으며, 선도 수즈, 시무 컴퓨팅, 쑤안넝 테크놀로지, 웨팡 테크놀로지, 오웨이 링신 테크놀로지, 하오리 지능 테크놀로지에서 출품되었다. 2026 DSA 국제 혁신 창업 대회도 같은 날 시작되었으며, 팀 부문과 기업 부문을 두고 DSA 알고리즘 및 응용, 하드웨어 가속, DSA 칩 설계 세 가지 트랙을 다루며, 상금 풀은 115만 마카오 파타카이고, 심사에 처음으로 「마카오 정착 의향 및 실현 가능성」 항목이 추가되었다.</p>
+
+<p>회의에서 인용된 업계 데이터는 다음과 같다. 2025년 전 세계 RISC-V SoC 출하량은 약 69억 개이며, 2031년에는 360억 개로 증가하여 연평균 복합 성장률 31.7%에 이를 것으로 예상된다. 이 수치는 회의 자료에서 나온 것으로 제3자 서명은 확인되지 않아 인용 기록으로 남긴다. 베이징 오픈소스 칩 연구원 탕단 원장은 인터뷰에서 연구원이 마카오에 기술 지원을 제공하고 국제 표준 제정 및 호환성 테스트에 공동 참여할 수 있다고 밝혔다. 이러한 회의의 무게를 판단하려면 실제 성과물을 봐야 한다. 이번에 나온 것은 센터, 플랫폼, 협약 의향으로 조직 구조 차원이며, 구체적인 프로젝트 목록과 자금 배정은 아직 보이지 않는다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="http://macaucee.com.mo/content.asp?id=122435">마카오 컨벤션 전시 경제 신문: 2026 RISC-V 산업 발전 대회 글로벌 협력 특별 포럼 마카오 개최</a>, <a href="https://www.macaodaily.com/content/202611/20/c517948.html">마카오일보: RISC-V 포럼 마카오 개최, 글로벌 산업 협력 심화</a>, <a href="https://www.semiw.com/news/17950775858030.html">반도체 세계 전재</a>.</p>
+
+<h3 id="인피니언-플래그십-aurix-패밀리를-risc-v로-전환-riscvorg-5문-인터뷰-게재-11-19">인피니언, 플래그십 AURIX 패밀리를 RISC-V로 전환, riscv.org 5문 인터뷰 게재 (11-19)</h3>
+
+<p>11월 19일, RISC-V International 블로그에 인피니언 자동차 마이크로컨트롤러 소프트웨어 및 생태계 관리 부사장 Thomas Schneid와의 5문 인터뷰가 게재되었으며, 주제는 AURIX RC1의 출시였다. AURIX RC1은 11월 4일 출시되었으며, 인피니언 최초로 RISC-V 명령어 집합 기반의 마이크로컨트롤러 패밀리이다.</p>
+
+<p>인터뷰에서 제시된 배경 수치는 기록할 만하다. TechInsights 통계에 따르면 인피니언은 2025년 전 세계 차량용 마이크로컨트롤러의 3분의 1 이상을 공급했다. AURIX는 이 회사 자동차 사업의 출발점이 된 패밀리이자 시장 지위의 주요 버팀목이다. RC1은 기존 AURIX TriCore와 TRAVEO T2G 두 제품 라인을 한 세대로 통합하여 실시간 컨트롤러부터 MCU/MPU 하이브리드 소자까지 포괄한다. 응용 분야로는 존, 차체, 섀시, 배터리 관리, 파워트레인, 운전 보조 안전 관리, 콕핏이 나열되었다. 일부 모델에는 AI 가속을 위한 병렬 처리 장치(PPU)가 탑재된다.</p>
+
+<p>인피니언이 강조하는 것은 마이그레이션 비용이다. Schneid의 설명에 따르면, 회사는 완성차 업체가 RISC-V로 전환하는 데 드는 엔지니어링 투입과 고객 툴체인에 미치는 영향을 최소화하기 위해 많은 노력을 기울였다. 이 발언의 무게는 차량용 MCU의 교체 비용이 주로 칩 자체가 아니라 AUTOSAR 구성, 디버거, 기능 안전 인증, 공급망 재검증에 있다는 데 있다. 시장의 3분의 1을 차지하는 공급업체가 플래그십 패밀리를 움직이려 한다는 것은 생태계가 이미 충분하다고 판단했다는 뜻이다.</p>
+
+<p>남겨둬야 할 여지도 적지 않다. 인피니언은 구체적인 모델명과 제품 라인 세부 사항이 아직 공개되지 않았다고 명확히 밝혔으며, 이는 SKU도, 샘플 타임라인도, 양산 시점도 없다는 것을 의미한다. AURIX 기존 고객의 마이그레이션도 하루아침에 완료되지 않으며, 차량 규격 프로젝트의 설계 주기는 보통 3~5년이다. 이 소식을 SiFive의 BMC 양산 소식과 함께 놓고 보면, 2026년 RISC-V의 산업 신호는 ‘관리면’과 ‘제어면’에 집중되어 있으며 아직 주 연산력에는 이르지 못했다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/">RISC-V International: V Questions with… Infineon’s Thomas Schneid</a>.</p>
+
+<h3 id="lilygo-t-can485-c5-esp32-c5-산업-제어-보드-진입-can과-rs-485-동일-보드-탑재-11-18">LILYGO T-CAN485 C5: ESP32-C5 산업 제어 보드 진입, CAN과 RS-485 동일 보드 탑재 (11-18)</h3>
+
+<p>11월 18일, LinuxGizmos는 LILYGO가 두 가지 개발 플랫폼을 출시했다고 보도했다. 그중 T-CAN485 C5는 Espressif ESP32-C5 기반으로 RISC-V 아키텍처다. 다른 하나인 T-Display CM0는 쿼드코어 Arm Cortex-A53의 Compute Module Zero를 사용하며 RISC-V가 아니므로 여기서는 구분만 하고 집계하지 않는다.</p>
+
+<p>T-CAN485 C5의 사양: 16MB flash에 8MB PSRAM, 무선은 2.4/5GHz 듀얼밴드 Wi-Fi 6, 블루투스 5 LE 및 IEEE 802.15.4(Zigbee 및 Thread)를 지원한다. 산업용 인터페이스는 비교적 충실하게 제공된다. SN65HVD251DR CAN 트랜시버는 최대 1Mbps; MAX13487E 반이중 RS-485는 자동 방향 제어 지원; W5500 이더넷 컨트롤러는 SPI 연결. 그 외 0~10V 아날로그 입력, 3.3~24V 디지털 입력, microSD 및 Qwiic 인터페이스가 있다. 보드 크기는 128×62×17mm, 7~24V DC 입력 또는 5V USB 전원 공급.</p>
+
+<p>이 보드의 의미는 ESP32-C5를 ‘Wi-Fi 6 개발 보드’에서 산업 현장으로 끌어올린다는 데 있다. CAN과 RS-485는 생산 라인과 빌딩 제어의 두 가지 주축이며, 0~10V 아날로그량과 광전압 입력을 갖춘 점으로 보아 목표 시나리오는 데스크톱 실험이 아니라 PLC 주변 또는 게이트웨이임을 알 수 있다. ESP32-C5는 Espressif의 첫 듀얼밴드 Wi-Fi 6 탑재 RISC-V 칩이며, 이런 보드가 많아질수록 RISC-V의 MCU 측 출하 구조는 소비자용에서 산업용으로 이동할 것이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-18　<strong>출처</strong>: <a href="https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/">LinuxGizmos: LILYGO CM0 terminal and ESP32-C5 board</a>.</p>
+
+<h2 id="3-국내-팀-심층-분석">3. 국내 팀 심층 분석</h2>
+
+<h3 id="spacemit-llamacpp-업스트림-동기화-정밀도-열거형-업스트림-따라-변경-11-19">SpacemiT llama.cpp 업스트림 동기화, 정밀도 열거형 업스트림 따라 변경 (11-19)</h3>
+
+<p>11월 19일, spacemit-com/llama.cpp의 <code class="highlighter-rouge">mtmd-backend</code> 브랜치가 비교적 큰 업스트림 동기화를 진행했다. 14시 36분 #81 “Sync upstream llama.cpp master into mtmd-backend”를 머지했다. 13시 17분 <code class="highlighter-rouge">spacemit: use current precision enum after upstream sync</code> 커밋을 올렸으며 작성자는 timeuser4다. 후자는 전자의 패치다: 업스트림이 정밀도 열거형의 이름이나 값을 변경했으므로 다운스트림 백엔드도 따라 변경해야 한다.</p>
+
+<p>같은 배치로 들어온 업스트림 변경도 여럿 있다. OpenCL 백엔드는 분해식 FA에서 KV padding 조정을 허용하며(#32522), ggml은 WASM Relaxed SIMD 강화를 보완했다(#19590). 또한 루프 상태의 sticky NaN 수정(#31913), CI의 LLVM을 22.1.8로 교체(#32548)도 있다. 이는 SpacemiT가 작성한 것이 아니라 동기화와 함께 들어온 업스트림 코드다.</p>
+
+<p>이번 동기화를 기록할 가치가 있는 이유는 유지보수 비용의 구조를 드러냈기 때문이다. RISC-V 백엔드는 ggml의 텐서 연산자와 메모리 레이아웃을 수정하는데, 업스트림이 이 부분을 빠르게 리팩터링하고 있다. 정밀도 열거형 같은 저수준 타입이 바뀌면 다운스트림의 모든 백엔드가 재컴파일하고 의미를 확인해야 한다. SpacemiT의 방식은 장기 브랜치를 유지하며 정기적으로 일괄 동기화하는 것이지, 건별로 rebase하는 것이 아니다. 장점은 머지 충돌을 집중 처리하는 것이고, 단점은 동기화할 때마다 적응 커밋을 보충해야 하며 업스트림과의 거리가 주기적으로 벌어진다는 것이다.</p>
+
+<p>같은 날 spacemit-com에는 두 가지 작은 움직임도 있었다: mpp는 모듈이 활성화되지 않았을 때 pkgconfig가 여전히 C++ 헤더를 포함하는 문제를 수정했다; ai-sdk와 bianbu-agentic은 각각 서브모듈 포인터를 한 번씩 업데이트했다. 이 세 건은 모두 유지보수에 해당하며 기능 진전을 구성하지 않는다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://github.com/spacemit-com/llama.cpp">spacemit-com/llama.cpp（mtmd-backend）</a>, <a href="https://github.com/spacemit-com/llama.cpp/pull/81">PR #81: 업스트림 master 동기화</a>.</p>
+
+<h3 id="eswincomputing-starpro64-16ghz-작동점-팬-및-워치독을-디바이스-트리에-추가-11-20">eswincomputing StarPro64: 1.6GHz 작동점, 팬 및 워치독을 디바이스 트리에 추가 (11-20)</h3>
+
+<p>11월 20일 새벽, revyos/linux에 eswincomputing EIC7700 플랫폼 StarPro64를 위한 디바이스 트리 변경 세 건이 적용되었다: CPU에 1.6GHz 작동점 추가, 팬 제어 활성화, 워치독 활성화. 같은 배치에 EIC7700 플랫폼 지원을 활성화하는 총괄 스위치 한 건도 포함되어 있다. 작성자는 Icenowy와 RevySR이다.</p>
+
+<p>세 건의 변경이 중요한 이유는 모두 “보드에 올려야만 필요한” 변경이기 때문이다. CPU 작동점은 이 칩이 1.6GHz에서 안정적으로 동작함이 검증되었음을 의미하며, 단순한 스펙시트 상의 숫자가 아니다. 팬 제어는 이 보드에 능동 냉각이 있으며 온도 곡선을 디바이스 트리에 기술해야 함을 나타낸다. 워치독 활성화는 무인 운영 시나리오에서의 자동 복구와 관련된다.</p>
+
+<p>eswincomputing의 EIC7700은 RISC-V 엣지 컴퓨팅 SoC이며, StarPro64는 이에 대응하는 고성능 단일 보드이다. 이전에 해당 플랫폼의 소프트웨어 지원은 주로 제조사의 linux-stable 및 opensbi 저장소에 집중되었으며, 가장 최근 푸시는 10월 19일이었다. 이번 변경이 제조사 저장소가 아닌 revyos에 적용된 것은 서드파티 배포판이 이 보드를 공식 지원 플랫폼으로 유지보수하기 시작했음을 의미한다. 사용자 입장에서의 실질적 의미는: revyos를 설치하면 팬이 돌고, 주파수가 올라가며, 시스템 다운 시 자동으로 재시작된다는 것이다.</p>
+
+<p><strong>날짜</strong>: 2026-11-20　<strong>출처</strong>: <a href="https://github.com/revyos/linux/tree/revyos/7.3.y">revyos/linux（revyos/7.3.y）</a>, <a href="https://github.com/eswincomputing">eswincomputing</a>.</p>
+
+<h2 id="4-임베디드-인텔리전스-및-로봇공학-특별-장">4. 임베디드 인텔리전스 및 로봇공학 특별 장</h2>
+
+<h3 id="spacemit-로봇-스택-3건-클록-앵커-깊이-홀-채우기-참조-모션-플래너-11-19">SpacemiT 로봇 스택 3건: 클록 앵커, 깊이 홀 채우기, 참조 모션 플래너 (11-19)</h3>
+
+<p>11월 19일, spacemit-robotics의 humanoid_common에 세 개의 PR이 병합되어 각각 시간 기준, 깊이 이미지 품질, 플래너 연동을 해결했다.</p>
+
+<p>03시 15분에 #36 “feat(perception): add robot clock anchor service”가 병합되었으며, 작성자는 chenzhaoqiJM이다. 이는 하드웨어 드라이버에 읽기 전용 RPC 서비스를 추가하여 ZMQ를 통해 IMU의 샘플링 타임스탬프와 호스트 수신 타임스탬프를 외부에 노출시켜, 외부 깊이 카메라 퍼블리셔가 캡처 시점을 로봇 클록에 매핑할 수 있게 한다. 구현상 백그라운드 스레드에서 실행되어 제어 루프를 차단하지 않으며, 클록 역행 시 기존 앵커를 무효화하고 세션을 전환한다.</p>
+
+<p>07시 57분에 #37 “feat(perception): simulate and fill depth holes”가 병합되었으며, 동일 작성자이다. 이는 시뮬레이션에 구성 가능한 깊이 홀, 노이즈 및 시뮬레이션 지연을 추가하며, 기본적으로 30FPS로 캡처하고 따라잡기식 프레임 보간은 하지 않는다. 홀 채우기는 2픽셀 반경 내 원본 유효 이웃으로 채우고, 캡처 타임스탬프를 유지하며, 렌더러 워밍업 단계의 만료된 프레임은 폐기한다. #36과 #37은 한 쌍이다: 전자는 시간 기준을 제공하고, 후자는 시뮬레이션에서 실제 카메라에만 있는 결함을 생성하여 다운스트림 알고리즘이 시뮬레이션 단계에서 처리할 수 있게 한다.</p>
+
+<p>08시 18분에 #38 “feat(planner): support optional reference motion planners”가 병합되었으며, 작성자는 beililcj이다. 이 변경은 선택적 참조 모션 플래너를 도입하며, 요청 소유권, 런타임 가용성 판단 및 상태 보고를 포함하고, 내부 전송 프로토콜을 v7에서 v8로 올리며, 관절 및 IMU 피드백은 여전히 별도 메시지로 유지된다. 커밋 설명에는 검증 방법이 명시되어 있다: 로컬 패키지 빌드, lint 및 10개 플래너, 전송, 연산자 회귀 테스트 통과.</p>
+
+<p>같은 날 ros2_humanoid에 두 건의 부수 변경이 있었다. 11시 45분에 “bridge RealSense depth to Hiking control” 추가, 16시 08분에 “align Hiking depth preview”. omni-agent 한 건은 ASR에 provider 오버라이드와 LLM <code class="highlighter-rouge">/health</code> 시작 대기를 추가했다.</p>
+
+<p>세 건을 연결한 의도는 명확하다. 로봇 스택이 서드파티 인지와 서드파티 정책을 연동하고 있으며, 연동 시 먼저 두 가지를 해결해야 한다: 서로 다른 출처의 데이터를 어떻게 동일한 시간축에 정렬할 것인가, 서로 다른 출처의 제어 명령 중 누가 결정권을 가지는가. #36은 전자를 해결하고, #38의 “요청 소유권”은 후자를 해결한다. 관절 및 IMU 피드백을 별도 메시지로 유지하는 것도 같은 고려이다 — 상태 피드백과 명령 하달은 하나의 채널에 섞여서는 안 된다.</p>
+
+<p><strong>날짜</strong>: 2026-11-19　<strong>출처</strong>: <a href="https://github.com/spacemit-robotics/humanoid_common/pull/36">humanoid_common PR #36: 로봇 클록 앵커</a>, <a href="https://github.com/spacemit-robotics/humanoid_common/pull/37">PR #37: 깊이 공백 채우기</a>, <a href="https://github.com/spacemit-robotics/humanoid_common/pull/38">PR #38: 선택적 참조 모션 플래너</a>, <a href="https://github.com/spacemit-robotics/ros2_humanoid">ros2_humanoid</a>, <a href="https://github.com/spacemit-robotics/omni-agent">omni-agent</a>.</p>
+
+<h2 id="5-요약-및-트렌드-관찰">5. 요약 및 트렌드 관찰</h2>
+
+<p>첫 번째 판단은 데이터센터 관리 평면이 국산 비순차 RISC-V 코어의 첫 양산 적용점이 되었다는 것이다. StarFive의 Tianshu-70은 2024년 8월 출시 당시 ‘고성능, 극저전력’ IP였고, 2년 후 JH-B100에 탑재되어 출하되었다. 경로 선택은 옳다: BMC는 보드당 하나씩, 신뢰성 요구가 높고, 비즈니스 부하를 담당하지 않아 비순차 코어의 엔지니어링 성숙도를 검증하기에 적합한 위치다. 할인해서 봐야 할 것은 ‘연간 출하량 천만 대급’이라는 표현인데, 이는 주문이 아닌 예상치이며, 글로벌 서버 연간 출하량 자체가 천만 대 규모이기 때문이다. 진짜 관찰점은 분기별 출하량이 이행될 수 있는지, 그리고 Tianshu-83/100에 고객 테이프아웃이 있는지다.</p>
+
+<p>두 번째 판단은 생태계 측의 행보가 ‘설치 가능 여부’에서 ‘누가 유지보수하는가’로 이동했다는 것이다. RISE의 1506개 휠 중 1389개가 자체 인덱스에 등록되어 있으며, 보고서는 ‘업스트림이 인수한 후 RISE 빌드 퇴출’을 성공 지표로 삼고 있다. openRuyi는 gRPC를 bundled BoringSSL에서 시스템 OpenSSL 4로 전환했고, revyos는 커널을 Debian 패키징 계층으로 옮겼다. 두 가지 일의 방향은 일치한다: 패치를 각 저장소에 하나씩 남기는 대신 배포판의 통합 유지보수 평면으로 흡수하는 것이다. 이런 작업은 릴리스 노트에는 나타나지 않지만, 3년 후에도 업스트림을 따라갈 수 있는지를 결정한다.</p>
+
+<p>세 번째 판단은 차량용 MCU의 선두 공급업체가 플래그십 패밀리를 움직이기 시작했다는 것이다. Infineon은 글로벌 차량용 MCU의 3분의 1 이상을 점유하며, AURIX와 TRAVEO 두 라인을 1세대 RISC-V 제품으로 통합하고 마이그레이션 비용 최소화를 강조했다. 이는 올해 가장 무거운 아키텍처 신호 중 하나이지만, 현재 SKU도, 샘플 타임라인도 없다. 차량 규격 프로젝트의 설계 주기는 3~5년이므로, 실제 양산차에서 RC1을 보게 되는 것은 2029년 전후가 될 것이다.</p>
+
+<h3 id="최근-3일-트렌드-관리-평면은-숫자를-내고-패키징-계층은-기반을-보강하고-플랫폼-측은-협약을-체결한다-11-17--11-19">최근 3일 트렌드: 관리 평면은 숫자를 내고, 패키징 계층은 기반을 보강하고, 플랫폼 측은 협약을 체결한다 (11-17 ~ 11-19)</h3>
+
+<p>11월 17일부터 19일까지를 연결해서 보면, 세 가지 라인이 각각 한 걸음씩 나아갔다. 관리 평면에서는 11월 17일 StarFive가 JH-B100 양산 납품을 공식 발표했고, 11월 19일에는 코어 모델과 출하 예상을 보충하며 ‘고객 납품’에서 ‘규모화 상용화’로 표현이 이동했다. 같은 기간 Zijing의 M100은 차량 규격 칩의 누적 출하량과 고객 명단을 공개했다. 두 가지 모두 RISC-V가 완제품 BOM에서 어느 위치를 차지하는지에 대한 답이며, 답은 모두 주변부이지만 필수적인 그 한 칩이다.</p>
+
+<p>기초 소프트웨어 측에서는 사흘 동안 패키징과 구성 작업이 이루어졌다. 11월 17일 openRuyi는 OpenSBI를 1.9로 올리고 OpenSSL 3.6.5를 도입했다. 11월 18일에는 curl과 nginx의 보안 업데이트를 보충하고 14개의 Go 패키지를 편입했다. 11월 19일에는 gRPC 체인을 OpenSSL 4로 전환했다. revyos는 11월 18일의 ‘구성 베이스라인’에서 11월 20일의 ‘Debian 패키징 계층’으로 나아갔다. RISE는 Python 휠의 커버리지를 추적 가능한 표로 만들었다. 사흘 동안 성능 돌파는 하나도 없었고, 전부 유지보수성에 관한 것이었다.</p>
+
+<p>플랫폼과 조직 측에서는 11월 19일의 마카오 회의에서 완구 오픈소스 생태계 센터와 국제화 수요-공급 매칭 플랫폼이 출범했으며, 개방형 컴퓨팅 파워 플랫폼에 전략적 의향서를 체결했다. 같은 날 riscv.org는 Infineon 인터뷰를 공개했다. 한쪽은 조직 구조를 구축하고, 다른 한쪽은 선두 공급업체의 입장 표명을 공개 텍스트로 구체화하고 있다. 두 가지를 합치면 2026년 하반기의 중심은 ‘이미 돌아가는 것들을 조직화하는 것’이지, 새로운 아키텍처를 또 내놓는 것이 아니다.</p>
+
+<h2 id="부록">부록</h2>
+
+<h3 id="출처-검증표">출처 검증표</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>출처</th>
+      <th>검증 결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News 집계(중영문 24개 쿼리, 중국어 팀 키워드 10개 추가)</td>
+      <td>모니터링 기간 내 실질 신규 3건: StarFive TianShu-70 양산(11월 19일, Kuai Technology 최초 보도, Wangtong News 등 전재), 마카오 RISC-V 산업발전대회(11월 19일, Macau Daily 등이 11월 19일~20일 보도), RISE의 Python wheel 보고서(11월 18일 발표, 11월 19일 Adafruit 등 통해 확산), 모두 수록 완료. 제외 항목: Purism Librem 5 v2의 스페인어·포르투갈어 후속 기사(11월 18일 보고서에 공식 보도자료 기준으로 이미 수록), Zijing M100의 Changsha Evening News 탐방 기사(11월 18일 보고서에서 오늘의 중점으로 이미 다룸), 알리바바 CEO의 Qwen이 Pingtouge 칩에서 훈련된다는 발언(주체는 PPU와 Yitian 라인으로 RISC-V에 해당하지 않음), OpenAI와 AMD의 칩 설계 협력 다수 기사(RISC-V 전용 정보 없음), Microchip RT PolarFire 우주급 인증(주체는 FPGA로 RISC-V는 해당 SoC 서브시리즈의 코어일 뿐), WCH ch32fun 오픈소스 스택(프로젝트 자체는 신규가 아니라 전재)</td>
+    </tr>
+    <tr>
+      <td>Hacker News／Phoronix／CNX Software／LinuxGizmos／RISC-V International</td>
+      <td>HN 모니터링 기간 내 1건: Show HN의 RISC-V 에뮬레이터가 RTX3060에서 256 hart SMP Linux 부팅(1점, 1댓글), 별도로 11월 18일 「OpenAI 오픈소스보다 앞선 RISC-V CPU 설계 AI 회로」 논의(9점), 모두 개인 프로젝트로 항목화하지 않음. CNX Software와 LinuxGizmos는 모니터링 기간 내 각 1건, 전자는 Waveshare ESP32-S31 디스플레이 키트(ESP32-S31은 Espressif 신규 시리즈로 제품 페이지에 아키텍처 세부 정보 없어 잠정 미수록), 후자는 LILYGO 두 보드(T-CAN485 C5는 수록, T-Display CM0는 Arm으로 제외). riscv.org 블로그 모니터링 기간 내 1건, 즉 Infineon 5문 인터뷰로 수록 완료</td>
+    </tr>
+    <tr>
+      <td>GitHub 조직 및 주요 저장소 점검(40여 개 저장소)</td>
+      <td>모니터링 기간 내 활동: XiangShan 2건, difftest 3건, GEM5 5건, openRuyi 20건, revyos/linux 20건, cvw 약간(Atom 피드 조회 불가, 메인 브랜치 모니터링 기간 내 신규 커밋 없음), spacemit-com/llama.cpp 14건(업스트림 일괄 동기화 1회 포함), spacemit-com/mpp 1건, spacemit-com/ai-sdk와 bianbu-agentic 각 1건, humanoid_common 4건, ros2_humanoid 2건, omni-agent 1건. 푸시 제로: NEMU, XSCache, cva6, core-v-verif, XUANTIE-RV(74개 저장소), eswincomputing(17개 저장소), sophgo, Radxa Linkr, RuyiSDK. Nuclei-Software 두 저장소의 pushed_at은 모니터링 기간 내이나 메인 브랜치에 커밋 없음, 푸시된 브랜치는 <code class="highlighter-rouge">develop</code>과 <code class="highlighter-rouge">develop_n100</code>이며 이벤트 시각은 11월 18일 16시 55분(베이징 시간)으로 모니터링 기간 밖이라 이번 호 미집계</td>
+    </tr>
+    <tr>
+      <td>openRuyi 이중 출처</td>
+      <td>공식 사이트 뉴스 페이지 최신은 여전히 2026년 10월 19일 두 건과 2026.09 릴리스, 모니터링 기간 내 신규 버전 없음; 메인 저장소 20건은 로그 기준 수록 완료</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 순회 점검</td>
+      <td>변화 없음: 6개 순위표에 신규 기록과 점수 변동 없음, What’s New와 Upcoming 신규 없음, 위원회 멤버 변동 없음</td>
+    </tr>
+    <tr>
+      <td>RISC-V 회원 공식 사이트 순회 점검(391개사)</td>
+      <td>변화 항목은 주로 대학과 재단 홈페이지(브란덴부르크 공과대학, China University of Petroleum(베이징), CNCF, CMC Microsystems, ETH Zurich, 유럽우주국 등), 표본 점검 결과 모두 홈페이지 뉴스 교체와 모집 공고로 신제품·투자·아키텍처 발표 없어 미수록; 수집 실패 74개사, Institute of Software Chinese Academy of Sciences, Beijing Institute of Open Source Chip, Synopsys, Tencent 등 포함</td>
+    </tr>
+    <tr>
+      <td>RVSC2026 정상회의 공식 사이트 점검</td>
+      <td>변경 없음: 공식 사이트 sitemap, 11개 핵심 페이지와 소스 저장소 모두 업데이트 없음, 소스 HEAD는 여전히 10월 20일</td>
+    </tr>
+    <tr>
+      <td>제외 항목 점검</td>
+      <td>알리바바 CEO의 Qwen이 Pingtouge 칩에서 훈련된다는 발언은 주제 귀속에 따라 제외, Pingtouge의 PPU와 Yitian 라인은 RISC-V에 해당하지 않음; Hejian Gongruan, Xinhua Zhang 등 EDA 관련 기사는 모니터링 기간 내 RISC-V 전용 내용 없음; 「OpenAI 모델이 RISC-V 코어 테스트에서 1위」 류 제목은 AI 보조 칩 설계의 전언으로 원문에 RISC-V 전용 평가 데이터 없어 미수록</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="전체-출처-목록">전체 출처 목록</h3>
+
+<ul>
+  <li><strong>[1]</strong> Kuaikeji: 중대한 돌파구! 국산 아웃오브오더 RISC-V CPU IP, 데이터센터 진출 — <a href="https://news.mydrivers.com/1/1166/1166936.htm">https://news.mydrivers.com/1/1166/1166936.htm</a></li>
+  <li><strong>[2]</strong> Wangtongshe: StarFive Fang·Tianshu-70 아웃오브오더 RISC-V CPU IP 최초 양산 — <a href="http://tech.news18a.com/article/18143">http://tech.news18a.com/article/18143</a></li>
+  <li><strong>[3]</strong> StarFive 테크놀로지 공식 웹사이트: RISC-V 기반 서버 BMC 칩 양산 납품 — <a href="https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news">https://www.starfivetech.com/index.php?c=show&amp;id=214&amp;s=news</a></li>
+  <li><strong>[4]</strong> IT Zhijia: StarFive, 64비트 초저전력 아웃오브오더 RISC-V CPU 코어 IP Fang·Tianshu-70 출시 (2024-08) — <a href="https://www.ithome.com/0/788/873.htm">https://www.ithome.com/0/788/873.htm</a></li>
+  <li><strong>[5]</strong> RISE: Python on RISC-V: 1500 Packages and Counting — <a href="https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/">https://riseproject.dev/2026/11/18/python-on-risc-v-1500-packages-and-counting/</a></li>
+  <li><strong>[6]</strong> Adafruit: Python on RISC-V: 1500 packages and counting — <a href="https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting">https://blog.adafruit.com/2026/11/19/python-on-risc-v-1500-packages-and-counting</a></li>
+  <li><strong>[7]</strong> openRuyi-Project/openRuyi — <a href="https://github.com/openRuyi-Project/openRuyi">https://github.com/openRuyi-Project/openRuyi</a></li>
+  <li><strong>[8]</strong> openRuyi 공식 웹사이트 뉴스 페이지 — <a href="https://openruyi.cn/zh-Hans/news/">https://openruyi.cn/zh-Hans/news/</a></li>
+  <li><strong>[9]</strong> revyos/linux (revyos/7.3.y 브랜치) — <a href="https://github.com/revyos/linux/tree/revyos/7.3.y">https://github.com/revyos/linux/tree/revyos/7.3.y</a></li>
+  <li><strong>[10]</strong> OpenXiangShan/XiangShan (kunminghu-v3 브랜치) — <a href="https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3">https://github.com/OpenXiangShan/XiangShan/tree/kunminghu-v3</a></li>
+  <li><strong>[11]</strong> OpenXiangShan/difftest — <a href="https://github.com/OpenXiangShan/difftest">https://github.com/OpenXiangShan/difftest</a></li>
+  <li><strong>[12]</strong> OpenXiangShan/GEM5 (xs-dev 브랜치) — <a href="https://github.com/OpenXiangShan/GEM5/tree/xs-dev">https://github.com/OpenXiangShan/GEM5/tree/xs-dev</a></li>
+  <li><strong>[13]</strong> IoT Tech News: Hypnos brings continual learning to RISC-V edge devices — <a href="https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/">https://iottechnews.com/news/hypnos-brings-continual-learning-risc-v-edge-devices/</a></li>
+  <li><strong>[14]</strong> arXiv:2611.24637 Hypnos 논문 — <a href="https://arxiv.org/abs/2611.24637">https://arxiv.org/abs/2611.24637</a></li>
+  <li><strong>[15]</strong> cogsys-tudelft/hypnos 오픈소스 저장소 — <a href="https://github.com/cogsys-tudelft/hypnos">https://github.com/cogsys-tudelft/hypnos</a></li>
+  <li><strong>[16]</strong> Macau Convention &amp; Exhibition Economy News: 2026 RISC-V 산업 발전 대회 글로벌 협력 특별 포럼, 마카오에서 개최 — <a href="http://macaucee.com.mo/content.asp?id=122435">http://macaucee.com.mo/content.asp?id=122435</a></li>
+  <li><strong>[17]</strong> Macau Daily News: RISC-V 포럼 마카오 개최, 글로벌 산업 협력 심화 — <a href="https://www.macaodaily.com/content/202611/20/c517948.html">https://www.macaodaily.com/content/202611/20/c517948.html</a></li>
+  <li><strong>[18]</strong> Semiconductor World: 표준 상호운용·글로벌 공생 — <a href="https://www.semiw.com/news/17950775858030.html">https://www.semiw.com/news/17950775858030.html</a></li>
+  <li><strong>[19]</strong> RISC-V International: V Questions with… Infineon’s Thomas Schneid — <a href="https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/">https://riscv.org/blog/v-questions-with-infineon-thomas-schneid/</a></li>
+  <li><strong>[20]</strong> LinuxGizmos: LILYGO CM0 terminal and ESP32-C5 board — <a href="https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/">https://linuxgizmos.com/lilygo-cm0-terminal-and-esp32-c5-board-bridge-linux-and-industrial-iot/</a></li>
+  <li>
+    <p><strong>[21]</strong> spacemit-com/llama.cpp (mtmd-backend 브랜치) — &lt;https://gith</p>
+  </li>
+  <li><strong>[22]</strong> humanoid_common PR #36: 로봇 클럭 앵커 서비스 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/36">https://github.com/spacemit-robotics/humanoid_common/pull/36</a></li>
+  <li><strong>[23]</strong> humanoid_common PR #37: 깊이 홀 채우기 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/37">https://github.com/spacemit-robotics/humanoid_common/pull/37</a></li>
+  <li><strong>[24]</strong> humanoid_common PR #38: 선택적 참조 모션 플래너 — <a href="https://github.com/spacemit-robotics/humanoid_common/pull/38">https://github.com/spacemit-robotics/humanoid_common/pull/38</a></li>
+  <li><strong>[25]</strong> spacemit-robotics/ros2_humanoid — <a href="https://github.com/spacemit-robotics/ros2_humanoid">https://github.com/spacemit-robotics/ros2_humanoid</a></li>
+  <li><strong>[26]</strong> spacemit-robotics/omni-agent — <a href="https://github.com/spacemit-robotics/omni-agent">https://github.com/spacemit-robotics/omni-agent</a></li>
+  <li><strong>[27]</strong> eswincomputing (Eswin Computing GitHub 조직) — <a href="https://github.com/eswincomputing">https://github.com/eswincomputing</a></li>
+  <li><strong>[28]</strong> riscv100.top 순위 — <a href="https://riscv100.top/">https://riscv100.top/</a></li>
+</ul>
+
+<p><strong>한계 설명</strong>: 이번 호는 24시간 모니터링 기간(11월 19일 05:00~11월 20일 05:00)을 다룹니다. 미디어 측의 실질 뉴스 세 건 중 StarFive와 마카오 회의 두 건은 중국어 출처이고, Infineon 한 건은 riscv.org 공식 인터뷰입니다. 기술적 세부 사항은 커밋 제목, 릴리스 노트 및 논문 초록을 기준으로 하며, 코드나 칩을 항목별로 검증하지는 않았습니다. StarFive의 “연간 출하량이 천만 대 수준에 달할 전망”은 제조사 측 예상치로, 고객 목록, 생산 일정, 분기별 데이터의 뒷받침이 없습니다. Tianshu-70의 성능 표현은 2024년 발표 자료와 2026년 양산 자료 사이에 불일치가 있으며, 전자는 A72/A510을 벤치마크로 A55 대비 구체적 비율을 제시했고 후자는 A73에 근접한다고 밝혔습니다. 본 보고서는 두 내용을 병기하며 어느 한쪽을 선택하지 않습니다. Infineon의 AURIX RC1은 패밀리 포지셔닝만 공개되었을 뿐 SKU, 샘플 타임라인, 양산 시점이 없으며, 인터뷰의 마이그레이션 비용 언급은 회사 자체 설명입니다. RISE의 커버리지 수치는 자체 대시보드에서 나온 것으로 제3자 검증이 없으며, 519개의 “공백”은 해당 분류 기준에 따라 집계되었습니다. revyos/linux의 20건은 4분 이내에 반영되었고 일괄 푸시 형태로, 이틀 전 배치와 동일 출처인지는 커밋 제목만으로 판단할 수 없습니다. spacemit-com/llama.cpp의 14건 중 대부분은 업스트림 동기화로 유입된 것이며, SpacemiT 자체 변경은 정밀도 열거 적응 한 건뿐입니다. Hypnos는 학술 성과로, CORe50에서의 정확도와 지연 시간은 논문 자체 측정치이며 제3자 하드웨어에서 재현되지 않았습니다. 회원 공식 사이트 점검의 “콘텐츠 변경”은 페이지 텍스트 해시로 판정했으며, 크롤링 실패가 74개사였습니다. GitHub 익명 API는 이번 호에 부분적으로 사용 가능했고, 조직 수준 통계는 Atom 피드와 결합했으며, 기본 브랜치가 아니거나 중점 저장소가 아닌 경우 누락될 수 있습니다.</p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ko/post.html#news-list" class="btn btn-main news-list-link">뒤로</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>문의하기</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>이메일:</strong> contact@kubuds.cn<br>
+            <strong>주소:</strong> 중국 상하이시 바오산구 가오이로 88호 1동 1층 108실<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>링크</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

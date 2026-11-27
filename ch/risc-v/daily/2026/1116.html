@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="上海苦芽科技有限公司">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v" href="/rss/risc-v.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · risc-v · 日报" href="/rss/risc-v/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ch/index.html">苦芽</a></h2> -->
+      <a class="navbar-brand" href="/ch/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ch/">首页</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">服务与支持 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/service/simulator.html">模拟器</a></li>
+              <li><a class="dropdown-item" href="/ch/service/os.html">操作系统</a></li>
+              <li><a class="dropdown-item" href="/ch/service/toolchain.html">软件工具链</a></li>
+              <li><a class="dropdown-item" href="/ch/service/chip.html">嵌入式芯片</a></li>
+
+              <li><a class="dropdown-item" href="/ch/service/ide.html">集成开发环境</a></li>
+              <li><a class="dropdown-item" href="/ch/service/aisys.html">AI软件栈服务</a></li>
+              <li><a class="dropdown-item" href="/ch/service/consultation.html">专家咨询</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">解决方案 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ch/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ch/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">社区 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ch/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ch/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ch/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ch/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ch/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ch/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/post.html" style="white-space: nowrap;">新闻与活动</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ch/about.html" style="white-space: nowrap;">关于我们</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ch/career.html">招贤纳士</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              中文 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/risc-v/daily/2026/1116.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/risc-v/daily/2026/1116.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/risc-v/daily/2026/1116.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/risc-v/daily/2026/1116.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/risc-v/daily/2026/1116.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RISC-V 全球动态日报（2026-11-16） - 苦芽</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ch/">首页</a></li>
+                                <li class="breadcrumb-item"><a href="/ch/post.html#news-list" class="news-list-link">新闻与活动</a>
+                                </li>
+                                <li class="breadcrumb-item active">RISC-V 全球动态日报（2026-11-16）</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RISC-V 全球动态日报（2026-11-16）</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-16</span>
+                                    <span class="post-author">苦芽科技</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>调研窗口</strong>：2026-11-13 05:00 ~ 2026-11-16 05:00（北京时间，72 小时）
+<strong>信源</strong>：Google News 聚合（中英文 24 组查询，走代理）、Hacker News、Phoronix、CNX Software、LinuxGizmos、RISC-V International 官网、openRuyi 官网与主仓、RISC-V 会员企业官网巡检（391 家）、riscv100.top 榜单巡检，以及 GitHub 上香山 XiangShan／NEMU／difftest／XSCache、CORE-V CVW／CVA6、达摩院玄铁、奕斯伟、算能、芯来、乐鑫、进迭时空与 spacemit-robotics、矽速、revyos、openRuyi-Project、Radxa Linkr 等组织与重点仓库的提交与发布检索。</p>
+
+<hr />
+
+<h2 id="本期索引">本期索引</h2>
+
+<ul>
+  <li>今日重点：Purism 公布 Librem 5 v2，八核进迭时空 K1 与 1599 美元众筹价（11-14）</li>
+  <li>一、开源社区与软件生态
+    <ul>
+      <li>RISC-V 矩阵扩展路线全景：IME、VME、AME 与点积扩展同台（11-15）</li>
+      <li>FURSOY 开源乱序 RV64 核：Linux 6.6.50 启动，45nm 收敛 500MHz（11-15）</li>
+      <li>openRuyi 二十笔：LLVM 三线启 PIE，python-torch-ruyiai 入树（11-14）</li>
+      <li>ReVyOS 内核配置统一：一次启用六项平台配置与 linuxboot（11-15）</li>
+      <li>香山生态三仓：NEMU 修 MMU 与 CBO，XSCache 修 L2 计数（11-15）</li>
+      <li>IAR 峰会回顾：一套工具链应对碎片化，功能安全覆盖十项标准（11-13）</li>
+      <li>AI 辅助设计压缩 RISC-V IP 定制周期：Andes 案例从 8.5 周降至 6 周（11-13）</li>
+      <li>ESP32-P4 上的桌面系统：Sylphide OS 与 BMDS 两条路线（11-14）</li>
+    </ul>
+  </li>
+  <li>二、产品与生态动态
+    <ul>
+      <li>龙擎空天 LQ7000：国产 RISC-V 配自研 GPNPU，20 至 400 TOPS（11-13）</li>
+      <li>FIORA5 开放股权众筹：罗马尼亚的 RISC-V 边缘 AI 处理器（11-14）</li>
+      <li>印度 VVCE 65nm RISC-V 教学芯片送台积电流片（11-15）</li>
+    </ul>
+  </li>
+  <li>三、国内团队深挖
+    <ul>
+      <li>灵睿智芯 Pre-A+ 数亿元：P100 的 SMT4 与 128 核时间表（11-13）</li>
+      <li>中国经营网：RISC-V 主控芯片市场五年从 11 亿元到 377 亿元（11-14）</li>
+      <li>算能 sophon-tools 十一笔：管理面修复与默认口令整改（11-15）</li>
+    </ul>
+  </li>
+  <li>四、具身智能与机器人专章
+    <ul>
+      <li>北京具身智能三年行动方案把 RISC-V 智算芯片写进攻关清单（11-11）</li>
+      <li>端侧智能体的算力分层：LQ7000 的 TOPS 与 P100 的 SMT4 各管一层（11-15）</li>
+    </ul>
+  </li>
+  <li>五、总结与趋势观察</li>
+  <li>附录：完整信源清单与信源核查表</li>
+</ul>
+
+<hr />
+
+<h2 id="今日重点purism-公布-librem-5-v2八核进迭时空-k1-与-1599-美元众筹价11-14">今日重点：Purism 公布 Librem 5 v2，八核进迭时空 K1 与 1599 美元众筹价（11-14）</h2>
+
+<p>Purism 在 11 月 14 日启动 Librem 5 v2 的众筹，这是 Librem 5 系列第一次把主控从 Arm 换成 RISC-V。官方页面给出的规格是：八核进迭时空（SpacemiT）K1、5.7 英寸 720×1440 屏幕、8GB 内存、128GB 存储、4500mAh 可更换电池、双 SIM、前置 8MP 与后置 13MP 相机、蜂窝与 Wi-Fi／蓝牙与麦克风／摄像头三组硬件开关，系统为基于 Debian 的 PureOS，可通过 Waydroid 兼容层跑安卓应用。众筹价为 1599 美元，目标是在 2027 年 2 月 15 日前拿到 2500 份订单；测试机预计 2027 年末，量产交付指向 2028 年 5 月前后。LinuxGizmos、OMG! Ubuntu 与 Liliputing 在 11 月 14 日至 16 日陆续跟进，报道口径与官方页面一致。</p>
+
+<p>这条消息的分量在于「谁在换架构」。RISC-V 手机过去多是极客项目或开发板形态的小批量产品，而 Purism 是 Linux 手机里少数有连续产品线、有自有发行版、有既有用户群的厂商。它把下一代旗舰直接押在 K1 上，等于承认 RISC-V 的应用处理器已经能承担「一台可日常使用的 Linux 手机」的定位，而不是只做验证板。对进迭时空而言，K1 在两周内先后进入 Start9 的路由器与 Purism 的手机，说明这颗芯片正在从开发板市场向整机品牌渗透，这是国内 RISC-V SoC 少见的两条整机线并行。</p>
+
+<p>官方页面同时把风险写在明面上：RISC-V 对 PureOS 还不是「插上就能启动」的平台，图形栈目前只能显示画面，完整的 3D 支持与优化仍需重写与投入，这正是需要众筹来证明需求、再组织开发的原因。换句话说，这台手机的瓶颈不在 K1 的算力，而在移动图形栈、相机管线与电源管理这些「Arm 生态里现成、RISC-V 上要重做」的部分。2028 年的交付时间表、2500 份订单的众筹门槛，以及众筹模式本身的交付风险，都是观察这台机器能否落地的硬约束。</p>
+
+<p>把它放到这一周的其他消息里看，脉络更清楚：同一天前后的 FIORA5 谈的是 2027 年原型、2029 年授权，灵睿智芯的 128 核服务器 CPU 指向 2027 年流片、2028 年量产。RISC-V 的高价值整机与高性能芯片，时间表普遍落在 2027 至 2029 年，中间的两年是软件栈与硅后验证的窗口，而不是发布会到货架的窗口。</p>
+
+<p><strong>日期</strong>：2026-11-14　<strong>来源</strong>：<a href="https://puri.sm/librem-5-v2-crowdfunding-campaign">Purism：Librem 5 v2 众筹页</a>、<a href="https://linuxgizmos.com/librem-5-v2-linux-smartphone-adopts-eight-core-risc-v-processor">LinuxGizmos：Librem 5 v2 采用八核 RISC-V</a>、<a href="https://www.omgubuntu.co.uk/2026/11/librem-5-risc-v-new-linux-phone">OMG! Ubuntu：第二代 Librem 5</a></p>
+
+<h2 id="一开源社区与软件生态">一、开源社区与软件生态</h2>
+
+<h3 id="risc-v-矩阵扩展路线全景imevmeame-与点积扩展同台11-15">RISC-V 矩阵扩展路线全景：IME、VME、AME 与点积扩展同台（11-15）</h3>
+
+<p>FPRox 在 11 月 15 日发布一篇矩阵扩展现状综述，按「点积、胖内积、外积」三类乘加布局，把 RISC-V 国际协会正在讨论的几条路线放在同一张桌子上比较。文章列出的提案包括：面向 8 位整数的四元素点积扩展 Zvdot4a8i、独立仓库推进的集成矩阵扩展 IME（Zvv*mm）、挂在向量扩展之下的 VME（Zvt）、独立的附着矩阵扩展 AME（Ztt），以及批处理点积 Zv[b]dota。作者声明规格状态截至 2026 年 11 月中旬，后续会随草案变化更新。</p>
+
+<p>三类布局的差别不在「能不能算」，而在算术强度与寄存器压力。点积最灵活，向量与矩阵、矩阵与矩阵都能拆成点积，但每算一次要搬线性数量的元素，算术强度最低；胖内积最接近经典矩阵乘，适合矩阵与矩阵，做向量与矩阵时利用率低；外积把内积维度压到接近 1，只要累加器常驻、k 维足够大，就能用线性加载换来平方级计算，算术强度最高，但对操作数形状要求最苛刻。这些差别决定了新增寄存器堆还是复用向量寄存器、决定内存布局怎么排、也决定编译器能不能把现有算子自动映射过去。</p>
+
+<p>对产业来说，真正的风险不是提案多，而是提案之间不兼容。IME 走独立矩阵寄存器与独立指令，VME 依附向量寄存器，AME 又是另一套附着方式；如果最后没有收敛到一条主线，算子库与编译后端就要为每种组合维护一条路径，RISC-V 在 AI 推理上「一套代码跑多颗芯片」的卖点会被削弱。反过来看，这也解释了为什么这一周 IAR 谈工具链碎片化、香山谈验证正确性、发行版谈平台统一，都是同一个问题的不同侧面。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://fprox.substack.com/p/risc-v-matrix-extensions">FPRox：RISC-V Matrix Extensions</a></p>
+
+<h3 id="fursoy-开源乱序-rv64-核linux-6650-启动45nm-收敛-500mhz11-15">FURSOY 开源乱序 RV64 核：Linux 6.6.50 启动，45nm 收敛 500MHz（11-15）</h3>
+
+<p>FURSOY 在 11 月 15 日公开 fursoy-cpu，代号 Fursoy Slice-1：一颗用 SystemVerilog 从零写的 64 位乱序超标量 RISC-V 处理器，指令集为 RV64IMAFDV 加 Zba、Zbb、Zicsr、Zifencei。实测口径是能在 Sv39 虚拟内存下启动主线 Linux 6.6.50 与 BusyBox 用户态，并在 Nangate 45nm 标准单元综合下，八个核心功能块全部收敛到 500MHz。仓库采用 Apache 2.0 许可，除 RTL 外还带 SBI 固件、设备树、Linux 6.6.50 的配置材料、Verilator 测试台，以及 lint、回归、Sail 差分协同仿真、综合检查与 Linux 收尾流程的 Python 脚本。</p>
+
+<p>这颗核的定位不是对标服务器级 IP，而是把「乱序 + 虚拟内存 + 能跑 Linux」这套完整链路做成可复现的开源工程。开源核里能启动 Linux 的不少，但同时给出综合时序收敛结果、Sail 差分验证与完整构建脚本的不多；对教学与研究团队，这意味着不必先花几个月搭环境，就能从一份能跑通的基线改微架构。2 发射的宽度、45nm 的工艺、500MHz 的频率，也说明它在 PPA 上离量产 IP 还有距离，价值主要在方法学与验证闭环。</p>
+
+<p>把它和香山放在一起看，国内外的开源核正在分层：香山昆明湖走高性能与工业级验证路线，FURSOY 这类项目走「小而完整、可复现」的路线。两条路线都需要同一批基础设施，包括差分测试、Sail 模型与可重复的综合脚本，这也是这一周 difftest、NEMU 的提交值得记录的原因。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://github.com/FURSOY/fursoy-cpu">FURSOY/fursoy-cpu</a>、<a href="https://news.lavx.hu/article/fursoy-publishes-open-source-risc-v-core-that-boots-linux-and-hits-500-mhz-in-synthesis">LavX News：FURSOY 开源核启动 Linux 并收敛 500MHz</a></p>
+
+<h3 id="openruyi-二十笔llvm-三线启-piepython-torch-ruyiai-入树11-14">openRuyi 二十笔：LLVM 三线启 PIE，python-torch-ruyiai 入树（11-14）</h3>
+
+<p>openRuyi 主仓在窗口内落地二十笔，集中在 11 月 13 日晚间到 11 月 14 日下午。三条 LLVM 线（22、23、24）同批开启 PIE 并生成 clang 资源目录，clang-wrap 跟到 20261113 的快照，cmake 升到 4.4.5；新增 python-torch-ruyiai 软件包；KDE 侧补 bluedevil 与 kf6-bluez-qt；另有一批 Go 生态包入树，包括 go-maunium、go-go-mau-util、go-modernc 系列与 pion 的 turn、transport，从依赖关系看是 Matrix 客户端栈的铺路。11 月 14 日 15 时 13 分，linux 与 linux-lts 各一笔「刷新补丁集 + 刷新配置」同步落地。</p>
+
+<p>三条 LLVM 线一起开 PIE，是发行版层面的加固动作：PIE 让可执行文件按地址随机化加载，是 ASLR 生效的前提，逐线开启说明三个版本都要长期维护，而不是只保一条主线。python-torch-ruyiai 入树更值得注意，它是如意 AI 软件栈第一次以发行版软件包的形式出现，意味着 RuyiAI 的 PyTorch 适配不再只存在于独立仓库，而开始进入可安装、可依赖的发行版路径，这对下游把 RVA23 机器当 AI 开发机用是必要一步。</p>
+
+<p>Matrix 相关 Go 包与 KDE 蓝牙组件这两组，指向的是桌面可用性：前者补通讯客户端的依赖树，后者补桌面环境的蓝牙管理。加上前一天的内核补丁集刷新，这个窗口的 openRuyi 没有版本发布，做的是「把 AI 栈、桌面栈与内核基线同时往前推」，节奏与其滚动发行版的定位一致。</p>
+
+<p><strong>日期</strong>：2026-11-14　<strong>来源</strong>：<a href="https://github.com/openRuyi-Project/openRuyi">openRuyi-Project/openRuyi</a></p>
+
+<h3 id="revyos-内核配置统一一次启用六项平台配置与-linuxboot11-15">ReVyOS 内核配置统一：一次启用六项平台配置与 linuxboot（11-15）</h3>
+
+<p>ReVyOS 的 linux 仓库在 11 月 15 日晚间集中落地二十笔，清一色由同一维护者提交。配置侧新增 debian_defconfig，把公共选项、Picoheart errata 一并打开，并分别启用算能 SG2042 与 SG2044、平头哥 TH1520、进迭时空 K1 与 K3、超睿 DP1000、奕斯伟 EIC7700 六项平台配置，另加一份 linuxboot 配置与 cross／native 两套 CI 构建。修复侧包括：K3 上用 WRS.STO 取代 WRS.NTO 的 errata、EIC7700 的 MMC 卡时钟与 GPIO 卡检测修正、以及 DRM xe 在非一致性设备上的初始 DMA 映射同步。</p>
+
+<p>一次配置覆盖六项平台，是发行版维护方式的转变。此前每个平台一份 defconfig，升级内核就要逐份重排，容易出现某块板子被漏掉、或某条 errata 只打在其中一个配置里；统一到一份基线加平台开关之后，平台差异被收敛成配置项，CI 也能用 cross 与 native 两条线同时验证。对下游厂商，这意味着「我的板子在内核配置里有没有被照顾到」可以一眼查清，而不是去翻某个分支的历史。</p>
+
+<p>两处硬件修复值得单独记：K3 的 WRS.STO 与 WRS.NTO 之差关系到存储超时语义，属于典型的硅后 errata，只有在真实负载下才会暴露；EIC7700 的 MMC 时钟要在改速率前先停卡时钟、复位时清 CDTEST，这类问题直接影响 SD 卡能不能稳定识别。二者都不是新功能，却决定开发板能不能当日常机器用。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://github.com/revyos/linux">revyos/linux</a></p>
+
+<h3 id="香山生态三仓nemu-修-mmu-与-cboxscache-修-l2-计数11-15">香山生态三仓：NEMU 修 MMU 与 CBO，XSCache 修 L2 计数（11-15）</h3>
+
+<p>香山生态在这一窗口的提交全部落在正确性与验证侧。NEMU 四笔：把最终地址翻译缓存的失效按 stage 限定范围、把 dirty 的 FS 与 VS 状态同步给 Spike、在缓存管理指令（CMO）执行时使 LR／SC 保留失效、在 kmhv2 配置里打开 Zfh 与 Zfhmin 半精度浮点扩展。XiangShan 主仓两笔：把性能 CI 的构建与运行拆成两步、放宽文档里的 AI 使用提醒并澄清提交与 PR 指引。XSCache 一笔：修 CoupledL2 在 TX 保留计数上的进位丢失。difftest 一笔：把 fork 的检查点改成 1 秒、包槽位改为 2 的 22 次方。</p>
+
+<p>这四笔 NEMU 改动指向同一件事：虚拟化与缓存一致性的边界条件。地址翻译缓存的失效若不分 stage，VS 阶段的失效会误伤 FS 阶段的条目，客户机与宿主机的映射就会互相污染；LR／SC 保留在 CMO 之后若不失效，原子操作可能基于已经被清理的缓存行成功提交，这是很难在随机测试里命中的错误；把 dirty 状态同步给 Spike，则是让差分测试的参考模型与待测模型在同一条基线上比较，否则差异会被误判成 RTL 的 bug。</p>
+
+<p>主仓与缓存仓的两笔更像工程治理：CI 拆步让性能回归的失败定位更清楚，L2 的进位丢失属于计数器位宽上的细节，只有在长时间压测下才会体现为统计偏差。整体看，昆明湖 V3 这一阶段的重心是把虚拟化、原子操作与缓存管理的正确性钉死，而不是再加新特性。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://github.com/OpenXiangShan/NEMU">OpenXiangShan/NEMU</a>、<a href="https://github.com/OpenXiangShan/XiangShan">OpenXiangShan/XiangShan</a>、<a href="https://github.com/OpenXiangShan/XSCache">OpenXiangShan/XSCache</a></p>
+
+<h3 id="iar-峰会回顾一套工具链应对碎片化功能安全覆盖十项标准11-13">IAR 峰会回顾：一套工具链应对碎片化，功能安全覆盖十项标准（11-13）</h3>
+
+<p>电子工程专辑在 11 月 13 日刊出 IAR 对第六届 RISC-V 中国峰会的回顾。文章把嵌入式开发的痛点归成三条：架构碎片化带来工具链碎片化、功能安全标准多样、产品生命周期长。对应的方案是一套统一 IDE 加底层编译器、调试器与链接脚本，同时覆盖 Arm 与 RISC-V，让团队换架构时保持调试平台、编译选项与脚本格式一致；IAR 称早在 2019 年就推出商用 RISC-V 工具链，对尚未定稿的 P 扩展支持按厂商版本选择，以适配不同编码格式。</p>
+
+<p>功能安全部分是这篇文章信息量最大的地方。文章把标准之间的关系讲成引用链：工业机器人整机标准 ISO 10218 引用方法论标准 ISO 13849，后者在软件工具层面又引用基础标准 IEC 61508；理清这条链，工具链的安全论证就有章可循。IAR 称其功能安全版覆盖汽车、工业、医疗、轨道交通等十个标准，并提供安全指南与认证文档。调试侧则提到多核与异构多核调试、Trace 追溯，以及通过模型上下文协议让 AI 代理调用调试平台。</p>
+
+<p>这篇文章本质上是厂商视角，但它说出了一个产业事实：RISC-V 的碎片化最终由工具链厂商兜底。芯片厂可以自定义指令，操作系统可以自己做适配，但一个要卖十年的工业控制器，必须有一套被认证过、能提供长期支持的编译与调试环境；这也是开源工具链在功能安全场景里短期难以替代商业工具链的原因。</p>
+
+<p><strong>日期</strong>：2026-11-13　<strong>来源</strong>：<a href="https://www.eet-china.com/newsexpress/75861.html">电子工程专辑：RISC-V 中国峰会回顾，一套工具链应对架构碎片化与功能安全挑战</a></p>
+
+<h3 id="ai-辅助设计压缩-risc-v-ip-定制周期andes-案例从-85-周降至-6-周11-13">AI 辅助设计压缩 RISC-V IP 定制周期：Andes 案例从 8.5 周降至 6 周（11-13）</h3>
+
+<p>EE Times 在 11 月 13 日刊出对 Architect Labs 的报道：这家公司用 AI 系统在不到两周内完成一颗低功耗、低延迟物理 AI 加速器从规格到验证与部署的全流程，由人类架构师写规格，AI 生成 RTL、UVM 验证、形式化证明、固件、驱动与内核，首批测试芯片（A0）一次成功。报道同时给出竞品坐标：ChipAgents 在 9 月称把晶心科技（Andes）的一项处理器定制任务从 8.5 周缩短到 6 周，Ricursive 的创始人来自 Google Brain 的 AlphaChip 团队，新思也在用 AI 代理处理设计复杂度。</p>
+
+<p>RISC-V 在这条叙事里的位置很具体：定制是它的核心卖点，而定制成本高是它的核心阻力。客户要加自定义指令、改流水线、配专用加速器，过去要排一支团队做几个月；如果 AI 能把 IP 定制周期压到几周，愿意为特定负载改核的厂商就会变多，RISC-V 的「可扩展」才真正变成商业优势。Andes 这个案例的意义不在 8.5 周与 6 周的绝对差，而在于它说明定制环节已经开始被工具化。</p>
+
+<p>需要保留的怀疑是：这些数字都来自厂商自述，缺少独立基准与流片后的量产数据；两颗芯片的对比也是在特定工艺投影下算出来的。对观察者，现阶段能确认的是流程在被压缩，而不能确认压缩后的设计在真实负载与良率上同样成立。</p>
+
+<p><strong>日期</strong>：2026-11-13　<strong>来源</strong>：<a href="https://www.eetimes.com/inside-architect-labs-two-week-chip-design">EE Times：Inside Architect Labs’ Two-Week Chip Design</a></p>
+
+<h3 id="esp32-p4-上的桌面系统sylphide-os-与-bmds-两条路线11-14">ESP32-P4 上的桌面系统：Sylphide OS 与 BMDS 两条路线（11-14）</h3>
+
+<p>CNX Software 在 11 月 14 日报道两个把桌面系统搬到微控制器上的项目，目标硬件都是带 HDMI、以太网与 USB 的 ESP32-P4 板卡。Sylphide OS 由 Thomas Capricelli 开发，底层是 FreeRTOS，界面上仿早期麦金塔，已有桌面、菜单、窗口管理、图标与信息面板，驱动覆盖鼠标、键盘、显示、存储与网络，采用 GPL v3；除 ESP32-P4 外还支持树莓派 Pico 2 与 FabGL 板，并提供一个 Linux 上的模拟器。另一个项目 Bare Metal, Do Stuff 走 DOS 风格路线，同样面向 ESP32-P4。</p>
+
+<p>ESP32-P4 是乐鑫的双核 RISC-V 高性能 MCU，带 PSRAM 与显示接口，这两年是「单片机当电脑用」这类实验的主要载体。Sylphide OS 的做法是把实时内核留在底层、把图形与窗口管理做在上层，等于在 RTOS 上重新实现一套桌面范式；BMDS 则回到更简单的单任务或轻量多任务模型。两条路线的共同点是不追求通用计算能力，而是把有限的 RAM 与显示带宽用在界面响应上。</p>
+
+<p>对 RISC-V 生态，这类项目的价值在软件侧：它们逼着开发者把帧缓冲、位图字体、窗口裁剪与输入事件这些基础件在资源受限的 RISC-V 平台上重新打磨一遍。这些代码不会直接进入量产，但会成为后续 RISC-V MCU 图形方案的参考实现。</p>
+
+<p><strong>日期</strong>：2026-11-14　<strong>来源</strong>：<a href="https://www.cnx-software.com/2026/11/14/desktop-operating-systems-for-esp32-p4-based-pcs-meet-sylphide-os-and-bare-metal-do-stuff-bmds/">CNX Software：ESP32-P4 上的桌面操作系统</a></p>
+
+<h2 id="二产品与生态动态">二、产品与生态动态</h2>
+
+<h3 id="龙擎空天-lq7000国产-risc-v-配自研-gpnpu20-至-400-tops11-13">龙擎空天 LQ7000：国产 RISC-V 配自研 GPNPU，20 至 400 TOPS（11-13）</h3>
+
+<p>龙擎空天在 11 月 13 日发布智能体处理器技术框架白皮书，同时推出首款端侧 AI 处理器 LQ7000。官方口径是：芯片采用国产 RISC-V 加自研 EE-DNA GPNPU 架构，峰值算力覆盖 20TOPS 至 400TOPS，支持 INT4、INT8、FP16，预置 Qwen、DeepSeek、LLaMA 等主流大模型，面向家庭、教育、办公、政务等场景；另有一条在轨 AI 线，称可把遥感从「天感地算」推到「天感天算」，在轨大模型推理的目标信息利用率超过 90%。同日公司与国芯科技达成生态战略合作，并与六联智能签署端侧 AI 产品战略合作暨采购意向。</p>
+
+<p>值得记录的是产品定义方式：一颗芯片报出 20 至 400 TOPS 的区间，说明它卖的是可裁剪的 IP 组合，而不是单一 SKU，客户按功耗与成本选档。RISC-V 在这里承担控制与调度，矩阵计算交给自研 GPNPU，这种「通用核 + 专用阵列」的分工与国内多数端侧 AI 芯片一致，差别在于是否把通用核换成 RISC-V。</p>
+
+<p>需要谨慎的是披露程度：发布会没有给出量产与出货时间表，TOPS 区间也未对应到具体型号与功耗，在轨场景的 90% 利用率缺少第三方验证。国芯科技的加入与六联智能的采购意向是目前可核实的进展，真正的量产节点仍未公开。</p>
+
+<p><strong>日期</strong>：2026-11-13　<strong>来源</strong>：<a href="https://news.mydrivers.com/1/1165/1165672.htm">驱动之家：龙擎空天发布端侧 AI 算力芯片 LQ7000</a>、<a href="https://emh5wap.eastmoney.com/Info/Detail/202611133930718593">东方财富：龙擎空天发布 LQ7000</a></p>
+
+<h3 id="fiora5-开放股权众筹罗马尼亚的-risc-v-边缘-ai-处理器11-14">FIORA5 开放股权众筹：罗马尼亚的 RISC-V 边缘 AI 处理器（11-14）</h3>
+
+<p>罗马尼亚深科技创业公司 FIORA5 在 Growceanu 平台开放首轮股权众筹，最低 200 欧元可参与，Vest Ventures 与私人投资者已先行投入。公司位于奥拉迪亚，做的是面向边缘 AI 的可配置 RISC-V 处理器 IP，主打低延迟、确定性实时执行与低功耗，目标设备包括智能眼镜与边缘推理终端。按公司自述，其核心在芯片上占用面积最多减少 50%、能耗最多降低 60%；计划 2027 年做出功能原型，2029 年形成可授权架构。Vest Ventures 在 10 月以 15 万欧元完成对该公司的首笔直接投资。</p>
+
+<p>这是欧洲 RISC-V 创业的一个典型样本：不做整机、不做 SoC，只做可授权的处理器 IP，用众筹把小额资金聚起来，再用产业基金补位。这个模式的好处是资本效率高、叙事清楚；坏处是验证周期极长，从 IP 到客户流片再到量产，任何一环延后都会把 2029 年的授权目标往后推。</p>
+
+<p>面积与能耗的数字需要打折看待：它们是对比「现有方案」的自述值，没有给出对比对象、工艺节点与工作负载。对这类早期公司，更值得跟踪的是它能不能找到第一个愿意把 IP 放进量产芯片的客户，而不是发布会上的百分比。</p>
+
+<p><strong>日期</strong>：2026-11-14　<strong>来源</strong>：<a href="https://foro3d.com/en/2026/noviembre/fiora5-abre-ronda-en-growceanu-para-su-procesador-risc-v-de-ia-en-el-b.html">Foro3D：FIORA5 在 Growceanu 开放 RISC-V 边缘 AI 处理器融资</a>、<a href="https://itkey.media/west-romanian-vest-ventures-backs-fiora5-as-it-moves-toward-its-first-processor-poc">ITKeyMedia：Vest Ventures 投资 FIORA5</a></p>
+
+<h3 id="印度-vvce-65nm-risc-v-教学芯片送台积电流片11-15">印度 VVCE 65nm RISC-V 教学芯片送台积电流片（11-15）</h3>
+
+<p>《印度教徒报》11 月 15 日报道，卡纳塔克邦的 VVCE 工程学院完成一颗基于 RISC-V 的自研芯片设计，采用 65 纳米工艺，11 月 13 日送台积电流片。项目由学院电子与通信工程系牵头，与 AstraSemi、KYROS SEMI 合作，校方称其意义在于让学生与研究人员接触完整的先进半导体设计与流片流程。报道未披露芯片的具体规格、核数与用途。</p>
+
+<p>65nm 加教学项目的组合说明这不是性能竞赛，而是人才与流程训练。印度的 Chips to Startup 计划与设计激励计划已把数百所院校与数十家创业公司接入共享 EDA 与多项目晶圆服务，学院级流片正是这套基础设施的产物；对 RISC-V 而言，学生在校期间用开源指令集走完设计到流片的全流程，毕业后进入产业的门槛会低很多。</p>
+
+<p>这类消息单看很小，但它是生态厚度的指标：一个国家的 RISC-V 人才池不是靠几家企业发布会堆出来的，而是靠一届届学生真的把芯片送去流片。后续可跟踪的是这颗芯片的回片测试结果与是否形成可复用的教学 IP。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://www.thehindu.com/news/national/karnataka/vvce-achieves-milestone-in-indigenous-chip-design/article71704681.ece">The Hindu：VVCE 在自研芯片设计上取得里程碑</a></p>
+
+<h2 id="三国内团队深挖">三、国内团队深挖</h2>
+
+<h3 id="灵睿智芯-pre-a-数亿元p100-的-smt4-与-128-核时间表11-13">灵睿智芯 Pre-A+ 数亿元：P100 的 SMT4 与 128 核时间表（11-13）</h3>
+
+<p>上海灵睿智芯在 11 月 13 日宣布完成数亿元 Pre-A+ 轮融资，由美团战投领投，京东关联基金、干杯基金、力合算芯基金、钧犀资本、商汤国香资本、尚颀资本与琥珀资本等跟投，老股东继续加注。公司成立于 2025 年初，注册于上海张江，累计融资接近十亿元。产品侧的核心是今年 1 月发布的服务器级 RISC-V CPU 内核 P100：单核支持动态同时多线程 SMT4，可在 SMT1 至 SMT4 之间切换而不重启系统，配 20 级以上乱序流水线与 8 译码 10 发射；今年 8 月基于 P100 的测试芯片在国内先进工艺线流片，9 月披露进入商用阶段；128 核服务器级 CPU 计划 2027 年流片、2028 年量产。</p>
+
+<p>这家公司的技术叙事很明确：智能体负载的特征是大量并发会话与频繁 I/O 等待，单核吞吐不如「把等待时间换成另一条线程」有效，SMT4 就是为此设计的。短期它卖的是 IP 授权与定制开发，长期才卖芯片；这也解释了为什么融资能连续拿到，但客户名称、订单与收入都未披露。</p>
+
+<p>风险同样清楚。128 核芯片要到 2027 年才流片，2028 年量产，中间要跨过一致性互联、RAS 与软件栈三道关；而它主打的「智能体 CPU」是一个尚未被大规模验证的品类，客户是否愿意为 SMT4 付溢价，要等第一批整机落地才能回答。资本侧的信号倒是明确：从 2025 年的 GPU 战略配售，到 2026 年的存算融合与 RISC-V CPU，美团已在三条线上分别下注，产业资本正在把 RISC-V 服务器核当作长期赛道而非主题投资。</p>
+
+<p><strong>日期</strong>：2026-11-13　<strong>来源</strong>：<a href="https://www.cyzone.cn/article/853804.html">创业邦：灵睿智芯完成数亿元 Pre-A+ 轮融资</a>、<a href="https://finance.sina.com.cn/stock/t/2026-11-13/doc-iniyqnee8028075.shtml">新浪财经：美团领投灵睿智芯 Pre-A+ 轮</a></p>
+
+<h3 id="中国经营网risc-v-主控芯片市场五年从-11-亿元到-377-亿元11-14">中国经营网：RISC-V 主控芯片市场五年从 11 亿元到 377 亿元（11-14）</h3>
+
+<p>中国经营网在 11 月 14 日刊出一篇产业综述，给出几组可引用的数字：按弗若斯特沙利文口径，中国 RISC-V 主控芯片市场规模从 2021 年的 11 亿元升到 2025 年的 377 亿元，年复合增速 139.5%，预计 2030 年达到 2194 亿元；文章引述中国工程院院士倪光南的说法，称 RISC-V 已占全球处理器市场 25% 份额；按 RISC-V 国际协会 2026 年公开口径，全球 RISC-V 处理器内核累计出货量超过 250 亿颗。文章还梳理了如意社区的基础底座：openRuyi 原生操作系统、RuyiSDK 开发工具集、RuyiAI 软件栈、RuyiRepo 软件仓与 RVCK 内核同源工程。</p>
+
+<p>这组数字的用法要小心。139.5% 的复合增速来自极低基数，2021 年 11 亿元的盘子本身接近产业起步期；25% 的全球份额是「处理器数量」而非「算力」或「营收」口径，与服务器、手机主控的份额不是一回事。真正有信息量的是结构：文章把增长归因于服务器、车规与 AI 边缘三条线，并明确指出基础软件是当前瓶颈，这与此前峰会与工具链厂商的口径一致。</p>
+
+<p>另一个值得记的点是如意社区的组织方式。它把操作系统、SDK、AI 栈、软件仓与内核同源工程打包成一套公共底座，再联合阿里、中兴、进迭时空、算能、奕斯伟与多个发行版社区共建，这种「先做产业不愿做的基础件、再让厂商接」的路径，是中国 RISC-V 软件生态过去两年最实质的变化。</p>
+
+<p><strong>日期</strong>：2026-11-14　<strong>来源</strong>：<a href="https://finance.eastmoney.com/a/202611143931312434.html">东方财富转载中国经营网：RISC-V 崛起，中国厂商攻坚服务器、车规与 AI</a>、<a href="http://www.cb.com.cn/index/show/bzyc/cv/cv135295061646">中国经营网原文</a></p>
+
+<h3 id="算能-sophon-tools-十一笔管理面修复与默认口令整改11-15">算能 sophon-tools 十一笔：管理面修复与默认口令整改（11-15）</h3>
+
+<p>算能的 sophon-tools 仓库在 11 月 14 日至 15 日落地十一笔，全部是修复类提交。内容包括：修复 TimeoutMiddleware 响应头的并发写竞态、下线旧升级接口并修正 SSE 连接计数与旧流回收、修复 bm_set_ip 在网络管理器下配置丢失与失败仍返回成功、修复 DNS 未生效与错误回滚、修复文件管理里符号链接被误操作与上传路径绕过（安全类）、把 CV84X6 的 TPU 频率读取改为 sysfs 优先以修正只报真实值一半的问题、补齐 X11 开发头以支持带界面构建，以及把 DFSS 的 open 账户默认口令改掉并升到 1.11.1。</p>
+
+<p>这些提交与指令集无关，但对算能的服务器与加速卡产品很关键：bm_set_ip 那类「失败返回成功」的问题会让批量部署在无提示的情况下配置错误，SSE 连接计数与旧流回收直接影响管理界面的稳定性，上传路径绕过与默认口令则属于安全底线。TPU 频率只报一半的问题会误导性能监控与调优，改为 sysfs 优先说明其取值路径此前依赖了不可靠的输入。</p>
+
+<p>从生态角度，这类管理软件的质量决定了 RISC-V 加速卡能不能进机房。芯片参数再好看，如果带外管理与批量部署工具不稳，运维团队就不会把它放进生产集群。算能在国庆后的这段时间持续做修复而非新功能，反映的是产品化阶段的常态。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://github.com/sophgo/sophon-tools">sophgo/sophon-tools</a></p>
+
+<h2 id="四具身智能与机器人专章">四、具身智能与机器人专章</h2>
+
+<h3 id="北京具身智能三年行动方案把-risc-v-智算芯片写进攻关清单11-11">北京具身智能三年行动方案把 RISC-V 智算芯片写进攻关清单（11-11）</h3>
+
+<p>北京市经济和信息化局印发《北京市具身智能机器人产业高质量发展行动方案（2026—2028 年）》，方案于 11 月 11 日成文，11 月 12 日起媒体解读集中扩散。文件在技术创新策源工程的关键核心技术攻关清单里点名两类芯片：基于 RISC-V 的系统级智算芯片，以及高动态负载 N 沟道 MOSFET，并前瞻布局超低功耗智算芯片；配套表述是「应布局尽布局、能适配尽适配」，即供给端要求把芯片做出来，需求端要求整机厂把芯片装进去。量化目标包括：到 2028 年培育不少于 5 家国际一流、10 家国内领先的人形机器人整机企业，京津冀整机产能占全国 25%，关键零部件配套率超过 60%，在京形成 20 万台每年的整机产能，并建设总规模超过 50000PFlops 的专用算力集群。</p>
+
+<p>把指令集架构写进机器人专项政策正文，在国内并不常见。方案给出的理由可以还原为三条：开放指令集允许厂商把向量、矩阵与专用算子硬化进流水线，适配视觉语言动作模型的端侧推理；没有授权费与版税，对年出货几十万颗、对物料成本极敏感的机器人芯片是实打实的差价；供应链自主可控。三条叠加，RISC-V 就成了这份文件里唯一被点名的通用架构。</p>
+
+<p>需要区分的是政策语言与工程现实。方案同时给出了整机指标：额定负载达自重 40% 以上、平均无故障时间超过 2000 小时、核心运动部件年故障率低于 10%、设计寿命超过 5 年、连续作业续航 4 小时以上。这些指标约束的是端侧算力的功耗与散热预算，也解释了为什么文件要把「超低功耗智算芯片」单列一项：机器人身体里的算力，首先要活在这个功耗包里。</p>
+
+<p><strong>日期</strong>：2026-11-11　<strong>来源</strong>：<a href="https://www.163.com/dy/article/LBGCQ6G20552IBJ1.html">网易转载：北京市具身智能机器人产业高质量发展行动方案（2026—2028 年）全文</a>、<a href="https://news.qq.com/rain/a/20261112A0BLEI00">腾讯新闻：北京发布具身智能产业三年行动方案，点名支持国内 RISC-V 芯片</a></p>
+
+<h3 id="端侧智能体的算力分层lq7000-的-tops-与-p100-的-smt4-各管一层11-15">端侧智能体的算力分层：LQ7000 的 TOPS 与 P100 的 SMT4 各管一层（11-15）</h3>
+
+<p>这一周两条国内产品线放在一起看，能看清「智能体算力」其实是分层的。龙擎空天的 LQ7000 报的是 20 至 400 TOPS 的矩阵算力，预置大模型，面向端侧推理；灵睿智芯的 P100 报的是 SMT4 与乱序宽度，面向服务器与边缘的并发调度。前者衡量的是单位时间能做多少次乘加，后者衡量的是同一颗核能同时挂住多少个任务、在 I/O 等待时还能不能干活，两者不在一个坐标轴上。</p>
+
+<p>具身智能把这两层压在同一个功耗预算里。运控层要 50Hz 级的硬实时，一次全身决策只有 20 毫秒，靠的是确定性响应而不是峰值算力；视觉语言动作层是数亿到数十亿参数、2.5 至 5Hz 的推理，靠的是矩阵算力与内存带宽；再往上的智能体层要做长程规划与工具调用，靠的是多任务并发与内存容量。三层的资源需求互相冲突，任何一层吃掉过多功耗，另外两层就会被压缩。</p>
+
+<p>这也解释了为什么国内厂商开始用不同的产品去切不同的层：进迭时空把 K1、K3、K5 排成一条从运控到智能体的线，龙擎空天用可裁剪的 TOPS 区间覆盖端侧推理，灵睿智芯用 SMT4 去接服务器侧的并发。对采购方，判断一颗芯片是否合适，先要问它服务的是哪一层，再去看对应的指标；拿 TOPS 去比 SMT 线程数，或用运控的实时性去要求推理芯片，都会得出错误结论。</p>
+
+<p><strong>日期</strong>：2026-11-15　<strong>来源</strong>：<a href="https://news.mydrivers.com/1/1165/1165672.htm">驱动之家：龙擎空天 LQ7000</a>、<a href="https://www.cyzone.cn/article/853804.html">创业邦：灵睿智芯 P100 与 Pre-A+ 轮</a>、<a href="https://zhuanlan.zhihu.com/p/2081684550313325606">CCF TF 183 期回顾：RISC-V 构建具身智能开源算力体系</a>、<a href="https://www.163.com/dy/article/LBGCQ6G20552IBJ1.html">网易转载：北京市具身智能机器人产业行动方案</a></p>
+
+<h2 id="五总结与趋势观察">五、总结与趋势观察</h2>
+
+<p>这一周最清晰的信号是 RISC-V 开始出现在「品牌整机」的采购决策里。Purism 把下一代 Linux 手机的主控换成进迭时空 K1，并为此公开承认图形栈要从头补课；这不是一次开发板众筹，而是一家有连续产品线的厂商在旗舰产品上换架构。K1 同时出现在 Start9 的路由器与 Purism 的手机上，说明国内 RISC-V 应用处理器已经能同时覆盖网络设备与移动终端两类整机。</p>
+
+<p>第二条线是资本与政策的合力。灵睿智芯单轮数亿元、累计接近十亿元，投资方从财务资本换成美团、京东、商汤、上汽这类产业资本；北京市的具身智能三年行动方案把 RISC-V 系统级智算芯片写进攻关清单。两者指向同一个判断：RISC-V 的高价值场景被锁定在服务器、车规与具身智能三处，而这三处都需要长期投入，不适合短线主题。</p>
+
+<p>第三条线是软件侧的补课速度在加快。openRuyi 把三条 LLVM 线一起开 PIE、把 PyTorch 的 RISC-V 适配作为发行版软件包入树；ReVyOS 用一份内核配置覆盖六项平台配置并补上 K3 与 EIC7700 的硅后 errata；香山的 NEMU 把虚拟化与原子操作的边界条件逐条钉死。这些工作不产生发布会素材，但决定了芯片到手后能不能直接开发。</p>
+
+<p>第四条线是碎片化的成本正在显性化。RISC-V 矩阵扩展至少五条提案并行，工具链厂商要用统一 IDE 去兜住架构差异，功能安全还要面对十项标准；生态越往高价值场景走，标准收敛的价值就越高。这一周 IAR 与 FPRox 两篇文章从不同角度说了同一件事：RISC-V 的下一阶段竞争，不在单核跑分，而在「谁来定义公共基线」。</p>
+
+<p>最后是时间表。Purism 指向 2028 年交付，FIORA5 指向 2027 年原型、2029 年授权，灵睿智芯指向 2027 年流片、2028 年量产，龙擎空天未给量产节点。这一批产品与芯片的兑现期普遍在两年之后，中间的验证窗口里，软件栈、认证与供应链任何一环出问题都会推迟落地。对关注者，接下来值得盯的三个点是：矩阵扩展草案能否收敛、K1 手机的图形栈能否在 2027 年测试机上跑通、以及 128 核级 RISC-V 服务器芯片的首轮流片结果。</p>
+
+<h2 id="附录">附录</h2>
+
+<h3 id="信源核查表">信源核查表</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>信源</th>
+      <th>核查结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Google News 聚合（中英文 24 组查询，72 小时窗口）</td>
+      <td>窗口内实质新增：Purism Librem 5 v2、灵睿智芯 Pre-A+ 融资、龙擎空天 LQ7000、FIORA5 众筹、VVCE 流片、IAR 峰会回顾、中国经营网产业综述。剔除项：Milk-V 查询命中 16 条牛奶与乳制品内容；RISC-V Explained、NoobFeed 等科普稿；Arm 授权机制分析；Tendrils Compute 3000 万美元融资（交互网架构，非 RISC-V）；BSC 在 SC26 的 RISC-V 与量子计算综述仅作背景，未单列</td>
+    </tr>
+    <tr>
+      <td>Hacker News／Phoronix／CNX Software／LinuxGizmos／RISC-V International</td>
+      <td>HN 命中 FPRox 的 RISC-V 矩阵扩展一篇，已收录；Phoronix 窗口内 RISC-V 频道无专属新文，QEMU 内存分层与 Redox OS 两条与 RISC-V 无直接关系，不收录；CNX 命中 ESP32-P4 桌面系统一篇，已收录；LinuxGizmos 主稿为 Librem 5 v2；riscv.org 博客窗口内无新增</td>
+    </tr>
+    <tr>
+      <td>GitHub 组织与重点仓库核查（30 余组织与仓库）</td>
+      <td>窗口内活跃：openRuyi 20 笔、revyos/linux 20 笔、sophgo/sophon-tools 11 笔；香山侧 NEMU 4 笔、XiangShan 2 笔、difftest 1 笔、XSCache 1 笔。达摩院玄铁（XUANTIE-RV）、奕斯伟（eswincomputing）、芯来（Nuclei-Software）、openhwfoundation 窗口内零推送。匿名 API 触发每小时 60 次限流，组织级活跃度改由各仓库 Atom 提交流与组织页核查，非默认分支推送可能被低估</td>
+    </tr>
+    <tr>
+      <td>riscv100.top 巡检</td>
+      <td>无变化：首页 What’s New、Upcoming、委员会成员，以及跨架构与 RISC-V 两频道下 SPEC CPU2006／2017／2026 六张榜单均无新增记录或分数变动，正文不占位</td>
+    </tr>
+    <tr>
+      <td>RISC-V 会员官网巡检（391 家）</td>
+      <td>耗时 237 秒，无变化 218 家、报内容变化 100 家、抓取失败 73 家（含中科院软件所、北京开源芯片研究院、腾讯、英伟达、新思、ADI、DENSO 等）。变化项经逐条核对均为首页公告轮换或营销更新（SiFive、AMD、Canonical、Codasip、imec 及多所高校），无新产品、融资或架构发布，不收录</td>
+    </tr>
+    <tr>
+      <td>openRuyi 官网新闻页与主仓</td>
+      <td>新闻页最新仍为 2026-10 的两篇（生态基础设施、Ruyi Firmware）与 2026.09 版本发布，窗口内无新版本；主仓 20 笔已按日志收录</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="完整信源清单">完整信源清单</h3>
+
+<ul>
+  <li><strong>[1]</strong> Purism：Librem 5 v2 众筹页 — <a href="https://puri.sm/librem-5-v2-crowdfunding-campaign">https://puri.sm/librem-5-v2-crowdfunding-campaign</a></li>
+  <li><strong>[2]</strong> LinuxGizmos：Librem 5 v2 采用八核 RISC-V 处理器 — <a href="https://linuxgizmos.com/librem-5-v2-linux-smartphone-adopts-eight-core-risc-v-processor">https://linuxgizmos.com/librem-5-v2-linux-smartphone-adopts-eight-core-risc-v-processor</a></li>
+  <li><strong>[3]</strong> OMG! Ubuntu：Purism 公布第二代 Librem 5 — <a href="https://www.omgubuntu.co.uk/2026/11/librem-5-risc-v-new-linux-phone">https://www.omgubuntu.co.uk/2026/11/librem-5-risc-v-new-linux-phone</a></li>
+  <li><strong>[4]</strong> FPRox：RISC-V Matrix Extensions — <a href="https://fprox.substack.com/p/risc-v-matrix-extensions">https://fprox.substack.com/p/risc-v-matrix-extensions</a></li>
+  <li><strong>[5]</strong> FURSOY/fursoy-cpu — <a href="https://github.com/FURSOY/fursoy-cpu">https://github.com/FURSOY/fursoy-cpu</a></li>
+  <li><strong>[6]</strong> LavX News：FURSOY 开源核启动 Linux 并收敛 500MHz — <a href="https://news.lavx.hu/article/fursoy-publishes-open-source-risc-v-core-that-boots-linux-and-hits-500-mhz-in-synthesis">https://news.lavx.hu/article/fursoy-publishes-open-source-risc-v-core-that-boots-linux-and-hits-500-mhz-in-synthesis</a></li>
+  <li><strong>[7]</strong> openRuyi-Project/openRuyi — <a href="https://github.com/openRuyi-Project/openRuyi">https://github.com/openRuyi-Project/openRuyi</a></li>
+  <li><strong>[8]</strong> revyos/linux — <a href="https://github.com/revyos/linux">https://github.com/revyos/linux</a></li>
+  <li><strong>[9]</strong> OpenXiangShan/NEMU — <a href="https://github.com/OpenXiangShan/NEMU">https://github.com/OpenXiangShan/NEMU</a></li>
+  <li><strong>[10]</strong> OpenXiangShan/XiangShan — <a href="https://github.com/OpenXiangShan/XiangShan">https://github.com/OpenXiangShan/XiangShan</a></li>
+  <li><strong>[11]</strong> OpenXiangShan/XSCache — <a href="https://github.com/OpenXiangShan/XSCache">https://github.com/OpenXiangShan/XSCache</a></li>
+  <li><strong>[12]</strong> 电子工程专辑：RISC-V 中国峰会回顾，一套工具链应对架构碎片化与功能安全挑战 — <a href="https://www.eet-china.com/newsexpress/75861.html">https://www.eet-china.com/newsexpress/75861.html</a></li>
+  <li><strong>[13]</strong> EE Times：Inside Architect Labs’ Two-Week Chip Design — <a href="https://www.eetimes.com/inside-architect-labs-two-week-chip-design">https://www.eetimes.com/inside-architect-labs-two-week-chip-design</a></li>
+  <li><strong>[14]</strong> CNX Software：ESP32-P4 上的桌面操作系统 — <a href="https://www.cnx-software.com/2026/11/14/desktop-operating-systems-for-esp32-p4-based-pcs-meet-sylphide-os-and-bare-metal-do-stuff-bmds/">https://www.cnx-software.com/2026/11/14/desktop-operating-systems-for-esp32-p4-based-pcs-meet-sylphide-os-and-bare-metal-do-stuff-bmds/</a></li>
+  <li><strong>[15]</strong> 驱动之家：龙擎空天发布端侧 AI 算力芯片 LQ7000 — <a href="https://news.mydrivers.com/1/1165/1165672.htm">https://news.mydrivers.com/1/1165/1165672.htm</a></li>
+  <li><strong>[16]</strong> 东方财富：龙擎空天发布 LQ7000 — <a href="https://emh5wap.eastmoney.com/Info/Detail/202611133930718593">https://emh5wap.eastmoney.com/Info/Detail/202611133930718593</a></li>
+  <li><strong>[17]</strong> Foro3D：FIORA5 在 Growceanu 开放融资 — <a href="https://foro3d.com/en/2026/noviembre/fiora5-abre-ronda-en-growceanu-para-su-procesador-risc-v-de-ia-en-el-b.html">https://foro3d.com/en/2026/noviembre/fiora5-abre-ronda-en-growceanu-para-su-procesador-risc-v-de-ia-en-el-b.html</a></li>
+  <li><strong>[18]</strong> ITKeyMedia：Vest Ventures 投资 FIORA5 — <a href="https://itkey.media/west-romanian-vest-ventures-backs-fiora5-as-it-moves-toward-its-first-processor-poc">https://itkey.media/west-romanian-vest-ventures-backs-fiora5-as-it-moves-toward-its-first-processor-poc</a></li>
+  <li><strong>[19]</strong> The Hindu：VVCE 在自研芯片设计上取得里程碑 — <a href="https://www.thehindu.com/news/national/karnataka/vvce-achieves-milestone-in-indigenous-chip-design/article71704681.ece">https://www.thehindu.com/news/national/karnataka/vvce-achieves-milestone-in-indigenous-chip-design/article71704681.ece</a></li>
+  <li><strong>[20]</strong> 创业邦：灵睿智芯完成数亿元 Pre-A+ 轮融资 — <a href="https://www.cyzone.cn/article/853804.html">https://www.cyzone.cn/article/853804.html</a></li>
+  <li><strong>[21]</strong> 新浪财经：美团领投灵睿智芯 Pre-A+ 轮 — <a href="https://finance.sina.com.cn/stock/t/2026-11-13/doc-iniyqnee8028075.shtml">https://finance.sina.com.cn/stock/t/2026-11-13/doc-iniyqnee8028075.shtml</a></li>
+  <li><strong>[22]</strong> 东方财富转载中国经营网：RISC-V 崛起，中国厂商攻坚服务器、车规与 AI — <a href="https://finance.eastmoney.com/a/202611143931312434.html">https://finance.eastmoney.com/a/202611143931312434.html</a></li>
+  <li><strong>[23]</strong> 中国经营网原文 — <a href="http://www.cb.com.cn/index/show/bzyc/cv/cv135295061646">http://www.cb.com.cn/index/show/bzyc/cv/cv135295061646</a></li>
+  <li><strong>[24]</strong> sophgo/sophon-tools — <a href="https://github.com/sophgo/sophon-tools">https://github.com/sophgo/sophon-tools</a></li>
+  <li><strong>[25]</strong> 网易转载：北京市具身智能机器人产业高质量发展行动方案（2026—2028 年） — <a href="https://www.163.com/dy/article/LBGCQ6G20552IBJ1.html">https://www.163.com/dy/article/LBGCQ6G20552IBJ1.html</a></li>
+  <li><strong>[26]</strong> 腾讯新闻：北京发布具身智能产业三年行动方案 — <a href="https://news.qq.com/rain/a/20261112A0BLEI00">https://news.qq.com/rain/a/20261112A0BLEI00</a></li>
+  <li><strong>[27]</strong> CCF TF 183 期回顾：从芯片到机器人应用，RISC-V 构建具身智能开源算力体系 — <a href="https://zhuanlan.zhihu.com/p/2081684550313325606">https://zhuanlan.zhihu.com/p/2081684550313325606</a></li>
+</ul>
+
+<p><strong>局限性说明</strong>：本期为周一三日报，窗口覆盖 11 月 13 日 05:00 至 11 月 16 日 05:00 共 72 小时。GitHub 匿名 API 在本期触发每小时 60 次限流，组织与仓库活跃度改由各仓库 Atom 提交流与组织页核查，因此非默认分支推送可能被低估。RISC-V 矩阵扩展的五条提案均处草案阶段，文章表述以作者声明为准，规格随时可能变化。龙擎空天的 20 至 400 TOPS 区间未对应到具体型号与功耗，在轨场景的 90% 指标缺少第三方验证；FIORA5 的面积与能耗数据、Architect Labs 的加速与功耗对比均为厂商自述，缺少独立基准。Purism 的众筹项目存在交付延期与目标未达成的风险，1599 美元为众筹价而非零售价。北京市具身智能行动方案于 11 月 11 日成文，属本窗口前的政策文件，本期按背景补记并在索引中标注成文日期。</p>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ch/post.html#news-list" class="btn btn-main news-list-link">返回新闻列表</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>联系我们</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>邮箱:</strong> contact@kubuds.cn<br>
+            <strong>地址:</strong> 上海市宝山区高逸路88号1幢1层108室<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>链接</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-4 col-md-4 ">
+          <h4>关注我们</h4>
+          <img src="/assets/img/contact/qrcode_wechat_public_account_100px.webp" class="img-fluid text-left"
+            alt="weixin_public_qrcode">
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 上海苦芽科技有限公司</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

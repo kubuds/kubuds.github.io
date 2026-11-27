@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai Kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/ko/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/ko/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/ko/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/ko/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/ko/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/ko/">홈</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">서비스 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/service/simulator.html">시뮬레이터</a></li>
+              <li><a class="dropdown-item" href="/ko/service/os.html">운영체제</a></li>
+              <li><a class="dropdown-item" href="/ko/service/toolchain.html">툴체인</a></li>
+              <li><a class="dropdown-item" href="/ko/service/chip.html">임베디드 칩</a></li>
+
+              <li><a class="dropdown-item" href="/ko/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/ko/service/aisys.html">AI 시스템</a></li>
+              <li><a class="dropdown-item" href="/ko/service/consultation.html">컨설팅</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">솔루션 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/ko/solution/openharmony.html">OpenHarmony</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openeuler.html">openEuler</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/openkylin.html">openKylin</a></li>
+              <li><a class="dropdown-item" href="/ko/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">커뮤니티 <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/ko/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页：指向当前语言的索引（各语言版本已生成；
+                   无译文的语言其索引内容为英文回退），不再统一指向 /ch/ -->
+              <li><a class="dropdown-item" href="/ko/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/ko/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/ko/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/ko/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/ko/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/post.html" style="white-space: nowrap;">뉴스 및 이벤트</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/ko/about.html" style="white-space: nowrap;">회사 소개</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/ko/career.html">채용 정보</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              한국어 <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/en/rt-thread/daily/2026/1029.html">
+                  English</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1029.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1029.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1029.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1029.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread 데일리 리포트 (2026-10-29) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/ko/">홈</a></li>
+                                <li class="breadcrumb-item"><a href="/ko/post.html#news-list" class="news-list-link">뉴스 및 이벤트</a>
+                                </li>
+                                <li class="breadcrumb-item active">RT-Thread 데일리 리포트 (2026-10-29)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread 데일리 리포트 (2026-10-29)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-10-29</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>모니터링 기간</strong>: 2026-10-28 08:00 ~ 2026-10-29 08:00 (베이징 시간, 24시간)</p>
+
+<p><strong>출처</strong>: RT-Thread 공식 뉴스 API 및 커뮤니티 아티클 API, GitHub(메인 저장소 commits / PR / Issue / releases / tags, RT-Thread/packages, vscode-rt-smart, sdk, pkgs-test, topic:rt-thread 생태계 검색), Google News 집계(중영문 6개 쿼리 그룹, 프록시 경유), HN Algolia, 업계 미디어 및 커뮤니티 프로젝트 저장소 검증(상세 내용은 부록 출처 목록 참조)</p>
+
+<hr />
+
+<h2 id="이번-호-인덱스">이번 호 인덱스</h2>
+
+<ul>
+  <li>
+    <ol>
+      <li>커널 및 버전 동향
+        <ul>
+          <li>3개월 전 제출된 utest 제안, 한 번에 4건 머지 (10-28)</li>
+          <li>utest 집계 오판: 뒤의 unit이 통과하면 testcase의 실패 수가 지워짐 (10-28)</li>
+          <li>netdev 케이스, 공인망 의존성 차단, CI에서 더 이상 8.8.8.8과 Baidu에 접속하지 않음 (10-28)</li>
+          <li>musl 환경에서 시그널 케이스가 1부터 시작, signal 0은 더 이상 참여하지 않음 (10-28)</li>
+          <li>DHCP raw 서버 옵션 파싱 경계 보완, 범위 초과 읽기 결함 종료 (10-28)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>보안 후속 조치 및 머지 대기 큐
+        <ul>
+          <li>RT-Smart 터미널 ioctl이 사용자 포인터를 커널에 넘겨 역참조, 임의 커널 메모리 읽기/쓰기 가능 (10-28)</li>
+          <li>libc 타이머 64비트 절단: 10초 타이머가 21시간으로 설정됨 (10-28)</li>
+          <li>musl pthread_exit 스레드 연결 리스트 use-after-free, SMP 동시 종료 시 크래시 (10-28)</li>
+          <li>Smart 관련 10-18 제안들이 큐에서 계속 갱신됨 (10-29)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>공식 및 커뮤니티 활동
+        <ul>
+          <li>공식 뉴스 API 여전히 6월 17일, 연속 네 번째 달 신규 없음 (10-28)</li>
+          <li>커뮤니티 아티클 채널, 80분 내에 임베디드 대회 작품 3편 연속 게시 (10-28)</li>
+          <li>FAL 메인테이너 사임, MAINTAINERS에서 한 줄 삭제 (10-28)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>생태계 및 벤더 적용
+        <ul>
+          <li>Renesas RA6W1-EK, Wi-Fi 인터럽트 벡터 24개 보완, CryptoCell 및 MAC 송수신 보완 (10-28)</li>
+          <li>NOVOSENSE NS800RT7P65 기반 산업용 CAN 분산 이동 로봇 (10-28)</li>
+          <li>XuanTie D121 마스터에 Loongson LS2K0300 슬레이브 구성, 다중 장치 모니터링 및 이상 추적 구현 (10-28)</li>
+          <li>NXP MCXA346 기반 경량 신경망 강화 FOC, 정상 상태 오차 4.26% 감소 (10-28)</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>트렌드 관찰 및 요약
+        <ul>
+          <li>이번 호 트렌드: 테스트 인프라와 보안 경계 동시 보강</li>
+          <li>한계 및 중복 제거 설명</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>부록: 출처 검증표 및 출처 목록</li>
+</ul>
+
+<hr />
+
+<h2 id="1-커널-및-버전-동향">1. 커널 및 버전 동향</h2>
+
+<h3 id="11-3개월-전-제출된-utest-제안-한-번에-4건-머지-10-28">1.1 3개월 전 제출된 utest 제안, 한 번에 4건 머지 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:44 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">메인 저장소 커밋 기록</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11601">제안 #11601</a></p>
+
+<p>이번 호 메인라인의 유일한 그룹 단위 반영은 오래된 제안 하나에서 비롯되었다. 제안 #11601은 7월 9일 생성되어 10월 28일 14:44에 머지되었으며, 4건의 커밋, 3개 파일, 125줄 추가, 103줄 삭제를 포함한다: utest 집계 통계 수정, netdev 케이스 안정화, musl 환경에서 signal 0 건너뛰기, 그리고 두 곳의 clang-format 정리. 4건이 동일한 타임스탬프에 반영된 것은 개별 선별이 아닌 통째로 병합되었음을 의미한다. 7월 제출부터 10월 말 메인라인 진입까지 3개월 이상 지연되었는데, 이런 순수 테스트 및 포맷 제안이 리뷰 큐에서 우선순위가 낮은 것은 일반적이지만, 일단 머지되면 즉시 CI의 판정 결과를 바꿀 수 있다.</p>
+
+<h3 id="12-utest-집계-오판-뒤의-unit이-통과하면-testcase의-실패-수가-지워짐-10-28">1.2 utest 집계 오판: 뒤의 unit이 통과하면 testcase의 실패 수가 지워짐 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:44 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">제안 #11601</a></p>
+
+<p>하나의 testcase 내부에 여러 UTEST_UNIT_RUN이 포함된 경우, 특정 unit이 실패한 후 이후 unit이 통과하면 <code class="highlighter-rouge">utest_unit_run()</code>이 <code class="highlighter-rouge">local_utest.failed_num</code>을 재설정하여 최종적으로 testcase와 전체 집계가 여전히 통과로 표시된다. 즉, 테스트가 실제로 실패했는데도 보고서에는 문제없다고 나오는 것이다. 수정 방법은: testcase 실행 시작 전에 통계를 초기화하고, 각 unit은 여전히 독립적으로 집계하며, unit 종료 후 해당 unit의 통과 수와 실패 수를 testcase 총계에 누적하는 것이다. 이렇게 하면 unit 수준 격리를 유지하면서도 뒤의 성공이 앞의 실패를 덮어쓰지 않게 된다. 변경은 utest.c에 적용되었으며, 29줄 추가, 6줄 삭제.</p>
+
+<h3 id="13-netdev-케이스-공인망-의존성-차단-ci에서-더-이상-8888과-baidu에-접속하지-않음-10-28">1.3 netdev 케이스, 공인망 의존성 차단, CI에서 더 이상 8.8.8.8과 Baidu에 접속하지 않음 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:44 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">제안 #11601</a></p>
+
+<p>기존 netdev ping 테스트 케이스는 8.8.8.8과 www.baidu.com을 반드시 연결되어야 하는 대상으로 취급했고, “192.256.0.321” 같은 불법 IP 문자열이 파서 계층에서 거부되는 것에 의존하기도 했다. 문제는 두 가지다. CI 환경에 외부 네트워크가 없으면 전자 유형의 테스트 케이스는 반드시 실패하는데, 이는 가짜 빨강(flaky failure)이다. 불법 문자열의 거부 동작은 파서 구현에 따라 일관되지 않는데, 이는 가짜 단정(pseudo-assertion)이다. 이번에 외부 네트워크 테스트 케이스를 전체적으로 <code class="highlighter-rouge">#ifndef RT_USING_CI_ACTION</code>으로 감쌌고, 불법 주소는 빈 호스트명을 전달하도록 변경했으며(DNS 질의 이전에 거부됨), DNS 테스트 케이스는 설정 기록이 반영되는지만 검증하도록 변경했다. 변경은 tc_netdev.c에 적용되었으며, 34줄 추가, 43줄 삭제되었다.</p>
+
+<h3 id="14-musl에서-시그널-테스트-케이스를-1부터-설치-signal-0은-더-이상-참여하지-않음-10-28">1.4 musl에서 시그널 테스트 케이스를 1부터 설치, signal 0은 더 이상 참여하지 않음 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:44 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11601">제안 #11601</a></p>
+
+<p>네 곳의 시그널 테스트 케이스가 원래 모두 signo가 0부터 핸들러를 설치했다. POSIX에서 0번 시그널은 존재성 검사에만 사용되며 설치 가능한 핸들러 의미가 없어, musl에서 이렇게 호출하면 실패하므로 전체 테스트 케이스 그룹이 musl 설정에서 실패했다. 이번에 UTEST_SIGNAL_MIN을 도입했다. musl에서는 1, 다른 libc에서는 여전히 0을 취하며, 네 곳의 루프가 통일되게 이 매크로를 사용하도록 변경했다. 변경은 signal_tc.c에 적용되었으며, 10줄 추가, 4줄 삭제되었다. 이는 “libc 구현 차이”를 테스트 판정에서 분리해내는 전형적인 방식으로, 단정에서 조건을 완화하는 것보다 더 깔끔하다.</p>
+
+<h3 id="15-dhcp-raw-서버-옵션-파싱-경계-보충-범위-초과-읽기-결함-종료-10-28">1.5 DHCP raw 서버 옵션 파싱 경계 보충, 범위 초과 읽기 결함 종료 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 19:04 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11940">제안 #11940</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11913">결함 #11913</a></p>
+
+<p>raw API의 DHCP 서버가 클라이언트 옵션을 순회할 때, 누락된 길이 바이트를 읽거나 내용이 잘린 옵션을 반환할 수 있었으며, MESSAGE_TYPE과 REQUESTED_IP 두 호출 지점이 이후 길이가 검증되지 않은 값을 읽어 범위 초과 읽기를 구성했다. 파싱은 또한 미리 할당된 1500바이트 버퍼를 기준으로 수행되어 실제 수신된 데이터 범위를 초과했다. 이번에 머지된 수정 방법은 계층별 검증이다. 길이 바이트를 읽기 전에 옵션 헤더가 완전한지 먼저 확인하고, 반환하거나 포인터를 진행하기 전에 선언된 내용이 패킷 내에 있는지 확인하며, REQUESTED_IP는 값이 최소 4바이트, MESSAGE_TYPE은 최소 1바이트를 요구하고, DHCP_OPTIONS_OFS보다 짧은 패킷을 거부하며, 실제 패킷 길이에 따라 옵션 영역을 계산한다. dhcp_server_raw.c만 변경되었으며, 23줄 추가, 5줄 삭제되었고, 작성자는 12개 호스트 측 회귀 테스트 케이스(ASAN)로 검증했다.</p>
+
+<h2 id="2-보안-후속-조치-및-머지-대기-큐">2. 보안 후속 조치 및 머지 대기 큐</h2>
+
+<h3 id="21-rt-smart-터미널-ioctl이-사용자-포인터를-커널에-넘겨-역참조-임의-커널-메모리-읽기쓰기-가능-10-28">2.1 RT-Smart 터미널 ioctl이 사용자 포인터를 커널에 넘겨 역참조, 임의 커널 메모리 읽기/쓰기 가능 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 13:14 (보고) / 20:35 (수정 제안)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11937">결함 #11937</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11941">제안 #11941</a></p>
+
+<p>보고서는 RT-Smart의 터미널 서브시스템이 FreeBSD tty 프레임워크에서 이식되었지만, 이식 시 FreeBSD가 <code class="highlighter-rouge">sys_ioctl()</code>에서 먼저 사용자 인자를 커널 스택 버퍼로 copyin하는 전제를 누락했다고 지적한다. RT-Smart의 <code class="highlighter-rouge">sys_ioctl()</code>은 flock이 아닌 명령에 대해 원시 사용자 포인터를 직접 전달하며, 이식된 어댑터 함수와 tty.c의 TIOCGWINSZ 분기는 여전히 <code class="highlighter-rouge">*(struct winsize *)data</code>로 커널 주소에 직접 쓴다. 그 결과는 다음과 같다. 비특권 프로세스가 open과 ioctl 두 가지 공식 인터페이스만으로 임의 커널 메모리를 읽고 쓸 수 있으며, 널 포인터를 전달하면 커널을 즉시 크래시시킬 수 있다. 영향 범위는 v5.1.0부터의 모든 버전(2024-03-28의 제안 #8672에 의해 도입)이며, v5.0.x는 영향을 받지 않는다. qemu-vexpress-a9에서 검증되었으며, 결함은 아키텍처와 무관하여 AArch64의 RT-Smart에도 동일하게 적용된다. 당일 20:35, 커뮤니티는 제안 #11941을 제출했다. ioctl 어댑터 계층에 커널 스택 임시 저장과 copy_from_user/copy_to_user를 도입하고, ptm과 tty 공통 경로에 <code class="highlighter-rouge">lwp_in_user_space()</code> 경계 검증을 보충하며, 6개 파일에 걸쳐 577줄 추가, 52줄 삭제되었다.</p>
+
+<h3 id="22-libc-타이머-64비트-절단-10초-타이머가-21시간으로-설정됨-10-28">2.2 libc 타이머 64비트 절단: 10초 타이머가 21시간으로 설정됨 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 (생성 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11938">제안 #11938</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11924">결함 #11924</a></p>
+
+<p>결함 #11924는 <code class="highlighter-rouge">timer_gettime()</code>이 총 잔여 나노초를 32비트 정수에 저장한 뒤 초 단위로 분해한다고 보고했다. 제안자는 더 깊이 파고들어 앞쪽에 더 심각한 동일 유형의 절단이 또 하나 있음을 발견했다. <code class="highlighter-rouge">timer_settime()</code>이 <code class="highlighter-rouge">unsigned long res = rt_clock_time_get_res_scaled()</code>로 환산을 수행하는데, 이 함수는 100 Hz 클럭 소스에 대해 1e13 규모의 값을 반환하므로 32비트에 저장하면 하위 비트만 남아 계산된 reload가 완전히 어긋난다. 제안에 제시된 계산식에 따르면 10초 타이머가 환산한 reload는 약 21시간에 해당한다. 즉 타이머는 arm되는 순간부터 이미 틀린 것이며, <code class="highlighter-rouge">timer_gettime()</code>만 수정해서는 결과가 올바르게 되지 않는다. 제안은 설정과 조회 양측을 동시에 수정하며, 4개 파일을 건드려 142줄을 추가하고 5줄을 삭제했으며, 여전히 큐에 남아 있다.</p>
+
+<h3 id="23-musl-pthread_exit-스레드-연결-리스트-use-after-free-smp-동시-종료-시-크래시-10-28">2.3 musl pthread_exit 스레드 연결 리스트 use-after-free, SMP 동시 종료 시 크래시 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-26 (보고) / 2026-10-28 (업데이트)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11932">결함 #11932</a></p>
+
+<p>RT-Thread Smart 5.2.2, SMP, aarch64, musl 1.2.5 조합에서 동시 pthread_create와 pthread_exit가 <code class="highlighter-rouge">musl_pthread_exit</code> 내부에서 크래시된다. 스레드 연결 리스트에서 노드를 제거할 때 이미 해제되었거나 매핑이 해제된 스레드 디스크립터에 기록하거나(Data Abort), 스레드 반환 주소가 0으로 기록된다(Instruction Abort). 보고에는 재현 프로그램과 상세 분석이 첨부되어 있으며, 8스레드로 1000회 부하를 걸면 수백 회 내에 재현된다. 이 모니터링 기간 내에 해당 결함은 업데이트되었으나 대응하는 수정 제안은 아직 없으며, 다음 배치에서 주시해야 할 Smart 측 문제에 속한다. 이는 2.1과 서로 다른 하위 시스템이지만 둘 다 “사용자 공간과 커널 공간 경계”라는 선상에 놓여 있다.</p>
+
+<h3 id="24-smart의-10-18-제안-묶음이-큐에서-계속-갱신됨-10-29">2.4 Smart의 10-18 제안 묶음이 큐에서 계속 갱신됨 (10-29)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 20:37 ~ 2026-10-29 00:17 (최종 업데이트)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11896">제안 #11896</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/11894">제안 #11894</a></p>
+
+<p>qemu-virt64에서 RT-Thread Smart를 활성화하는 제안은 10월 29일 00:17에도 여전히 업데이트가 있었고, lwp를 하위 시스템별로 분할하여 시스템 콜을 구현하는 제안은 10월 28일 20:37에 갱신되었으며, 두 건 모두 10월 18일에 생성되어 아직 머지되지 않았다. 같은 묶음에는 lwp, 시그널, 시리얼 관련 제안 여러 건이 10월 28일 오후에 집중적으로 갱신되었다. 이 제안군은 이 모니터링 기간 내에서도 큐에서 가장 활발한 구간이지만, 당일 머지된 네 건 중 Smart에 속하는 것은 한 건도 없어, 메인테이너들이 이번 라운드에서는 테스트와 네트워크 측의 오래된 과제를 먼저 정리했음을 보여준다.</p>
+
+<h2 id="3-공식-및-커뮤니티-활동">3. 공식 및 커뮤니티 활동</h2>
+
+<h3 id="31-공식-뉴스-인터페이스는-여전히-6월-17일-연속-네-번째-달-신규-없음-10-28">3.1 공식 뉴스 인터페이스는 여전히 6월 17일, 연속 네 번째 달 신규 없음 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 (확인 시간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">공식 뉴스 인터페이스</a></p>
+
+<p>공식 뉴스 인터페이스를 페이지별로 확인한 결과, 최신 항목은 여전히 2026-06-17에 게시된 두 편으로, 각각 아부다비 투자 포럼과 제4회 소프트웨어 혁신 발전 대회에 관한 것이다. 24시간 및 7일 기간 내에 신규 항목은 없다. 같은 날 커뮤니티 기사 채널에서 세 편이 연달아 게시된 것과 비교하면 양측의 온도차가 뚜렷하다. 공식 대외 기고문은 이미 네 달 연속 저조한 빈도를 보이고 있으며, 데일리 리포트의 일상 콘텐츠는 실질적으로 GitHub와 커뮤니티 측이 담당하고 있다. 이 상태 자체가 커뮤니티 활성도를 판단하는 데 참고 가치가 있다. 회사의 대외 전달 리듬이 느려진 것이 엔지니어링 측의 정체를 의미하지는 않는다.</p>
+
+<h3 id="32-커뮤니티-기사-채널-80분-내-임베디드-대회-작품-세-편-연속-게시-10-28">3.2 커뮤니티 기사 채널, 80분 내 임베디드 대회 작품 세 편 연속 게시 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 13:03 ~ 14:12 (게시 시간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=article">커뮤니티 기사 인터페이스</a></p>
+
+<p>커뮤니티 기사 인터페이스에 13:03부터 14:12 사이에 세 편이 추가되었으며, 모두 2026 임베디드 대회 참가 작품이다. 나신위 NS800RT7P65 기반 산업용 CAN 분산 이동 로봇, 현티에 D121을 마스터로 한 다중 슬레이브 모니터링 및 이상 추적 시스템, NXP MCXA346 기반 경량 신경망 강화 브러시리스 모터 컨트롤러이다. 세 편 모두 오픈소스 저장소 또는 완전한 재현 기록을 첨부했으며, 트랙은 산업 제어, 산업 연동, 모터 제어 세 방향을 아우른다. 집중 게시는 대회가 작품 제출과 전시 피크에 접어들었음을 보여주며, 이번 작품 저자들이 단순히 보고서 한 부를 제출하는 것이 아니라 엔지니어링 세부 사항을 코드와 함께 공개하는 습관이 있음을 보여준다. 항목별 기술 분석은 4장을 참조하라.</p>
+
+<h3 id="33-fal-유지관리자-사임-maintainers-항목-하나-삭제-10-28">3.3 FAL 유지관리자 사임, MAINTAINERS 항목 하나 삭제 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 18:48 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11939">제안 #11939</a></p>
+
+<p>MAINTAINERS만 수정한 머지로, components_fal 항목을 삭제했으며 원작자는 설명에서 더 이상 커뮤니티 작업에 참여할 시간과 여력이 없다고 밝혔다. FAL(Flash 추상화 계층)은 오랫동안 단독으로 유지관리되어 왔으며, 이번은 유지관리자의 자발적 이관으로 코드 품질 문제와는 무관하다. 항목 삭제 후 해당 컴포넌트는 당분간 등록된 유지관리자가 없으며, 이후 누군가 보임할지 주목할 만하다. 과거의 관례에 따르면 이런 기반 컴포넌트는 담당자가 없어지면 제조사가 BSP를 제출할 때에야 문제가 드러난다.</p>
+
+<h2 id="4-생태계와-제조사-적응">4. 생태계와 제조사 적응</h2>
+
+<h3 id="41-renesas-ra6w1-ek-wi-fi-인터럽트-벡터-24개-추가-cryptocell과-mac-송수신-보완-10-28">4.1 Renesas RA6W1-EK, Wi-Fi 인터럽트 벡터 24개 추가, CryptoCell과 MAC 송수신 보완 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 18:52 (머지 시간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11934">제안 #11934</a></p>
+
+<p>RA6W1-EK의 rafw_gen 벡터 테이블은 원래 범용 주변장치만 커버했으며, Wi-Fi 측의 인터럽트 그룹 전체에 진입점이 없었다. KDMA, TDES CBC, PSK SHA1, SYSPLL 및 FPLL 락, RTC 인터페이스 전체(외부 웨이크업, 전원 차단, 저전압, 펄스 카운트, 버스 클록, 액세스, 미러, 로드 완료), MRM 및 D-cache MRM, CryptoCell-312, HSU, MAC 타이머/수신/송신/프로토콜/범용/비콘, 그리고 radio controller까지 총 24개다. 이번에 전부 weak 핸들러로 선언하여 벡터 테이블에 등록했으며, 동시에 ROM 심볼 테이블의 crypto 진입점 두 개를 <code class="highlighter-rouge">__rom_</code> 접두사로 개명하여 RAM 측 동명 심볼과의 충돌을 피했다. 변경은 vector_data.c(49줄 추가)와 rom_code_gcc.symbols(6줄 수정)에 반영되었다.</p>
+
+<h3 id="42-naxinwei-ns800rt7p65-기반-산업용-can-분산-이동-로봇-10-28">4.2 NaXinwei NS800RT7P65 기반 산업용 CAN 분산 이동 로봇 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:12 (게시 시간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">커뮤니티 글: 소형 자율 이동 로봇</a>, <a href="https://gitcode.com/sdcwhy/ns800-amr">오픈소스 저장소</a></p>
+
+<p>2026 임베디드 대회 산업 제어 부문 작품으로, 코드는 GPL-3.0으로 공개되었다. 주제어는 NaXinwei NS800RT7P65(Cortex-M7, 600 MHz)이며 RT-Thread 4.x를 구동하고, 단일 칩이 FOC 2축 짐벌, CAN 마스터, 40개의 MSH 온라인 진단 명령을 담당한다. 섀시는 CAN 5노드 아키텍처(마스터, 짐벌 FOC, 센서 수집, 섀시 구동, 비전 AI)로, 슬레이브 각각이 로컬 폐루프를 구성하여 산업용 AMR의 계층 설계에 부합한다. 인지 측은 초음파 회전 스캔으로 2D 포인트 클라우드를 생성하고, 관성 유닛과 오도메트리로 자세를 추정하며, 카메라가 이미지를 제공하고 협력 보드가 목표 검출을 수행하여 비전 연산 능력과 제어 연산 능력을 분리했다. 모니터링은 근거리망 MQTT 플랫폼을 통해 이루어지며, Web 페이지에서 자세, 포인트 클라우드, 인식 목표, 궤적을 실시간 표시하고 내부망에서 다단계 작업 시퀀스 전송을 지원하여 전체 링크가 공중망에 의존하지 않는다.</p>
+
+<h3 id="43-xuantie-d121-마스터에-loongson-ls2k0300-슬레이브-구성-다중-기기-모니터링-및-이상-추적-10-28">4.3 XuanTie D121 마스터에 Loongson LS2K0300 슬레이브 구성, 다중 기기 모니터링 및 이상 추적 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 13:03 (게시 시간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/ask/article/3febce8c6543ba79.html">커뮤니티 글: 다중 슬레이브 기기 모니터링 및 이상 추적 시스템</a></p>
+
+<p>같은 대회 작품 중의 산업 연동 솔루션. 마스터는 XuanTie D121로 RT-Thread와 LVGL 터치스크린을 구동하며, RS485와 Modbus RTU를 통해 두 슬레이브를 폴링한다. Xinghuo STM32F407은 온습도와 6축 데이터를 수집하고, Loongson LS2K0300은 CPU, 메모리, 가동 시간 등 시스템 지표를 보고한다. 수집 데이터는 TF 카드에 저장되어 로컬 재생을 지원하며, 통신 중단, 복구, 진동 한계 초과 등 핵심 이벤트는 영속 큐에 들어가 ESP8266을 통해 클라우드로 전송된 후 WeChat 미니프로그램으로 원격 조회하며, 네트워크 단절 시에는 로컬에 먼저 저장하고 복구 후 재전송한다. 설계의 핵심은 단일 기기가 연결 해제되어도 다른 기기가 계속 기록할 수 있다는 점이다. ARM과 LoongArch 두 종류의 슬레이브를 같은 Modbus 버스에 넣은 것은 이기종 기기 접속 시나리오에 직접적인 참고 가치가 있다.</p>
+
+<h3 id="44-nxp-mcxa346-기반-경량-신경망-강화-foc-정상상태-오차-426-감소-10-28">4.4 NXP MCXA346 기반 경량 신경망 강화 FOC, 정상상태 오차 4.26% 감소 (10-28)</h3>
+
+<p><strong>날짜</strong>: 2026-10-28 14:12 (게시 시간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">커뮤니티 글: 경량 신경망으로 강화된 지능형 브러시리스 모터 컨트롤러</a>, <a href="https://github.com/2470519590/rtt-mcx-BLDCmotor">오픈소스 저장소</a></p>
+
+<p>세 번째 대회 작품은 하드웨어로 NXP FRDM-MCXA346에 2804 모터, AS5600 자기 엔코더, SimpleFOC Mini 드라이버를 사용했다. 제어 측은 먼저 피드포워드와 PI를 결합한 속도 루프 및 위치 루프를 구성하고, 이어서 제어 출력 위에 3입력, 8은닉유닛, 1출력의 동적 보상 네트워크를 중첩했다. 가중치는 C 코드로 내보내 MCU에서 직접 계산하며, 펌웨어에는 추론 프레임워크를 도입하지 않았다. 보상은 개별적으로 켜고 끌 수 있어 동일 파라미터 대조가 가능하다. 실측 90개 구간 실보드 테스트(정/부 15 RPM 내 10가지 전환 각 3회) 결과: 정상상태 말단 100밀리초 창의 RMSE는 2.187에서 2.094 RPM으로 약 4.26% 감소했고, 전체 구간 RMSE는 3.327에서 3.291로 약 1.07% 감소했다. 또한 P 항 목표에 25밀리초 평활화를 추가한 후, 60개 구간 테스트의 전체 구간 속도 오차 평균이 약 5.83% 감소했다. RT-Thread 측 제어 스레드는 2밀리초 주기로 실행되며, 시리얼 스레드는 명령과 텔레메트리를 별도로 처리하고 스레드 간 상태 동기화에는 뮤텍스를 사용한다.</p>
+
+<h2 id="5-트렌드-관찰-및-요약">5. 트렌드 관찰 및 요약</h2>
+
+<h3 id="51-이번-기간-트렌드-테스트-인프라와-안전-경계의-동시-보강">5.1 이번 기간 트렌드: 테스트 인프라와 안전 경계의 동시 보강</h3>
+
+<p><strong>날짜</strong>: 2026-10-29(이번 기간)　<strong>출처</strong>: <a href="https://github.com/RT-Thread/rt-thread/commits/master">메인 저장소 커밋 기록</a>, <a href="https://github.com/RT-Thread/rt-thread/issues/11937">결함 #11937</a></p>
+
+<p>이번 기간 병합된 7건 중 4건이 테스트 관련이다. 3건은 테스트 케이스 로직을 변경했고, 1건은 포맷팅만 수행했다. 방향은 모두 CI 판정을 신뢰할 수 있게 만드는 것이다. 더 이상 공용 네트워크에 의존하지 않고, 이후 unit에 의해 덮어쓰이지 않으며, musl 환경에서 signal 0을 설치할 수 있다고 가정하지 않는다. 보안 측은 또 다른 흐름이다. DHCP 범위 초과 읽기가 차단되었고, RT-Smart 터미널 ioctl의 사용자 포인터가 커널로 직접 전달되는 문제는 당일 보고되고 당일 수정 제안이 올라왔으며, libc 타이머 절단은 “조회만 수정”에서 “설정까지 함께 수정”으로 진전되었다. 두 종류의 작업 모두 새 기능을 만들지는 않지만, 모두 같은 목표를 향한다. 즉 “테스트 통과”와 “파라미터 신뢰”라는 두 전제를 다시 확실히 하는 것이다. 이와 대조적으로 Smart 측 제안은 여전히 대기열에서 갱신 중이며 당일 병합되지 않았는데, 이는 이번 유지보수 순서가 테스트와 네트워크 측의 오래된 부채를 먼저 정리하는 것임을 보여준다.</p>
+
+<h3 id="52-한계-및-중복-제거-설명">5.2 한계 및 중복 제거 설명</h3>
+
+<p><strong>날짜</strong>: 2026-10-29(이번 기간)　<strong>출처</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">공식 뉴스 API</a>, <a href="https://club.rt-thread.org/api/index/getList?type=article">커뮤니티 글 API</a></p>
+
+<ul>
+  <li>공식 뉴스 API는 연속 네 번째 달 신규 항목이 없으며, 이번 기간 뉴스 측 내용은 커뮤니티 글 API와 GitHub에서 가져왔다. 미디어 모니터링 기간 내에는 RTOS 회고 장문 1건(10-28 11:48)만 검색되었으나, 원 사이트 수집 제한으로 본문의 RT-Thread 관련 여부를 확인할 수 없어 수록하지 않았다.</li>
+  <li>어제 데일리 리포트에 기록된 clang-format 22.1.8 전체 포맷팅 제안 #11936은 이번 기간에도 계속 갱신되었으나(10-28 18:50), 실질적 변화가 없어 중복 수록하지 않았다.</li>
+  <li>topic:rt-thread 생태계 모니터링 기간 내에는 zlgopen/awtk만 푸시가 있었으며(10-28 12:56), 범용 GUI 툴킷의 일반적 개선으로 RT-Thread와 직접적 관계가 없어 제외했다.</li>
+  <li>HN Algolia의 이번 기간 두 건의 검색 결과는 모두 threads 및 ThreadShelf와의 문자열 오매칭이어서 전량 제외했으며, Google News 영어 측 모니터링 기간 내에는 관련 기사가 없었다.</li>
+  <li>세 편의 대회 작품은 같은 날 게시되었고 주제가 유사하여 각자의 트랙에 따라 별도로 수록했으며, 기술 세부 사항 유실을 피하기 위해 하나로 합치지 않았다.</li>
+</ul>
+
+<h2 id="부록-출처-검증표-및-출처-목록">부록: 출처 검증표 및 출처 목록</h2>
+
+<h3 id="출처-검증표">출처 검증표</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>출처</th>
+      <th>검증 결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>공식 뉴스 인터페이스(rt_org)</td>
+      <td>24시간 내 신규 없음, 최신 항목은 2026-06-17에 멈춤</td>
+    </tr>
+    <tr>
+      <td>커뮤니티 문서 인터페이스(article)</td>
+      <td>모니터링 기간 내 3편 신규, 모두 2026 임베디드 대회 작품(10-28 13:03 ~ 14:12)</td>
+    </tr>
+    <tr>
+      <td>메인 저장소 commits</td>
+      <td>모니터링 기간 내 7건 병합, 10-28 14:44와 18:48 ~ 19:04에 집중</td>
+    </tr>
+    <tr>
+      <td>메인 저장소 PR</td>
+      <td>병합 4건(#11601, #11934, #11939, #11940), 신규 2건(#11938, #11941), 심사 중 제안 17건이 이번 모니터링 기간에 업데이트됨</td>
+    </tr>
+    <tr>
+      <td>메인 저장소 releases / tags</td>
+      <td>신규 없음, 최신은 여전히 v5.3.0(2026-09-10)</td>
+    </tr>
+    <tr>
+      <td>메인 저장소 Issue</td>
+      <td>신규 1건(#11937, RT-Smart 터미널 ioctl 보안), 별도 2건이 이번 모니터링 기간에 업데이트됨</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/packages</td>
+      <td>푸시 없음, 최신 푸시 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>vscode-rt-smart</td>
+      <td>푸시 없음, 최신 푸시 2026-10-26</td>
+    </tr>
+    <tr>
+      <td>RT-Thread/sdk</td>
+      <td>푸시 없음, 최신 푸시 2026-10-26</td>
+    </tr>
+    <tr>
+      <td>pkgs-test</td>
+      <td>푸시 없음, 최신 푸시 2026-10-23</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread 생태계 검색</td>
+      <td>모니터링 기간 내 zlgopen/awtk 푸시만 있었고 RT-Thread와 직접 관련 없어 제외</td>
+    </tr>
+    <tr>
+      <td>Google News 중국어</td>
+      <td>모니터링 기간 내 RTOS 회고 장문 1건, 원 사이트 수집 제한으로 미수록</td>
+    </tr>
+    <tr>
+      <td>Google News 영어</td>
+      <td>모니터링 기간 내 관련 항목 없음</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>2건의 threads와 ThreadShelf가 오매칭되어 전체 제외</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="전체-출처-목록">전체 출처 목록</h3>
+
+<ul>
+  <li><strong>[1]</strong> RT-Thread 메인 저장소 커밋 기록<br />
+<a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+  <li><strong>[2]</strong> 메인 저장소 PR #11601 (utest 집계 및 테스트 케이스 안정화)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11601">https://github.com/RT-Thread/rt-thread/pull/11601</a></li>
+  <li><strong>[3]</strong> 메인 저장소 PR #11940 (DHCP raw 옵션 경계)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11940">https://github.com/RT-Thread/rt-thread/pull/11940</a></li>
+  <li><strong>[4]</strong> 메인 저장소 이슈 #11913 (DHCP 범위 초과 읽기)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11913">https://github.com/RT-Thread/rt-thread/issues/11913</a></li>
+  <li><strong>[5]</strong> 메인 저장소 이슈 #11937 (RT-Smart 터미널 ioctl 사용자 포인터)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11937">https://github.com/RT-Thread/rt-thread/issues/11937</a></li>
+  <li><strong>[6]</strong> 메인 저장소 PR #11941 (터미널 ioctl copyin/copyout)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11941">https://github.com/RT-Thread/rt-thread/pull/11941</a></li>
+  <li><strong>[7]</strong> 메인 저장소 PR #11938 (libc 타이머 64비트 절단)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11938">https://github.com/RT-Thread/rt-thread/pull/11938</a></li>
+  <li><strong>[8]</strong> 메인 저장소 이슈 #11924 (timer_gettime 절단)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11924">https://github.com/RT-Thread/rt-thread/issues/11924</a></li>
+  <li><strong>[9]</strong> 메인 저장소 이슈 #11932 (musl pthread_exit 스레드 연결 리스트)<br />
+<a href="https://github.com/RT-Thread/rt-thread/issues/11932">https://github.com/RT-Thread/rt-thread/issues/11932</a></li>
+  <li><strong>[10]</strong> 메인 저장소 PR #11896 (qemu-virt64 Smart 활성화)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11896">https://github.com/RT-Thread/rt-thread/pull/11896</a></li>
+  <li><strong>[11]</strong> 메인 저장소 PR #11894 (lwp 서브시스템 분리)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11894">https://github.com/RT-Thread/rt-thread/pull/11894</a></li>
+  <li><strong>[12]</strong> 메인 저장소 PR #11934 (RA6W1-EK 시스템 구성)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11934">https://github.com/RT-Thread/rt-thread/pull/11934</a></li>
+  <li><strong>[13]</strong> 메인 저장소 PR #11939 (MAINTAINERS에서 FAL 항목 제거)<br />
+<a href="https://github.com/RT-Thread/rt-thread/pull/11939">https://github.com/RT-Thread/rt-thread/pull/11939</a></li>
+  <li><strong>[14]</strong> 메인 저장소 릴리스 기록<br />
+<a href="https://github.com/RT-Thread/rt-thread/releases">https://github.com/RT-Thread/rt-thread/releases</a></li>
+  <li><strong>[15]</strong> 메인 저장소 태그 목록<br />
+<a href="https://github.com/RT-Thread/rt-thread/tags">https://github.com/RT-Thread/rt-thread/tags</a></li>
+  <li><strong>[16]</strong> 공식 뉴스 API<br />
+<a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[17]</strong> 커뮤니티 게시글 API<br />
+<a href="https://club.rt-thread.org/api/index/getList?type=article">https://club.rt-thread.org/api/index/getList?type=article</a></li>
+  <li><strong>[18]</strong> 커뮤니티 게시글: 소형 자율 이동 로봇 (NS800RT7P65)<br />
+<a href="https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html">https://club.rt-thread.org/ask/article/88ec5ac60d41d665.html</a></li>
+  <li><strong>[19]</strong> 커뮤니티 게시글: 다중 슬레이브 장치 모니터링 및 이상 추적 시스템 (XuanTie D121)<br />
+<a href="https://club.rt-thread.org/ask/article/3febce8c6543ba79.html">https://club.rt-thread.org/ask/article/3febce8c6543ba79.html</a></li>
+  <li><strong>[20]</strong> 커뮤니티 게시글: 경량 신경망으로 강화된 브러시리스 모터 컨트롤러 (MCXA346)<br />
+<a href="https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html">https://club.rt-thread.org/ask/article/1ae9bc2938def9c8.html</a></li>
+  <li><strong>[21]</strong> 대회 작품 오픈소스 저장소: ns800-amr<br />
+<a href="https://gitcode.com/sdcwhy/ns800-amr">https://gitcode.com/sdcwhy/ns800-amr</a></li>
+  <li><strong>[22]</strong> 대회 작품 오픈소스 저장소: rtt-mcx-BLDCmotor<br />
+<a href="https://github.com/2470519590/rtt-mcx-BLDCmotor">https://github.com/2470519590/rtt-mcx-BLDCmotor</a></li>
+  <li><strong>[23]</strong> RT-Thread 조직 저장소 목록<br />
+<a href="https://github.com/orgs/RT-Thread/repositories?sort=pushed">https://github.com/orgs/RT-Thread/repositories?sort=pushed</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/ko/post.html#news-list" class="btn btn-main news-list-link">뒤로</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>문의하기</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>이메일:</strong> contact@kubuds.cn<br>
+            <strong>주소:</strong> 중국 상하이시 바오산구 가오이로 88호 1동 1층 108실<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>링크</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

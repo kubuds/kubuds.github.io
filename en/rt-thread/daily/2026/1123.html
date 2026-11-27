@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/en/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1123.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1123.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1123.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1123.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1123.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Daily Intelligence Report (2026-11-23) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Daily Intelligence Report (2026-11-23)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Daily Intelligence Report (2026-11-23)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-23</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Research window</strong>: 2026-11-20 08:00 ~ 2026-11-23 08:00 (Beijing time, 72 hours, covering Saturday and Sunday)</p>
+
+<p><strong>Sources</strong>: Official news API and corporate website news center, main repository commits and proposals/issues, releases and tags, org-wide repo and packages pushes, topic search, Google News (via proxy), HN, chip vendor public spec pages.</p>
+
+<hr />
+
+<h2 id="index">Index</h2>
+
+<ul>
+  <li>I. Official and Community Activities
+    <ul>
+      <li>Official news API still stuck at November 6 (11-23)</li>
+      <li>Corporate website has three more items not captured by the API (11-23)</li>
+    </ul>
+  </li>
+  <li>II. Kernel and Security
+    <ul>
+      <li>virtio trust boundary issue claimed then released after thirteen hours (11-21)</li>
+      <li>Power management registration interface gains race and lock protection (11-20)</li>
+    </ul>
+  </li>
+  <li>III. Drivers and Frameworks
+    <ul>
+      <li>CAN framework refactor spans BSPs from ten vendors (11-21)</li>
+      <li>Serial V1 mode switch reopened, four-byte buffer treated as forty-eight-byte struct (11-20)</li>
+      <li>SWM341 classic CAN copies by hardware DLC, overruns eight-byte buffer (11-21)</li>
+    </ul>
+  </li>
+  <li>IV. Toolchain and Documentation
+    <ul>
+      <li>mkromfs pads by character count, misaligns UTF-8 directory entries (11-20)</li>
+      <li>Two commands in macOS QEMU quick start will stall readers (11-22)</li>
+    </ul>
+  </li>
+  <li>V. BSP and Hardware: Allwinner V861
+    <ul>
+      <li>Five proposals form a progression from single-core to dual-core SMP (11-21)</li>
+      <li>Maintainer review: acceptance files not accepted, toolchain switches to env 2.x and sdk (11-21)</li>
+      <li>Chip side: dual-core C907 plus E907, with RVV 1.0 (11-23)</li>
+    </ul>
+  </li>
+  <li>VI. Review Queue and Collaboration
+    <ul>
+      <li>~110 hours with zero submissions, zero merges, queue grows from 142 to 151 (11-23)</li>
+      <li>Thread tracing proposal closed after a year and two months (11-21)</li>
+      <li>Two new repos bring RT-Thread into CarPlay and smartwatches (11-22)</li>
+    </ul>
+  </li>
+  <li>VII. Summary and Trend Observations
+    <ul>
+      <li>Weekend增量 all on the proposal side</li>
+      <li>Three commits carry traces of AI collaboration</li>
+      <li>The entry ticket for a new BSP is consistency with existing conventions</li>
+      <li>A longer queue does not equal worsening backlog</li>
+      <li>After the last commit</li>
+    </ul>
+  </li>
+  <li>Appendix: Source verification table</li>
+</ul>
+
+<hr />
+
+<h2 id="i-official-and-community-activities">I. Official and Community Activities</h2>
+
+<h3 id="11-official-news-api-still-stuck-at-november-6-11-23">1.1 Official news API still stuck at November 6 (11-23)</h3>
+
+<p><strong>Date</strong>: 2026-11-23 (API check). <strong>Source</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">Official news API</a>.</p>
+
+<p>The API returns five items. The latest is still the November 6, 15:54 article “From OS Foundation to AI Deployment: RT-Thread Ruisaide’s Full-Stack Capabilities Anchor Industrial Intelligent Upgrade.”</p>
+
+<p>Checking each body text one by one, all five were published on November 6 itself, from 10:18 to 15:54. Nothing new since.</p>
+
+<p>This is the API’s consecutive period of zero new items. The previous daily report recorded the tenth period; this issue continues the count.</p>
+
+<p>Google News’s three-day and seven-day windows also have no valid entries. The Chinese query returns only one Moore Threads stock price piece, unrelated to RT-Thread; the English three-day window is empty.</p>
+
+<p><strong>Assessment</strong>: Official external communication was completely silent during the window. Basis: no new articles after November 20 across the API, corporate website, and news search.</p>
+
+<h3 id="12-corporate-website-has-three-more-items-not-captured-by-the-api-11-23">1.2 Corporate website has three more items not captured by the API (11-23)</h3>
+
+<p><strong>Date</strong>: 2026-11-23 (site check). <strong>Source</strong>: <a href="https://www.rt-thread.com/col19/list.html">Ruisaide News Center</a>.</p>
+
+<p>The corporate website’s news list page is server-rendered and can be parsed directly. The list is in reverse chronological order; the latest four are 11-03, 10-27, 10-02, and 09-14.</p>
+
+<p>The 11-03 item is “RT-Thread Appears at World Internet Conference Wuzhen Summit, ‘Heterogeneous Converged Edge Intelligent AIOS Foundation’ Selected for ‘New Light’ Product Recommendation List.” The 10-27 item covers full-stack practice at the 6th RISC-V China Summit. The 10-02 item is the Automotive Software Industry Ecosystem Salon.</p>
+
+<p>None of these three are among the five returned by the API. The API’s latest item, published November 6, is actually later than the corporate website’s 10-27 and 10-02 items.</p>
+
+<p><strong>Assessment</strong>: The two official channels’ lists are not the same dataset. Basis: the API lacks the 10-02, 10-27, and 11-03 items, while the corporate website lacks the 11-06 item. Both must be checked every period going forward.</p>
+
+<h2 id="ii-kernel-and-security">II. Kernel and Security</h2>
+
+<h3 id="21-virtio-trust-boundary-issue-claimed-then-released-after-thirteen-hours-11-21">2.1 virtio trust boundary issue claimed then released after thirteen hours (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-20 22:51 to 11-21 11:41 (claim and release). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/11327">#11327</a>.</p>
+
+<p>The issue was filed by XueDugu on April 13, affecting master and six release tags from v5.0.0 to v5.2.2.</p>
+
+<p>The problem surface is in five virtio drivers: input, console, gpu, blk, net. They directly use the id from the backend-provided used ring as a local array index without first validating the range.</p>
+
+<p>The net one has an extra layer. When used len is less than the header length, the length calculation underflows, and the copy then proceeds with that length.</p>
+
+<p>Maintainer GuEe-GUI’s reply on April 14: mainline VirtIO is about to be deprecated, use cases are somewhat experimental, further fixes are not recommended, see #11232 for the new version.</p>
+
+<p>On November 20 at 22:51, niuxiaoch claimed it with /claim. On November 21 at 11:41, the same account released it with /unclaim. Less than thirteen hours apart.</p>
+
+<p><strong>Assessment</strong>: The disagreement over how to handle this issue has not been resolved. Basis: both signals—”fix not recommended” and “someone claimed it”—are present simultaneously, and the claim lasted only thirteen hours.</p>
+
+<h3 id="22-power-management-registration-interface-gains-race-and-lock-protection-11-20">2.2 Power management registration interface gains race and lock protection (11-20)</h3>
+
+<p><strong>Date</strong>: 2026-11-20 22:20 (proposal). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12075">#12075</a>.</p>
+
+<p>The proposal fixes #10075. That issue describes rt_pm_device_register hanging after power management is enabled.</p>
+
+<p>The first change is ordering. Originally the list node was linked into _pm.device_list first, then device_pm’s fields were initialized. The proposal swaps the two steps.</p>
+
+<p>The second is protection. List operations are wrapped with interrupts disabled, while memory allocation and free are left outside the critical section.</p>
+
+<p>The latter is precisely the precondition for #10075 not hanging. The proposal body states that if allocation were placed inside the interrupt-disabled region, it would deadlock under SMP.</p>
+
+<p>Scale: one file, 39 lines added, 3 lines removed, two commits, verification board qemu-vexpress-a9.</p>
+
+<p><strong>Assessment</strong>: The trade-off in the fix is more noteworthy than the fix itself. Basis: the proposal handles “interrupts disabled” and “allocation that may sleep” separately, rather than using one big lock for convenience.</p>
+
+<h2 id="iii-drivers-and-frameworks">III. Drivers and Frameworks</h2>
+
+<h3 id="31-can-framework-refactor-spans-bsps-from-ten-vendors-11-21">3.1 CAN framework refactor spans BSPs from ten vendors (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-21 10:03 (updated). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12054">#12054</a>.</p>
+
+<p>The proposal was raised by wdfk-prog on November 14 and updated to its sixth commit within the window.</p>
+
+<p>The scale is 42 files, 9,187 lines added, 5,292 lines removed. Labels cover BSPs from ten vendors: NXP, STM32, Loongson, HC32, Renesas, GD32, Phytium, AT32, WCH, and Novosns.</p>
+
+<p>The core of the approach is to stop maintaining a transmit software queue in the generic CAN layer. The controller’s built-in hardware mailboxes become the sole queuing resource.</p>
+
+<p>The description states the responsibility boundary in one line: the generic layer handles hardware resources, synchronization, ownership, termination, and lifecycle; transmit buffering, retry, scheduling, and protocol QoS go to the upper layer.</p>
+
+<p>Three related discussions are linked. #11767 is the refactor plan, #11759 is TX Full Flush and hardware Abort, and #11779 is driver lifecycle.</p>
+
+<p><strong>Assessment</strong>: This is a framework-level change, not a point fix. The basis is that the changes land in both the generic layer and ten BSPs, and the description rewrites the responsibility boundary.</p>
+
+<h3 id="32-serial-v1-reopen-with-a-different-mode-a-four-byte-buffer-interpreted-as-a-forty-eight-byte-struct-11-20">3.2 Serial V1 reopen with a different mode: a four-byte buffer interpreted as a forty-eight-byte struct (11-20)</h3>
+
+<p><strong>Date</strong>: 2026-11-20 13:27 issue, 13:42 proposal. <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/12072">#12072</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12073">#12073</a>.</p>
+
+<p>The symptom is the same serial device first opened with interrupt transmit, then reopened with DMA transmit.</p>
+
+<p>The first open allocates a four-byte transmit FIFO. The DMA transmit path interprets it as a forty-eight-byte DMA struct.</p>
+
+<p>The out-of-bounds point is specific. The data_queue member starts at offset 4, which falls exactly outside the original four-byte allocation.</p>
+
+<p>The root cause is in the flag bits. The open flag mask contains both the interrupt transmit and DMA transmit bits, so changing only the transmit mode still goes through rt_serial_open() again.</p>
+
+<p>The fix returns -RT_EBUSY when the mode differs and preserves the existing mode bits on reopen. The scale is one file, 18 lines added, 12 lines removed.</p>
+
+<p><strong>Assessment</strong>: The entry point for this class of defect is the flag-bit design, not a mistake in a particular driver. The basis is that the fix is in the framework’s open path, not in a specific BSP.</p>
+
+<h3 id="33-swm341-classic-can-receive-copies-by-hardware-dlc-overrunning-the-eight-byte-buffer-11-21">3.3 SWM341 classic CAN receive copies by hardware DLC, overrunning the eight-byte buffer (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-21 00:28 (proposal). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12076">#12076</a>.</p>
+
+<p>The symptom is that the hardware DLC of a classic CAN frame may exceed 8. The driver still copies by this length into a fixed eight-byte buffer.</p>
+
+<p>Both paths overrun: CAN_Receive and swm_can_recvmsg. The proposal links issue #11425.</p>
+
+<p>The fix is direct: clamp the length to 8 bytes before both copies. The scale is two files, 8 lines added.</p>
+
+<p><strong>Assessment</strong>: Both defects in the window are in length and mode validation. The basis is that #12073 fixes the framework’s mode bits and #12076 fixes the BSP’s copy length, with different authors and different locations.</p>
+
+<h2 id="iv-toolchain-and-documentation">IV. Toolchain and Documentation</h2>
+
+<h3 id="41-mkromfs-pads-by-character-count-misaligning-utf-8-directory-entries-11-20">4.1 mkromfs pads by character count, misaligning UTF-8 directory entries (11-20)</h3>
+
+<p><strong>Date</strong>: 2026-11-20 20:42 (proposal). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12074">#12074</a>.</p>
+
+<p>When generating the binary ROMFS image, the tool script computes padding by character count but writes to disk by UTF-8 byte count. When a name contains Chinese characters, the two numbers differ.</p>
+
+<p>An example is enough to illustrate the problem. With image base 0x1000 and input path “中a/文”, the nested directory table is placed at 0x102a. Directory entries require four-byte alignment.</p>
+
+<p>The fix encodes first, then computes padding. When the encoded length is a multiple of four, it also appends a NUL terminator.</p>
+
+<p>For the same example, the directory table now starts at 0x102c. The author notes the change was assisted by OpenAI Codex.</p>
+
+<p>Verification is a new tool test case. The case fails on 6fdfe70062 and passes with the change applied; a byte-by-byte comparison of an ASCII tree was also performed.</p>
+
+<p><strong>Assessment</strong>: The defect appears only under non-ASCII paths, which regular test cases do not cover. The basis is that the original test compared a pure ASCII directory tree.</p>
+
+<h3 id="42-two-commands-in-the-macos-qemu-quick-start-stall-readers-11-22">4.2 Two commands in the macOS QEMU quick start stall readers (11-22)</h3>
+
+<p><strong>Date</strong>: 2026-11-22 14:49 issue, 11-23 02:02 proposal. <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/12082">#12082</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12083">#12083</a>.</p>
+
+<p>The first is in step 1.3. The command writes a quoted tilde into PATH, and a tilde inside quotes is not expanded, so the last segment is stored literally as-is.</p>
+
+<p>The second is in step 5.3. The documentation tells readers to run ./qemu_nographic.sh after formatting sd0, but this filename does not exist in the BSP directory. The actual name is qemu-nographic.sh.</p>
+
+<p>The issue author states that only the PATH behavior was verified; no macOS build was run and QEMU was not started.</p>
+
+<p>The proposal was submitted by BernardXiong and modifies the same English document. The interval from issue to proposal is about eleven hours.</p>
+
+<p><strong>Assessment</strong>: How fast a documentation defect is fixed depends on who reads it. The basis is that the reporter stopped at behavior verification while the maintainer changed the document directly.</p>
+
+<h2 id="v-bsp-and-hardware-allwinner-v861">V. BSP and Hardware: Allwinner V861</h2>
+
+<h3 id="51-five-proposals-form-a-progressive-chain-from-single-core-to-dual-core-smp-11-21">5.1 Five Proposals Form a Progressive Chain from Single-Core to Dual-Core SMP (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-21 15:16 to 17:40 (submitted). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12077">#12077</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12078">#12078</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12079">#12079</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12080">#12080</a>, <a href="https://github.com/RT-Thread/rt-thread/pull/12081">#12081</a>.</p>
+
+<p>All five were submitted by cms19859230182-lang and target the same board: the Avaota F2 based on the Allwinner V861. The BSP directory is bsp/allwinner/avaota-f2.</p>
+
+<p>The chain has five steps: C907 single-core board support, the E907 heterogeneous side, hardware MSGBOX and OpenAMP-shaped endpoints, MMC card detection and sector reads, and C907 dual-core SMP.</p>
+
+<p>Each step leaves an on-board pass marker, in order: HETERO-OK, RPMSG-OK, OPENAMP-EPT-OK, mmc0 card OK, and SMP-OK hart0=0 hart1=1.</p>
+
+<p>The dependencies form a chain. #12078 depends on #12077, #12079 on #12078, #12080 on #12079, and #12081 on #12080.</p>
+
+<p>As a result, the line counts of the five proposals are cumulative and cannot be summed. #12081 lists 79 files and 6,092 added lines, which include the content of the first four.</p>
+
+<p>The descriptions state their boundaries. #12079 specifies OpenAMP-shaped named endpoints, not the full libmetal and virtio-rpmsg stack; #12080 states that no filesystem or block-write support is claimed.</p>
+
+<p><strong>Assessment</strong>: This is a BSP bring-up split into verifiable milestones. The basis is that each step has its own pass marker and acceptance document, and the dependencies form a chain.</p>
+
+<h3 id="52-maintainer-review-acceptance-file-rejected-toolchain-switched-to-env-2x-and-sdk-11-21">5.2 Maintainer Review: Acceptance File Rejected, Toolchain Switched to env 2.x and sdk (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-21 18:44 and 18:46 (review). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12077">#12077 review</a>.</p>
+
+<p>Two inline comments. The first targets bsp/allwinner/avaota-f2/ACCEPTANCE.md, stating “the submission of this file is not accepted.”</p>
+
+<p>The second targets the README. It suggests switching to env 2.x and managing toolchain installation and removal via the sdk command.</p>
+
+<p>The maintainer added that when a toolchain already exists locally, simple configuration suffices for automatic detection and use.</p>
+
+<p>The author replied on November 22 at 16:20 with “Fine, I’ll delete this file,” and wrote in the general comment at 16:32 the same day, “All changes done, please review.”</p>
+
+<p><strong>Assessment</strong>: The entry ticket for a new BSP is not feature count but consistency with existing engineering conventions. The basis is that the review raised only documentation and toolchain points and did not question the driver implementation.</p>
+
+<h3 id="53-chip-side-dual-core-c907-plus-e907-with-rvv-10-11-23">5.3 Chip Side: Dual-Core C907 plus E907, with RVV 1.0 (11-23)</h3>
+
+<p><strong>Date</strong>: 2026-11-23 (spec verification). <strong>Source</strong>: <a href="https://www.allwinnertech.com/index.php?a=index&amp;c=product&amp;id=148&amp;solveid=40">Allwinner V861 product page</a>, <a href="https://docs.aw-ol.com/docs/soc/v861">Allwinner Online V861 documentation</a>.</p>
+
+<p>The V861 is positioned as a network camera processor. It has dual-core XuanTie C907 at up to 1.4GHz, with the RV64GCBV and RV32GCBV instruction sets.</p>
+
+<p>Each of the two big cores has a 128-bit vector unit supporting RVV 1.0; both integrate single- and double-precision floating-point units.</p>
+
+<p>The little core is a single XuanTie E907 at up to 800MHz, with the RV32IMAFC instruction set. It also has a 1 TOPS INT8 neural network accelerator; on the imaging side the vendor claims AI-ISP 2.0.</p>
+
+<p>On the board side, the Avaota F2 is open-source hardware, 40 × 22 mm, with 128MB DDR3 and 16MB SPI NOR, and the camera connects via MIPI CSI.</p>
+
+<p>The repository status was also checked. On master, bsp/allwinner already contains the d1 and d1s directories; avaota-f2 does not yet exist.</p>
+
+<p><strong>Assessment</strong>: This is a new position for RT-Thread on RISC-V camera SoCs. The basis is that Allwinner’s previous RT-Thread BSPs were the D1 series, while the V861 belongs to the IPC product line, with vector units and an NPU.</p>
+
+<h2 id="vi-review-queue-and-collaboration">VI. Review Queue and Collaboration</h2>
+
+<h3 id="61-roughly-110-hours-with-zero-commits-and-zero-merges-queue-grows-from-142-to-151-11-23">6.1 Roughly 110 hours with zero commits and zero merges, queue grows from 142 to 151 (11-23)</h3>
+
+<p><strong>Date</strong>: 2026-11-23 (queue counts). <strong>Sources</strong>: <a href="https://github.com/RT-Thread/rt-thread/pulls">pull request list</a>, <a href="https://github.com/RT-Thread/rt-thread/commits/master">commit list</a>.</p>
+
+<p>The latest commit in the main repository is 6fdfe700, timestamped November 18 at 17:29. That is now roughly 110 hours ago.</p>
+
+<p>Zero merges in the window. The last merge was #12066, with the same timestamp as the latest commit.</p>
+
+<p>Open pull requests: 151, up from 142 last period. In the window, 10 were opened and 1 closed; 142 plus 10 minus 1 is exactly 151.</p>
+
+<p>Open issues: 342, up from 341 last period. In the window, 2 were opened and 1 closed; the numbers line up the same way.</p>
+
+<p>Releases and tags are also unchanged, with the latest still v5.3.0, released September 10.</p>
+
+<p><strong>Assessment</strong>: This is a scheduling phenomenon, not a decline in activity. The basis: 21 pull requests were updated and 10 new ones submitted in the window, with all the action on the pull request side.</p>
+
+<h3 id="62-thread-tracking-pull-request-closed-after-a-year-and-two-months-11-21">6.2 Thread-tracking pull request closed after a year and two months (11-21)</h3>
+
+<p><strong>Date</strong>: 2026-11-21 23:28 (closed). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/10689">#10689</a>.</p>
+
+<p>The pull request was opened on September 12, 2025, adding two fields to the thread list: startup count and last switch time.</p>
+
+<p>The author validated it on a single-core M4 and posted full output. He noted himself that he had not used the SMP portion.</p>
+
+<p>The maintainer’s comment on September 23, 2025 was that last time is only a very weak reference, that real-time systems do not pay much attention to this value, and that the change was of little significance. The pull request carried the -1 label. It was closed on November 21 without being merged.</p>
+
+<p><strong>Assessment</strong>: The closure was based on a design trade-off, not code quality. The basis: the dispute centered on whether these two metrics deserved a place in the thread list, and the author had already provided usable output.</p>
+
+<h3 id="63-two-new-repositories-bring-rt-thread-into-carplay-and-smartwatches-11-22">6.3 Two new repositories bring RT-Thread into CarPlay and smartwatches (11-22)</h3>
+
+<p><strong>Date</strong>: 2026-11-22 (pushed). <strong>Sources</strong>: <a href="https://github.com/boa-z/rt-carplay">rt-carplay</a>, <a href="https://github.com/fbiego/helios-sf32">helios-sf32</a>.</p>
+
+<p>rt-carplay is a CarPlay receiver SDK written in C under GPL-3.0. The repository was created on November 15, with a push in the early hours of November 23.</p>
+
+<p>It separates the protocol core and portable runtime into parts that do not depend on RT-Thread headers, then provides two host ports: RT-Thread and embedded Linux. The README is restrained about capability boundaries, stating explicitly that these interfaces do not claim official Ultra support.</p>
+
+<p>helios-sf32 is LVGL smartwatch firmware for the SiFli SF32LB52 development board, built on the OpenSiFli SDK and RT-Thread. It was pushed on the evening of November 22 and has 12 stars.</p>
+
+<p><strong>Assessment</strong>: Neither project is in the official repository, but both treat RT-Thread as a target runtime. The basis: both the READMEs and the repository topics explicitly mention an RT-Thread port or an RTOS dependency.</p>
+
+<h2 id="vii-summary-and-trend-observations">VII. Summary and Trend Observations</h2>
+
+<h3 id="71-the-weekends-incremental-activity-was-entirely-on-the-pull-request-side">7.1 The weekend’s incremental activity was entirely on the pull request side</h3>
+
+<p>Over three days the main repository saw zero commits and zero merges, with ten new pull requests and a net queue increase of nine.</p>
+
+<p><strong>Assessment</strong>: The weight of this window is in pull requests, not in landed code. The basis: the only action that would have reached the main branch did not happen, while the pull request side carried two complete technical threads.</p>
+
+<h3 id="72-three-pull-requests-carry-traces-of-ai-collaboration">7.2 Three pull requests carry traces of AI collaboration</h3>
+
+<p>#12073 includes a Claude session link, and #12074 and #12082 note assistance from OpenAI Codex. The three span the serial framework, ROMFS tooling, and documentation.</p>
+
+<p>Their shape is similar: the problem is clearly located, the change surface is small, and the verification method is spelled out. All three also add test cases or verification commands.</p>
+
+<p><strong>Assessment</strong>: AI collaboration has become a standard way of writing in this batch of pull requests, no longer a rare case. The basis: three of the ten new pull requests proactively disclosed it, and all wrote specific commands in their verification sections.</p>
+
+<h3 id="73-the-entry-ticket-for-a-new-bsp-is-consistency-with-existing-conventions">7.3 The entry ticket for a new BSP is consistency with existing conventions</h3>
+
+<p>The five V861 pull requests cover a very broad functional surface, yet the maintainer’s comments landed on two documents: the acceptance file is not accepted, and the toolchain must go through env 2.x and sdk.</p>
+
+<p><strong>Assessment</strong>: BSP review is gated on engineering conventions, not driver capability. The basis: in the same batch, the driver implementation was not questioned; what was called out was the process documentation and how the toolchain is obtained.</p>
+
+<h3 id="74-a-longer-queue-does-not-mean-worsening-backlog">7.4 A longer queue does not mean worsening backlog</h3>
+
+<p>Pull requests went from 142 to 151, issues from 341 to 342. Merges were zero, but 21 pull requests were updated.</p>
+
+<p><strong>Assessment</strong>: This is a gap in the merge window, not a review standstill. The basis: the maintainers were still reviewing the V861 pull requests over these two days and filed a documentation fix themselves the same day, with all the action in review and patching.</p>
+
+<h3 id="75-after-the-last-commit">7.5 After the last commit</h3>
+
+<p>6fdfe700 is a CI configuration change that selects the memory heap in mem.cfg. Since then there have been no commits on the main branch.</p>
+
+<p><strong>Assessment</strong>: When the next merge lands matters more than how many land. The basis: the queue already holds large changes such as the CAN framework refactor, and once the review cycle ends, landings will come in a cluster.</p>
+
+<h2 id="appendix-source-verification-table">Appendix: Source Verification Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Verification Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread official news API</td>
+      <td>Five items, latest 11-06 15:54, zero new items in window</td>
+    </tr>
+    <tr>
+      <td>Corporate website news center</td>
+      <td>Server-side rendering parseable, latest 11-03, zero new posts in window; missing the 11-06 item</td>
+    </tr>
+    <tr>
+      <td>Main repo commits</td>
+      <td>Zero commits in window, master latest 6fdfe700 (11-18 17:29), approx. 110 hours</td>
+    </tr>
+    <tr>
+      <td>PRs merged in window</td>
+      <td>0 (last was #12066, 11-18 17:29)</td>
+    </tr>
+    <tr>
+      <td>PRs opened in window</td>
+      <td>10: #12073 through #12081, #12083</td>
+    </tr>
+    <tr>
+      <td>PRs closed in window</td>
+      <td>1: #10689, not merged</td>
+    </tr>
+    <tr>
+      <td>Open PRs / issues</td>
+      <td>151 / 342 (previous period 142 / 341)</td>
+    </tr>
+    <tr>
+      <td>releases and tags</td>
+      <td>Latest remains v5.3.0 (2026-09-10), no new items in window</td>
+    </tr>
+    <tr>
+      <td>RT-Thread org repos</td>
+      <td>Zero pushes in window, most recent was rt-thread main repo on 11-18</td>
+    </tr>
+    <tr>
+      <td>Package index repo packages</td>
+      <td>Zero commits, last push 11-18 09:45</td>
+    </tr>
+    <tr>
+      <td>Windows tools repo env-windows</td>
+      <td>Zero commits, last push 11-16 17:14</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread active repos</td>
+      <td>2 repos: rt-carplay (CarPlay receiver SDK), helios-sf32 (SF32LB52 watch firmware)</td>
+    </tr>
+    <tr>
+      <td>Google News Chinese</td>
+      <td>1 item in three-day window, a Moore Threads stock price piece, unrelated to topic</td>
+    </tr>
+    <tr>
+      <td>Google News English</td>
+      <td>Zero hits in three-day window, bare queries work normally, channel failure ruled out</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>Both candidates were literal “thread” false matches, excluded</td>
+    </tr>
+    <tr>
+      <td>Allwinner V861 specs</td>
+      <td>Dual-core C907 (RV64GCBV, RVV 1.0) + E907 (RV32IMAFC), 1 TOPS NPU</td>
+    </tr>
+    <tr>
+      <td>Security issues</td>
+      <td>#11327 virtio trust boundary, released after claim; #12072 serial V1 out-of-bounds, PR submitted</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="complete-source-list">Complete Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> Official news API — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[2]</strong> RT-Thread News Center — <a href="https://www.rt-thread.com/col19/list.html">https://www.rt-thread.com/col19/list.html</a></li>
+  <li><strong>[3]</strong> Issue #11327 (virtio trust boundary) — <a href="https://github.com/RT-Thread/rt-thread/issues/11327">https://github.com/RT-Thread/rt-thread/issues/11327</a></li>
+  <li><strong>[4]</strong> PR #11232 (new VirtIO version) — <a href="https://github.com/RT-Thread/rt-thread/pull/11232">https://github.com/RT-Thread/rt-thread/pull/11232</a></li>
+  <li><strong>[5]</strong> PR #12075 (power management registration race) — <a href="https://github.com/RT-Thread/rt-thread/pull/12075">https://github.com/RT-Thread/rt-thread/pull/12075</a></li>
+  <li><strong>[6]</strong> Issue #10075 (PM registration hang) — <a href="https://github.com/RT-Thread/rt-thread/issues/10075">https://github.com/RT-Thread/rt-thread/issues/10075</a></li>
+  <li><strong>[7]</strong> PR #12054 (CAN framework refactor) — <a href="https://github.com/RT-Thread/rt-thread/pull/12054">https://github.com/RT-Thread/rt-thread/pull/12054</a></li>
+  <li><strong>[8]</strong> Issue #11767 (CAN refactor proposal) — <a href="https://github.com/RT-Thread/rt-thread/issues/11767">https://github.com/RT-Thread/rt-thread/issues/11767</a></li>
+  <li><strong>[9]</strong> Issue #12072 (serial V1 reopen out-of-bounds) — <a href="https://github.com/RT-Thread/rt-thread/issues/12072">https://github.com/RT-Thread/rt-thread/issues/12072</a></li>
+  <li><strong>[10]</strong> PR #12073 (reject reopen with mode change) — <a href="https://github.com/RT-Thread/rt-thread/pull/12073">https://github.com/RT-Thread/rt-thread/pull/12073</a></li>
+  <li><strong>[11]</strong> PR #12076 (SWM341 CAN length truncation) — <a href="https://github.com/RT-Thread/rt-thread/pull/12076">https://github.com/RT-Thread/rt-thread/pull/12076</a></li>
+  <li><strong>[12]</strong> PR #12074 (mkromfs UTF-8 alignment) — <a href="https://github.com/RT-Thread/rt-thread/pull/12074">https://github.com/RT-Thread/rt-thread/pull/12074</a></li>
+  <li><strong>[13]</strong> Issue #12082 (macOS QEMU documentation) — <a href="https://github.com/RT-Thread/rt-thread/issues/12082">https://github.com/RT-Thread/rt-thread/issues/12082</a></li>
+  <li><strong>[14]</strong> PR #12083 (same documentation fix) — <a href="https://github.com/RT-Thread/rt-thread/pull/12083">https://github.com/RT-Thread/rt-thread/pull/12083</a></li>
+  <li><strong>[15]</strong> PR #12077 (V861 C907 board port) — <a href="https://github.com/RT-Thread/rt-thread/pull/12077">https://github.com/RT-Thread/rt-thread/pull/12077</a></li>
+  <li><strong>[16]</strong> PR #12078 (V861 E907 heterogeneous) — <a href="https://github.com/RT-Thread/rt-thread/pull/12078">https://github.com/RT-Thread/rt-thread/pull/12078</a></li>
+  <li><strong>[17]</strong> PR #12079 (V861 MSGBOX and OpenAMP shape endpoints) — <a href="https://github.com/RT-Thread/rt-thread/pull/12079">https://github.com/RT-Thread/rt-thread/pull/12079</a></li>
+  <li><strong>[18]</strong> PR #12080 (V861 MMC) — <a href="https://github.com/RT-Thread/rt-thread/pull/12080">https://github.com/RT-Thread/rt-thread/pull/12080</a></li>
+  <li><strong>[19]</strong> PR #12081 (V861 dual-core SMP) — <a href="https://github.com/RT-Thread/rt-thread/pull/12081">https://github.com/RT-Thread/rt-thread/pull/12081</a></li>
+  <li><strong>[20]</strong> Allwinner V861 product page — <a href="https://www.allwinnertech.com/index.php?a=index&amp;c=product&amp;id=148&amp;solveid=40">https://www.allwinnertech.com/index.php?a=index&amp;c=product&amp;id=148&amp;solveid=40</a></li>
+  <li><strong>[21]</strong> Allwinner Online V861 documentation — <a href="https://docs.aw-ol.com/docs/soc/v861">https://docs.aw-ol.com/docs/soc/v861</a></li>
+  <li><strong>[22]</strong> PR #10689 (thread tracing) — <a href="https://github.com/RT-Thread/rt-thread/pull/10689">https://github.com/RT-Thread/rt-thread/pull/10689</a></li>
+  <li><strong>[23]</strong> rt-carplay — <a href="https://github.com/boa-z/rt-carplay">https://github.com/boa-z/rt-carplay</a></li>
+  <li><strong>[24]</strong> helios-sf32 — <a href="https://github.com/fbiego/helios-sf32">https://github.com/fbiego/helios-sf32</a></li>
+  <li><strong>[25]</strong> Main repo commit list — <a href="https://github.com/RT-Thread/rt-thread/commits/master">https://github.com/RT-Thread/rt-thread/commits/master</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic Page Needs
+    ================================================== -->
+  <meta charset="utf-8">
+  <!-- 已移除 base 标签：避免把域名写死进页面，链接在当前域名下解析（支持任意域名部署） -->
+  <!-- 双域名语言默认：kubuds.cn 打开根路径时自动进入中文版 /ch/；kubuds.io 保持英文 -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isKubudsCn = (host === 'kubuds.cn' || host.indexOf('.kubuds.cn') > -1);
+      if (isKubudsCn) {
+        var path = window.location.pathname;
+        if (path === '/' || path === '/index.html') {
+          window.location.replace('/ch/');
+        }
+      }
+    })();
+  </script>
+  <!-- 配色模式：尽早应用，避免首屏出现浅色闪一下再变深色（FOUC）。
+       优先级：localStorage > 系统偏好 > 默认 light，与 assets/js/theme.js 保持一致。 -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kubuds-theme');
+        var theme = (stored === 'dark' || stored === 'light')
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <!-- Mobile Specific Metas
+    ================================================== -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Shanghai kubuds Technology Co., LTD">
+
+  <!-- RSS 订阅点自动发现（按语言给出该语言的 feed；报告页额外给出对应主题/类型） -->
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · 全部主题" href="/rss/en/all.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread" href="/rss/en/rt-thread.xml">
+  
+  <link rel="alternate" type="application/rss+xml" title="苦芽科技 · rt-thread · 日报" href="/rss/en/rt-thread/daily.xml">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="author" content="kubuds">
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/img/home/home.webp" as="image" type="image/webp">
+  <link rel="preload" href="/assets/css/style.css" as="style">
+  <link rel="preload" href="/assets/js/lazy-loading.js" as="script">
+
+  <!-- bootstrap.min css -->
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/bootstrap.min.css">
+  <!-- Ionic Icon Css -->
+  <link rel="stylesheet" href="/assets/plugins/Ionicons/css/ionicons.min.css">
+  <!-- animate.css -->
+  <link rel="stylesheet" href="/assets/plugins/animate-css/animate.css" media="print" onload="this.media='all'">
+  <!-- Magnify Popup -->
+  <link rel="stylesheet" href="/assets/plugins/magnific-popup/magnific-popup.css" media="print"
+    onload="this.media='all'">
+  <!-- Slick CSS -->
+  <link rel="stylesheet" href="/assets/plugins/slick/slick.css" media="print" onload="this.media='all'">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Lazy Loading Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/lazy-loading.css">
+
+  <!-- Dark 模式配色（在 style.css 之后加载，只覆盖配色，不改布局） -->
+  <link rel="stylesheet" href="/assets/css/dark-mode.css">
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/assets/js/sw.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+</head>
+<!-- Header -->
+<header class="navigation fixed-top d-flex align-items-center">
+  <div class="container">
+
+    <!-- <div class="logo me-auto"></div> -->
+    <nav class="navbar navbar-expand-lg p-0">
+      
+      <!-- <h2><a href="/index.html">Kubuds</a></h2> -->
+      <a class="navbar-brand" href="/index.html">
+        <img class="logo_ch" src="/assets/img/logos/kubuds_ch.png" alt="苦芽">
+        <img class="logo" src="/assets/img/logos/kubuds_en.webp" alt="Kubuds">
+      </a>
+      
+
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+        aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="ion-android-menu"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-auto" id="navbarsExample09">
+        <ul id="navbar-main" class="navbar-nav ml-auto ">
+          <!-- <li class="nav-item active">
+                
+                <a class="nav-link" href="/">Home</a>
+                
+              </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Services <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/service/simulator.html">Simulator</a></li>
+              <li><a class="dropdown-item" href="/service/os.html">Operating System</a></li>
+              <li><a class="dropdown-item" href="/service/toolchain.html">Toolchain</a></li>
+              <li><a class="dropdown-item" href="/service/chip.html">Embedded Chip</a></li>
+
+              <li><a class="dropdown-item" href="/service/ide.html">IDE</a></li>
+              <li><a class="dropdown-item" href="/service/aisys.html">AI System</a></li>
+              <li><a class="dropdown-item" href="/service/consultation.html">Consultation</a></li>
+              
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Solutions <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              <li><a class="dropdown-item" href="/solution/aosp.html">AOSP</a></li>
+              
+            </ul>
+          </li>
+          <!-- 社区：2026-09-18 起中英文均显示；加入各主题日报/周报索引入口 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown-community" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Community <span
+                class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-community">
+              
+              <li><a class="dropdown-item" href="/community/openeuler.html">openEuler</a></li>
+              <!-- 各主题日报/周报索引页的 permalink 为 /en/<主题>/ 与 /ch/<主题>/ -->
+              <li><a class="dropdown-item" href="/en/flagos/">FlagOS</a></li>
+              <li><a class="dropdown-item" href="/en/risc-v/">RISC-V</a></li>
+              <li><a class="dropdown-item" href="/en/rt-thread/">RT-Thread</a></li>
+              <li><a class="dropdown-item" href="/en/tilelang/">TileLang</a></li>
+              <li><a class="dropdown-item" href="/en/ruyiai/">RuyiAI</a></li>
+              
+            </ul>
+          </li>
+          <!-- News & Events：2026-09-18 从 About 下拉移到顶级导航 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/post.html" style="white-space: nowrap;">News & Events</a>
+            
+          </li>
+          <!-- 关于我们：2026-09-19 去掉下拉（下拉内仅一个页面），改为直接链接 -->
+          <li class="nav-item">
+            
+            <a class="nav-link" href="/about.html" style="white-space: nowrap;">About Us</a>
+            
+          </li>
+
+          <!-- <li class="nav-item ">
+            
+            <a class="nav-link" href="/career.html">Careers</a>
+            
+          </li> -->
+        </ul>
+        <ul class="navbar-nav ml-auto navbar-language">
+          <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 -960 960 960" width="1.25rem"
+                fill="#211f1f">
+                <path
+                  d="M480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm0-75q17-17 34-63.5T540-336H420q9 55 26 101.5t34 63.5Zm-91-10q-14-30-24.5-69T347-336H204q29 57 77 97.5T389-181Zm182 0q60-17 108-57.5t77-97.5H613q-7 47-17.5 86T571-181ZM177-408h161q-2-19-2.5-37.5T335-482q0-18 .5-35.5T338-552H177q-5 19-7 36.5t-2 35.5q0 18 2 35.5t7 36.5Zm234 0h138q2-20 2.5-37.5t.5-34.5q0-17-.5-35t-2.5-37H411q-2 19-2.5 37t-.5 35q0 17 .5 35t2.5 37Zm211 0h161q5-19 7-36.5t2-35.5q0-18-2-36t-7-36H622q2 19 2.5 37.5t.5 36.5q0 18-.5 35.5T622-408Zm-9-216h143q-29-57-77-97.5T571-779q14 30 24.5 69t17.5 86Zm-193 0h120q-9-55-26-101.5T480-789q-17 17-34 63.5T420-624Zm-216 0h143q7-47 17.5-86t24.5-69q-60 17-108 57.5T204-624Z" />
+              </svg>
+              English <span class="ion-ios-arrow-down"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ch/rt-thread/daily/2026/1119.html">
+                  中文</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ru/rt-thread/daily/2026/1119.html">
+                  Русский</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ja/rt-thread/daily/2026/1119.html">
+                  日本語</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/ko/rt-thread/daily/2026/1119.html">
+                  한국어</a></li>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <li><a class="dropdown-item" href="/tw/rt-thread/daily/2026/1119.html">
+                  繁體中文</a></li>
+              
+              
+              
+              
+            </ul>
+          </li>
+          <!-- 配色模式切换（light / dark）：滑动开关，状态由 assets/js/theme.js 维护 -->
+          <li class="nav-item">
+            <button class="theme-toggle" type="button" role="switch" aria-checked="false"
+              aria-label="切换深浅配色模式" title="切换到深色模式">
+              <span class="tt-icon tt-icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+                  <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+                </svg>
+              </span>
+              <span class="tt-track"><span class="tt-thumb"></span></span>
+              <span class="tt-icon tt-icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="1rem" height="1rem" fill="currentColor">
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                </svg>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+  </div>
+</header>
+<!-- 配色模式切换（light / dark）：放在最前，尽早绑定开关 -->
+<script src="/assets/js/theme.js"></script>
+<!-- Main jQuery -->
+<script src="/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.1 -->
+<script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- slick Carousel -->
+<script src="/assets/plugins/slick/slick.min.js"></script>
+<script src="/assets/plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<!-- filter -->
+<script src="/assets/plugins/shuffle/shuffle.min.js"></script>
+<script src="/assets/plugins/SyoTimer/jquery.syotimer.min.js"></script>
+<!-- Google Map -->
+<!-- <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="/assets/plugins/google-map/map.js"></script> -->
+
+<!-- Lazy Loading Script -->
+<script src="/assets/js/lazy-loading.js"></script>
+
+<script src="/assets/js/main.js"></script>
+
+<head>
+    <title>RT-Thread Daily Intelligence Report (2026-11-19) - Kubuds</title>
+</head>
+
+<body>
+    <main id="main">
+        <section class="section-top section post-detail-section">
+            <div class="container section-top">
+                <div class="row section-top ">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <!-- 面包屑导航 -->
+                        <nav class="breadcrumb-nav">
+                            <ol class="breadcrumb">
+                                
+                                <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+                                <li class="breadcrumb-item"><a href="/post.html#news-list" class="news-list-link">News & Events</a></li>
+                                <li class="breadcrumb-item active">RT-Thread Daily Intelligence Report (2026-11-19)</li>
+                                
+                            </ol>
+                        </nav>
+                        <div class="post-content-wrapper">
+                            <div class="post-header text-center">
+                                <h4>RT-Thread Daily Intelligence Report (2026-11-19)</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">2026-11-19</span>
+                                    <span class="post-author">Kubuds</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p><strong>Research window</strong>: 2026-11-18 08:00 ~ 2026-11-19 08:00 (Beijing time, 24 hours)</p>
+
+<p><strong>Sources</strong>: RT-Thread official news API (category rt_org), GitHub main repository commits and PRs, releases and tags. Also includes pushes across all RT-Thread org repos and the package index repo packages. Supplementary channels are the Windows tools repo env-windows, active repos under topic:rt-thread, Google News (via proxy), and Hacker News.</p>
+
+<hr />
+
+<h2 id="index-for-this-issue">Index for This Issue</h2>
+
+<ul>
+  <li>I. Device Layer
+    <ul>
+      <li>A 2021 issue, closed by changing the encoding (11-18)</li>
+      <li>Where the codes collide: fcntl’s 1 through 4 share values with device commands (11-18)</li>
+      <li>Fourteen files changed along with it, spanning BSPs and rt-link (11-18)</li>
+    </ul>
+  </li>
+  <li>II. Testing and CI
+    <ul>
+      <li>memheap test cases silently dropped on BSPs without MEMHEAP (11-18)</li>
+      <li>Mixed path separators in the utest documentation (11-18)</li>
+      <li>Three commits in the early hours, one landed the same day (11-18)</li>
+    </ul>
+  </li>
+  <li>III. Packages and Ecosystem
+    <ul>
+      <li>AI Agent package adds A2A channel and layered memory (11-18)</li>
+    </ul>
+  </li>
+  <li>IV. Official and Community
+    <ul>
+      <li>Official news API sees no new items for the ninth consecutive issue (11-19)</li>
+      <li>No new releases, no new tags (11-19)</li>
+    </ul>
+  </li>
+  <li>V. Review Queue
+    <ul>
+      <li>RH850 port grows to 52 files within a week (11-18)</li>
+      <li>The other three touched only on timestamps (11-18)</li>
+      <li>No new proposals or issues in the window (11-19)</li>
+    </ul>
+  </li>
+  <li>VI. Summary and Trends
+    <ul>
+      <li>Today’s weight rests on a single proposal</li>
+      <li>Silent dropping is the hardest gap to spot on the testing side</li>
+      <li>After command values shift, out-of-repo code must verify itself</li>
+      <li>The second change to the AI Agent package</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="i-device-layer-redrawing-the-command-space">I. Device Layer: Redrawing the Command Space</h2>
+
+<h3 id="11-a-2021-issue-closed-by-changing-the-encoding-11-18">1.1 A 2021 Issue, Closed by Changing the Encoding (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 09:11 (merged). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11881">#11881</a>.</p>
+
+<p>Issue #5073 was filed on September 17, 2021. Its title says that serial ports going through the POSIX ioctl interface cannot set low-level parameters and never reach the underlying config, with the cause traced to “the macro-defined value being 3.” The issue remains open to this day.</p>
+
+<p>PR #11881 was opened on October 17, 2026. At 9:11 a.m. on November 18, Rbb666 merged it. That is 5 years and 2 months from report to merge, and 32 days from proposal to merge.</p>
+
+<p>Commit 629a7970. The scope is 14 files, 80 lines added, 57 lines removed. The approach is not to patch a single driver but to replace the numbering scheme for device control commands wholesale.</p>
+
+<h3 id="12-where-the-collision-sits-fcntls-1-to-4-share-values-with-device-commands-11-18">1.2 Where the Collision Sits: fcntl’s 1 to 4 Share Values with Device Commands (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 (PR body). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/issues/5073">#5073</a>.</p>
+
+<p>The PR body lays the conflict out in a table. On the POSIX side, <code class="highlighter-rouge">F_GETFD</code>, <code class="highlighter-rouge">F_SETFD</code>, <code class="highlighter-rouge">F_GETFL</code>, and <code class="highlighter-rouge">F_SETFL</code> are 1, 2, 3, and 4 respectively. In the old definitions, <code class="highlighter-rouge">RT_DEVICE_CTRL_RESUME</code>, <code class="highlighter-rouge">SUSPEND</code>, <code class="highlighter-rouge">CONFIG</code>, and <code class="highlighter-rouge">CLOSE</code> are 0x01, 0x02, 0x03, and 0x04.</p>
+
+<p>Both command sets share a single int argument. <code class="highlighter-rouge">F_GETFL</code> collides with <code class="highlighter-rouge">CONFIG</code> at 3, and <code class="highlighter-rouge">F_SETFL</code> collides with <code class="highlighter-rouge">CLOSE</code> at 4.</p>
+
+<p>The path is spelled out as well. <code class="highlighter-rouge">fcntl</code> goes through <code class="highlighter-rouge">dfs_file_ioctl</code> and <code class="highlighter-rouge">dfs_file_fcntl</code> to <code class="highlighter-rouge">fops-&gt;ioctl</code>. When a driver matches by numeric value, it treats <code class="highlighter-rouge">F_GETFL</code> as <code class="highlighter-rouge">CONFIG</code>. This is precisely the mechanical cause of “cannot set parameters” in issue #5073.</p>
+
+<p>The new encoding moves device classes into the high byte.
+The base macro is <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Type)</code>. It is the class number plus one, times 0x100. The high byte holds the class number, the low byte the index within the class.</p>
+
+<p>The nine generic commands switch to <code class="highlighter-rouge">BASE(Unknown) + 1..9</code>, landing at 0x2001 through 0x2009. This is fully disjoint from POSIX’s 0 to 4.</p>
+
+<p>The old <code class="highlighter-rouge">RT_DEVICE_CTRL_MASK = 0x1f</code> looked only at the low 5 bits and is incompatible with the new encoding. The author grepped the whole repo, found no callers, and deleted it. It is replaced by <code class="highlighter-rouge">RT_DEVICE_CTRL_CLASS_MASK = 0xff00</code> and <code class="highlighter-rouge">RT_DEVICE_CTRL_INDEX_MASK = 0x00ff</code>.</p>
+
+<p>One detail is worth noting. The “verified BSPs and configs” field in the PR is empty, and the <code class="highlighter-rouge">.config</code> and action links are not filled in either.</p>
+
+<h3 id="13-fourteen-files-follow-including-bsps-and-rt-link-11-18">1.3 Fourteen Files Follow, Including BSPs and rt-link (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 (commit diff surface). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commit/629a7970">629a7970</a>.</p>
+
+<p>Of the files that follow the change, eight are efm32 board-level drivers. acmp, adc, ethernet, iic, leuart, sdcard, timer, and usart each change three to four lines of command values. hk32f030c8-mini’s <code class="highlighter-rouge">rtconfig.py</code> changes by one line.</p>
+
+<p>The header-side changes are more concentrated.
+In <code class="highlighter-rouge">dev_pin.h</code>, <code class="highlighter-rouge">PIN_CONFIG_BIAS_BUS_HOLD</code> was originally the first enum entry with value 0,
+and is now <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Pin) + 1</code>.</p>
+
+<p><code class="highlighter-rouge">dev_serial_v2.h</code> turns three bare macros into an enum. They are <code class="highlighter-rouge">RT_HW_SERIAL_CTRL_GETC</code>, <code class="highlighter-rouge">PUTC</code>, and <code class="highlighter-rouge">GET_DMA_PING_BUF</code>. Values start at <code class="highlighter-rouge">RT_DEVICE_CTRL_BASE(Char) + 0x40</code>, with a note that 0x40 through 0x4f are reserved for hardware serial control.</p>
+
+<p>Two rt-link files follow as well. <code class="highlighter-rouge">include/rtdef.h</code> is the largest single change, with 34 lines added and 16 removed. A line is added to the version comment: 2026-11-07, CXSforHPU, class-encode RT_DEVICE_CTRL_* commands.</p>
+
+<p><strong>Assessment</strong>: The nine generic commands move from 0x01–0x09 to 0x2001–0x2009. Out-of-tree BSPs or packages that hard-code the old values will take the wrong branch after upgrading. This is based on the commit syncing only 14 files inside the repo, leaving no compatibility macros, and the verified-BSP field being empty.</p>
+
+<h2 id="ii-tests-and-ci-wrap-up">II. Tests and CI Wrap-Up</h2>
+
+<h3 id="21-memheap-cases-silently-dropped-on-bsps-without-memheap-11-18">2.1 memheap Cases Silently Dropped on BSPs Without MEMHEAP (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 17:29 (merged). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12066">#12066</a>.</p>
+
+<p>The commit message spells out the causal chain. <code class="highlighter-rouge">RT_UTEST_MEMHEAP</code> depends on <code class="highlighter-rouge">RT_USING_MEMHEAP</code>. <code class="highlighter-rouge">mem.cfg</code> does not select it. So the memheap test group was not compiled in on BSPs without that config. The old <code class="highlighter-rouge">mem.conf</code> had it selected.</p>
+
+<p>The fix adds two lines to <code class="highlighter-rouge">.github/utest/configs/kernel/mem.cfg</code>. PR #12066 was opened at 3:13 a.m. that day and merged at 17:29, a 14-hour gap.</p>
+
+<p>This kind of gap does not fail the build, nor does it turn tests red. The report shows a pass; the dropped cases simply do not appear in the statistics.</p>
+
+<h3 id="22-mixed-path-separators-in-the-utest-docs-11-18">2.2 Mixed Path Separators in the utest Docs (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 10:01 (merged). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/commit/ebd32d7a">ebd32d7a</a>.</p>
+
+<p><code class="highlighter-rouge">components/utilities/utest/README.md</code> changes two lines, unifying mixed path separators. The author is sexenteen; written on November 16, merged on the morning of November 18. A documentation-level change with no behavioral impact.</p>
+
+<h3 id="23-three-overnight-prs-one-landed-the-same-day-11-18">2.3 Three Overnight PRs, One Landed the Same Day (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 (PR status). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/12064">#12064</a>.</p>
+
+<p>The three overnight PRs listed yesterday have taken different paths today. #12066 is merged. #12064 and #12065 remain open, last updated at 19:08 and 20:25 respectively.</p>
+
+<p>All three come from parthitce. #12065’s body states the test environment: <code class="highlighter-rouge">kernel_basic</code> on RH850 <code class="highlighter-rouge">qemu-rh850-u2c</code>. Under <code class="highlighter-rouge">-O2</code>, stack corruption crashes <code class="highlighter-rouge">rt_memmove</code>; after the fix, all 22 test cases pass.</p>
+
+<p>The defect in the test case itself is that it reads and writes 11 bytes against two arrays of 6-byte source and 10-byte destination.</p>
+
+<h2 id="iii-packages-and-ecosystem">III. Packages and Ecosystem</h2>
+
+<h3 id="31-ai-agent-package-adds-a2a-channel-and-tiered-memory-11-18">3.1 AI Agent Package Adds A2A Channel and Tiered Memory (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 09:45 (commit). <strong>Source</strong>: <a href="https://github.com/RT-Thread/packages/commit/6595550d">6595550d</a>.</p>
+
+<p>The package index repo received a commit touching only <code class="highlighter-rouge">ai/Agent/Kconfig</code>, with 378 lines added and 212 removed. The commit message lists three things.</p>
+
+<p>First, add a2a channel support. Second, add switches, capacity, and persistence options for tiered memory. Third, when persistence is enabled, automatically select DFS and the POSIX file interface at 4.1 or above, so users need not go back and add components.</p>
+
+<p>The package itself, <code class="highlighter-rouge">ai/Agent</code>, describes itself as “rtthread lightweight Agent package.” Keywords are ai, Agent, llm, toolcall. The repo points to the author’s own <code class="highlighter-rouge">CXSforHPU/Agent</code>, depending on cJSON, webclient, mbedTLS, and ulog.</p>
+
+<p>This is the second change to this menu in two days. On November 16 at 11:22, #2050 “Complete Agent config items, reorder menu by purpose” was merged, also touching this Kconfig. The author, CXSforHPU, also merged the command-encoding commit in 1.1 to the main repo today.</p>
+
+<h2 id="iv-official-and-community-activity">IV. Official and Community Activity</h2>
+
+<h3 id="41-ninth-consecutive-period-with-no-new-official-news-11-19">4.1 Ninth Consecutive Period with No New Official News (11-19)</h3>
+
+<p><strong>Date</strong>: 2026-11-19 (API check). <strong>Source</strong>: <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">API</a>.</p>
+
+<p>The API returns five items. The latest is still “From OS Foundation to AI Deployment: RT-Thread’s Full-Stack Capabilities Anchor Industrial Intelligent Upgrade” from November 6 at 15:54. Counting from November 7, this is the ninth consecutive period with zero additions.</p>
+
+<h3 id="42-no-new-release-no-new-tags-11-19">4.2 No New Release, No New Tags (11-19)</h3>
+
+<p><strong>Date</strong>: 2026-11-19 (release and tag check). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/releases">releases</a>.</p>
+
+<p>The latest release is v5.3.0, published on September 10. The tag list matches, with no additions in the window.</p>
+
+<p>The version comment on the main branch was already recorded as v5.4.0 on October 17. The reporter of issue #12063 also writes master as v5.4.0-dev. The official release remains 5.3.0, one development cycle apart.</p>
+
+<h2 id="v-review-queue">V. Review Queue</h2>
+
+<h3 id="51-rh850-port-grows-to-52-files-in-a-week-11-18">5.1 RH850 Port Grows to 52 Files in a Week (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 20:15 (last update). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11998">#11998</a>.</p>
+
+<p>The Renesas RH850 G4KH port and <code class="highlighter-rouge">qemu-rh850-u2c</code> board package were opened on November 6. Yesterday it was 48 files and 3921 lines added. Today it is 52 files and 4122 lines added—4 files and 201 lines in one day.</p>
+
+<p>The content falls into three parts. <code class="highlighter-rouge">libcpu/rh850</code> uses TRAP0 for thread switching, including nested interrupts, FPU context, and fault dumps. <code class="highlighter-rouge">bsp/renesas/rh850</code> has startup code, INTC, OSTM, and RLIN3 serial, with serial supporting only serial V1. CI builds both hard-float and soft-float variants, plus kernel utest on QEMU, with SHA-256 verification of the toolchain and QEMU packages before extraction.</p>
+
+<p>The author’s stated test environment is toolchain v1.2.0 (GCC 14.3, picolibc) and qemu-rh850 v1.2.0.</p>
+
+<p><strong>Assessment</strong>: This PR is still adding content, not waiting on review. This is based on file count and line count both rising within a day while the review-side comment count shows no corresponding growth.</p>
+
+<h3 id="52-the-other-three-only-moved-on-timestamps-11-18">5.2 The Other Three Only Moved on Timestamps (11-18)</h3>
+
+<p><strong>Date</strong>: 2026-11-18 19:26 (last update). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pull/11842">#11842</a>.</p>
+
+<p>HUST CSE’s fix for the devtmpfs overlong-path component stack overflow is still 5 commits, 4 files, 314 lines added, 8 removed. Consistent with yesterday’s check, last updated at 19:26. For #12064 and #12065, see 2.3.</p>
+
+<p>All three only refreshed their update times; no new commits came in.</p>
+
+<h3 id="53-no-new-prs-or-issues-in-the-window-11-19">5.3 No New PRs or Issues in the Window (11-19)</h3>
+
+<p><strong>Date</strong>: 2026-11-19 (PR and issue counts). <strong>Source</strong>: <a href="https://github.com/RT-Thread/rt-thread/pulls">PR list</a>.</p>
+
+<p>In the window, 0 new PRs and 0 new issues. Open PRs: 138, down from 141 last period. Open issues: 341, flat versus last period.</p>
+
+<h2 id="vi-summary-and-trend-observations">VI. Summary and Trend Observations</h2>
+
+<h3 id="61-todays-weight-rests-on-a-single-pr">6.1 Today’s Weight Rests on a Single PR</h3>
+
+<p>The window contains three commits, 16 files total, 84 lines added, 59 removed. Of these, 629a7970 alone accounts for 14 files, 80 added, 57 removed. The other two each touch one file and two lines each.</p>
+
+<p><strong>Assessment</strong>: Today is a redrawing of the device command space, not patch stacking. This is based on the changes concentrating in <code class="highlighter-rouge">include/rtdef.h</code> and four device headers, with the BSP side only following the value changes and no logic changes.</p>
+
+<h3 id="62-silent-dropping-is-the-hardest-test-side-gap-to-catch">6.2 Silent Dropping Is the Hardest Test-Side Gap to Catch</h3>
+
+<p>The memheap test group did not fail to compile; it was never compiled in. The build passes, the tests pass. Nothing looks wrong in the report.</p>
+
+<p><strong>Assessment</strong>: This class of problem can only be found by comparing configs, not by running tests. This is based on the mechanism stated in the commit message: <code class="highlighter-rouge">RT_UTEST_MEMHEAP</code> depends on <code class="highlighter-rouge">RT_USING_MEMHEAP</code>, and when <code class="highlighter-rouge">mem.cfg</code> does not select it the whole group is skipped, whereas the old <code class="highlighter-rouge">mem.conf</code> did select it.</p>
+
+<h3 id="63-after-the-command-values-shift-out-of-tree-code-must-check-itself">6.3 After the Command Values Shift, Out-of-Tree Code Must Check Itself</h3>
+
+<p><strong>Assessment</strong>: The nine generic commands move from 0x01–0x09 to 0x2001–0x2009; out-of-tree BSPs and packages that hard-code the old values will take the wrong branch after upgrading. This is based on the commit syncing only 14 files inside the repo, leaving no compatibility macros, and the verified-BSP field being empty.</p>
+
+<h3 id="64-the-second-change-to-the-ai-agent-package">6.4 The Second Change to the AI Agent Package</h3>
+
+<p>Menu reordered on November 16, A2A channel and tiered memory added on November 18. Both touched only Kconfig.</p>
+
+<p><strong>Assessment</strong>: This package’s configuration surface is expanding toward “protocol access + memory management,” no longer just feature switches. This is based on the second commit adding a2a channel plus memory capacity and persistence options, whereas the first only reordered the menu by purpose.</p>
+
+<h2 id="appendix-source-verification-table">Appendix: Source Verification Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Verification Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RT-Thread official news API</td>
+      <td>Five items, latest 11-06 15:54, ninth consecutive issue with zero new items</td>
+    </tr>
+    <tr>
+      <td>Official news page</td>
+      <td>Client-side rendered, items cannot be scraped; API is authoritative</td>
+    </tr>
+    <tr>
+      <td>Main repo commits</td>
+      <td>3 in window, 16 files, +84 / -59 lines</td>
+    </tr>
+    <tr>
+      <td>PRs merged in window</td>
+      <td>2: #11881 (command encoding), #12066 (mem.cfg)</td>
+    </tr>
+    <tr>
+      <td>PRs opened in window</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Issues opened in window</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Open PRs / issues</td>
+      <td>138 / 341 (previous issue 141 / 341)</td>
+    </tr>
+    <tr>
+      <td>releases and tags</td>
+      <td>Latest remains v5.3.0 (2026-09-10), no new items in window</td>
+    </tr>
+    <tr>
+      <td>Package index repo packages</td>
+      <td>1 in window (ai/Agent config, +378/-212)</td>
+    </tr>
+    <tr>
+      <td>Windows tools repo env-windows</td>
+      <td>Last push 11-16 17:14, zero commits in window</td>
+    </tr>
+    <tr>
+      <td>Other RT-Thread org repos</td>
+      <td>No pushes in window; top two by push recency are rt-thread, packages</td>
+    </tr>
+    <tr>
+      <td>topic:rt-thread active repos</td>
+      <td>5 repos; only zlgopen/awtk pushed two commits on 11-18 16:42 (bitmap font loading, framebuffer stride), general GUI improvements, no specific RT-Thread tie-in</td>
+    </tr>
+    <tr>
+      <td>Google News Chinese</td>
+      <td>Zero items in window; most recent is a contest grand-prize project share from 38.6 hours ago (covered yesterday); zero hits for 睿赛德 and 睿擎派 over three days</td>
+    </tr>
+    <tr>
+      <td>Google News English</td>
+      <td>Zero hits in three-day and seven-day windows; bare queries work normally, ruling out channel failure</td>
+    </tr>
+    <tr>
+      <td>HN Algolia</td>
+      <td>Both candidates were literal “thread” false matches, excluded</td>
+    </tr>
+    <tr>
+      <td>Security advisories</td>
+      <td>No RT-Thread entries, no new IDs this issue</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="full-source-list">Full Source List</h3>
+
+<ul>
+  <li><strong>[1]</strong> PR #11881 (device control commands encoded by class, fixing POSIX code collisions) — <a href="https://github.com/RT-Thread/rt-thread/pull/11881">https://github.com/RT-Thread/rt-thread/pull/11881</a></li>
+  <li><strong>[2]</strong> Issue #5073 (serial port cannot set low-level parameters via POSIX ioctl) — <a href="https://github.com/RT-Thread/rt-thread/issues/5073">https://github.com/RT-Thread/rt-thread/issues/5073</a></li>
+  <li><strong>[3]</strong> Commit 629a7970 (command encoding merged) — <a href="https://github.com/RT-Thread/rt-thread/commit/629a7970ebb0902383db6cbc003e5bc248ff76d6">https://github.com/RT-Thread/rt-thread/commit/629a7970ebb0902383db6cbc003e5bc248ff76d6</a></li>
+  <li><strong>[4]</strong> Commit ebd32d7a (utest README path separators) — <a href="https://github.com/RT-Thread/rt-thread/commit/ebd32d7a">https://github.com/RT-Thread/rt-thread/commit/ebd32d7a</a></li>
+  <li><strong>[5]</strong> Commit 6fdfe700 (mem.cfg selects RT_USING_MEMHEAP) — <a href="https://github.com/RT-Thread/rt-thread/commit/6fdfe700">https://github.com/RT-Thread/rt-thread/commit/6fdfe700</a></li>
+  <li><strong>[6]</strong> PR #12066 (mem.cfg selects MEMHEAP) — <a href="https://github.com/RT-Thread/rt-thread/pull/12066">https://github.com/RT-Thread/rt-thread/pull/12066</a></li>
+  <li><strong>[7]</strong> PR #12064 (sys/signal.h adopts picolibc types) — <a href="https://github.com/RT-Thread/rt-thread/pull/12064">https://github.com/RT-Thread/rt-thread/pull/12064</a></li>
+  <li><strong>[8]</strong> PR #12065 (klibc memmove test case boundaries) — <a href="https://github.com/RT-Thread/rt-thread/pull/12065">https://github.com/RT-Thread/rt-thread/pull/12065</a></li>
+  <li><strong>[9]</strong> Commit 6595550d (packages ai/Agent config) — <a href="https://github.com/RT-Thread/packages/commit/6595550d">https://github.com/RT-Thread/packages/commit/6595550d</a></li>
+  <li><strong>[10]</strong> PR #2050 (Agent config options completed and menu reordered) — <a href="https://github.com/RT-Thread/packages/pull/2050">https://github.com/RT-Thread/packages/pull/2050</a></li>
+  <li><strong>[11]</strong> Package ai/Agent description file — <a href="https://github.com/RT-Thread/packages/blob/master/ai/Agent/package.json">https://github.com/RT-Thread/packages/blob/master/ai/Agent/package.json</a></li>
+  <li><strong>[12]</strong> PR #11998 (Renesas RH850 G4KH port and qemu board package) — <a href="https://github.com/RT-Thread/rt-thread/pull/11998">https://github.com/RT-Thread/rt-thread/pull/11998</a></li>
+  <li><strong>[13]</strong> PR #11842 (devtmpfs stack overflow on overlong path components) — <a href="https://github.com/RT-Thread/rt-thread/pull/11842">https://github.com/RT-Thread/rt-thread/pull/11842</a></li>
+  <li><strong>[14]</strong> RT-Thread official news API — <a href="https://club.rt-thread.org/api/index/getList?type=rt_org">https://club.rt-thread.org/api/index/getList?type=rt_org</a></li>
+  <li><strong>[15]</strong> RT-Thread org repository list — <a href="https://github.com/orgs/RT-Thread/repositories">https://github.com/orgs/RT-Thread/repositories</a></li>
+  <li><strong>[16]</strong> Main repo PR list — <a href="https://github.com/RT-Thread/rt-thread/pulls">https://github.com/RT-Thread/rt-thread/pulls</a></li>
+  <li><strong>[17]</strong> Main repo issue list — <a href="https://github.com/RT-Thread/rt-thread/issues">https://github.com/RT-Thread/rt-thread/issues</a></li>
+</ul>
+
+                            </div>
+                        </div>
+                        <div class="post-navigation">
+                            
+                            <a href="/post.html#news-list" class="btn btn-main news-list-link">Return</a>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+<!-- Footer -->
+<!-- 
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="footer-manu">
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="service.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <p class="copyright mb-0">Copyright
+          <script>document.write(new Date().getFullYear())</script> &copy; Designed & Developed by <a
+            href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+          <br> Get More <a href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
+            Templates</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer> -->
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Contact</h4>
+          <p>
+            Weiwei Li (CEO) <br>
+            <!-- Phone:  <br>
+          Fax:  <br> -->
+            <strong>Email:</strong> contact@kubuds.cn<br>
+            <strong>Address:</strong> Room 108, 1st Floor, Building 1, No. 88 Gaoyi Road, Baoshan District, Shanghai<br>
+          </p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 ">
+          <h4>Link</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="https://github.com/kubuds"> GitHub</a></li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copyright container">
+    <div class="me-md-auto text-center ">
+      <div class="copyright">
+        <p>Copyright &copy; 2026 Kubuds</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // 新闻详情页面滚动位置保持功能
+    (function () {
+        const NEWS_LIST_SCROLL_KEY = 'newsListScrollPosition';
+        const NEWS_LIST_TIMESTAMP_KEY = 'newsListTimestamp';
+
+        // 为所有返回新闻列表的链接添加点击事件监听器
+        function addNewsListLinkListeners() {
+            const newsListLinks = document.querySelectorAll('.news-list-link');
+            newsListLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // 不需要在这里保存位置，因为位置应该在从列表页进入详情页时已经保存了
+                    // 这里只需要确保链接正常工作
+                });
+            });
+        }
+
+        // 新闻详情页图片懒加载
+        function initNewsImageLazyLoading() {
+            const images = document.querySelectorAll('.post-content img');
+
+            if (images.length === 0) return;
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+
+                        // 添加加载状态
+                        img.style.opacity = '0.7';
+                        img.style.transition = 'opacity 0.3s ease';
+
+                        // 预加载图片
+                        const tempImg = new Image();
+                        tempImg.onload = function () {
+                            img.style.opacity = '1';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.onerror = function () {
+                            img.style.opacity = '1';
+                            img.alt = '图片加载失败';
+                            img.classList.add('loaded');
+                        };
+                        tempImg.src = img.src;
+
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.1
+            });
+
+            images.forEach(img => {
+                // 为所有图片添加懒加载属性
+                img.setAttribute('loading', 'lazy');
+                imageObserver.observe(img);
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 添加新闻列表链接监听器
+            addNewsListLinkListeners();
+
+            // 初始化图片懒加载
+            initNewsImageLazyLoading();
+        });
+    })();
+</script>
+
+</html>
